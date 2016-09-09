@@ -1,0 +1,21 @@
+inputPath: "src/test/resources/us_energy_10k.csv"
+inputColumns: [0,1]
+inputRows: 10000
+
+tKDEConf:
+  percentile: 0.01
+  qSampleSize: 10000
+
+  kernel: gaussian
+  tolMultiplier: .1
+  cutoffMultiplier: 1.5
+  bwMultiplier: 1.0
+  ignoreSelfScoring: true
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: true
+  gridSizes:
+    - 0.8
+    - 0.5

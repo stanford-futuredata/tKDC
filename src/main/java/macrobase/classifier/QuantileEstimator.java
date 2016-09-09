@@ -45,7 +45,7 @@ public class QuantileEstimator {
         double[] pValues = {pCutoff, pTol, pTarget};
         log.debug("Tracking percentiles: {}", Arrays.toString(pValues));
 
-        // Save all the trees we construct since we can reuse them
+        // Cache existing trees for reuse
         KDTree oldTree = null;
         while (rSize <= metrics.size()) {
             List<double[]> curData = metrics.subList(0, rSize);
@@ -108,7 +108,7 @@ public class QuantileEstimator {
         double[] curBW = new BandwidthSelector()
                 .setMultiplier(tConf.bwMultiplier)
                 .findBandwidth(data);
-        log.debug("Calculating bw: {} on n={}", curBW, data.size());
+        log.debug("Calculating scores for bw: {} on n={}", curBW, data.size());
         Kernel k = kFactory
                 .get()
                 .initialize(curBW);
@@ -116,7 +116,7 @@ public class QuantileEstimator {
         TreeKDE tKDE = new TreeKDE(tree);
         tKDE.setBandwidth(curBW);
         tKDE.setKernel(k);
-        tKDE.setIgnoreSelf(true);
+        tKDE.setIgnoreSelf(tConf.ignoreSelfScoring);
         if (curCutoff > 0) {
             tKDE.setCutoff(curCutoff).setTolerance(curTolerance);
         }

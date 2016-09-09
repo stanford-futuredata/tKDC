@@ -1,5 +1,6 @@
 package macrobase.classifier;
 
+import macrobase.conf.BenchmarkConf;
 import macrobase.conf.TreeKDEConf;
 import macrobase.data.CSVDataSource;
 import org.junit.BeforeClass;
@@ -11,18 +12,18 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
 public class QuantileEstimatorTest {
-    public static List<double[]> energyData;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        energyData = new CSVDataSource("src/test/resources/us_energy_10k.csv", 2).get();
+    public static List<double[]> getData(BenchmarkConf bConf) throws Exception {
+        return new CSVDataSource(bConf.inputPath, bConf.inputColumns)
+                .setLimit(bConf.inputRows)
+                .get();
     }
 
     @Test
-    public void check1Percent() {
-        TreeKDEConf tConf = new TreeKDEConf();
-        tConf.percentile = 0.01;
-        QuantileEstimator qEstimator = new QuantileEstimator(tConf);
+    public void check1Percent() throws Exception {
+        BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test_med.yaml");
+        List<double[]> energyData = getData(bConf);
+
+        QuantileEstimator qEstimator = new QuantileEstimator(bConf.tKDEConf);
         qEstimator.estimateQuantiles(energyData);
         // Value calculated from sklearn
         // bandwidth: [ 49.84778156, 10.74687233]
