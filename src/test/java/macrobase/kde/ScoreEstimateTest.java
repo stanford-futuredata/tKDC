@@ -1,5 +1,7 @@
 package macrobase.kde;
 
+import macrobase.kernel.GaussianKernel;
+import macrobase.kernel.Kernel;
 import macrobase.util.TinyDataSource;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ public class ScoreEstimateTest {
     @Test
     public void testSplitMonotonic() throws Exception {
         List<double[]> data = new TinyDataSource().get();
-        NKDTree tree = new NKDTree().setLeafCapacity(2).build(data);
+        KDTree tree = new KDTree().setLeafCapacity(2).build(data);
         double[] bw = {3.0, 3.0, 3.0};
         Kernel k = new GaussianKernel().initialize(bw);
 

@@ -1,4 +1,4 @@
-package macrobase.kde;
+package macrobase.kernel;
 
 public abstract class Kernel {
     protected int dim;

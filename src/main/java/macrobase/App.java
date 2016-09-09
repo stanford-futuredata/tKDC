@@ -1,5 +1,7 @@
 package macrobase;
 
+import macrobase.classifier.QuantileEstimator;
+import macrobase.conf.TreeKDEConf;
 import macrobase.data.CSVDataSource;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -13,10 +15,15 @@ public class App {
     public static void main(String[] args) throws Exception {
         StopWatch s = new StopWatch();
         s.start();
-        List<double[]> metrics = new CSVDataSource("us_energy_1p0_metrics.csv", 8)
-                .setLimit(100000)
+        List<double[]> metrics = new CSVDataSource("us_energy_1p0_metrics.csv", 2)
+                .setLimit(10000)
                 .get();
         s.stop();
         log.info("Loaded "+metrics.size()+" in "+s.toString());
+
+        TreeKDEConf tConf = new TreeKDEConf();
+        QuantileEstimator qEstimator = new QuantileEstimator(tConf);
+        int rSize = qEstimator.estimateQuantiles(metrics);
+        log.info("Q: {}, T: {}, C: {}", qEstimator.quantile, qEstimator.tolerance, qEstimator.cutoff);
     }
 }

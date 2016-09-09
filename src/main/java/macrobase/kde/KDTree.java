@@ -2,15 +2,14 @@ package macrobase.kde;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import macrobase.kde.AlgebraUtils;
 
 import java.util.*;
 
-public class NKDTree {
+public class KDTree {
     // Core Data
     protected int k;
-    protected NKDTree loChild;
-    protected NKDTree hiChild;
+    protected KDTree loChild;
+    protected KDTree hiChild;
     protected ArrayList<double[]> leafItems;
 
     // Parameters
@@ -25,11 +24,11 @@ public class NKDTree {
     // Array of (k,2) dimensions, of (min, max) pairs in all k dimensions
     private double[][] boundaries;
 
-    public NKDTree() {
+    public KDTree() {
         splitDimension = 0;
     }
 
-    public NKDTree(NKDTree parent, boolean loChild) {
+    public KDTree(KDTree parent, boolean loChild) {
         this.k = parent.k;
         this.splitDimension = (parent.splitDimension + 1) % k;
         this.boundaries = new double[k][2];
@@ -47,16 +46,16 @@ public class NKDTree {
         splitByWidth = parent.splitByWidth;
     }
 
-    public NKDTree setSplitByWidth(boolean f) {
+    public KDTree setSplitByWidth(boolean f) {
         this.splitByWidth = f;
         return this;
     }
-    public NKDTree setLeafCapacity(int leafCapacity) {
+    public KDTree setLeafCapacity(int leafCapacity) {
         this.leafCapacity = leafCapacity;
         return this;
     }
 
-    public NKDTree build(List<double[]> data) {
+    public KDTree build(List<double[]> data) {
         this.k = data.get(0).length;
         this.boundaries = AlgebraUtils.getBoundingBoxRaw(data);
         // Make a local copy of the data since we're going to sort it
@@ -67,7 +66,7 @@ public class NKDTree {
         return buildRec(dataArray, 0, dataArray.length);
     }
 
-    private NKDTree buildRec(double[][] data, int startIdx, int endIdx) {
+    private KDTree buildRec(double[][] data, int startIdx, int endIdx) {
         this.nBelow = endIdx - startIdx;
 
         if (endIdx - startIdx > this.leafCapacity) {
@@ -104,8 +103,8 @@ public class NKDTree {
                 this.splitValue = data[l][splitDimension];
                 l = (startIdx + endIdx) / 2;
             }
-            this.loChild = new NKDTree(this, true).buildRec(data, startIdx, l);
-            this.hiChild = new NKDTree(this, false).buildRec(data, l, endIdx);
+            this.loChild = new KDTree(this, true).buildRec(data, startIdx, l);
+            this.hiChild = new KDTree(this, false).buildRec(data, l, endIdx);
 
             this.mean = new double[k];
             for (int i = 0; i < k; i++) {
@@ -203,11 +202,11 @@ public class NKDTree {
         return this.boundaries;
     }
 
-    public NKDTree getLoChild() {
+    public KDTree getLoChild() {
         return this.loChild;
     }
 
-    public NKDTree getHiChild() {
+    public KDTree getHiChild() {
         return this.hiChild;
     }
 

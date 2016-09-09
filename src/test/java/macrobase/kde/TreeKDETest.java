@@ -10,7 +10,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-public class NTreeKDETest {
+public class TreeKDETest {
     public static List<double[]> tinyData;
 
     @BeforeClass
@@ -23,8 +23,8 @@ public class NTreeKDETest {
     public void simpleTest() throws Exception {
         List<double[]> data = tinyData;
 
-        NKDTree tree = new NKDTree().setLeafCapacity(3);
-        NTreeKDE kde = new NTreeKDE(tree).setTolerance(0.0);
+        KDTree tree = new KDTree().setLeafCapacity(3);
+        TreeKDE kde = new TreeKDE(tree).setTolerance(0.0);
         kde.train(data);
 
         KDESimple kdeSimple = new KDESimple();
@@ -44,8 +44,8 @@ public class NTreeKDETest {
             double cutoff,
             boolean ignoreSelf
     ) {
-        NKDTree tree = new NKDTree().setLeafCapacity(3);
-        NTreeKDE kde = new NTreeKDE(tree)
+        KDTree tree = new KDTree().setLeafCapacity(3);
+        TreeKDE kde = new TreeKDE(tree)
                 .setTolerance(tol)
                 .setCutoff(cutoff)
                 .setIgnoreSelf(ignoreSelf);

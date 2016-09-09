@@ -1,15 +1,17 @@
 package macrobase.kde;
 
+import macrobase.kernel.Kernel;
+
 /**
  * Class used to tracking the weight contributions of different regions of space.
  * Stored in a priority queue and split when we need more refined estimates.
  */
 public class ScoreEstimate {
-    public NKDTree tree;
+    public KDTree tree;
     protected double wMax, wMin;
     public double totalWMax, totalWMin;
 
-    public ScoreEstimate(Kernel kernel, NKDTree tree, double[] d) {
+    public ScoreEstimate(Kernel kernel, KDTree tree, double[] d) {
         this.tree = tree;
         double[][] minMaxD = tree.getMinMaxDistanceVectors(d);
         this.wMax = kernel.density(minMaxD[0]);

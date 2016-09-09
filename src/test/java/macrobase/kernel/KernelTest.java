@@ -1,10 +1,11 @@
-package macrobase.kde;
+package macrobase.kernel;
 
+import macrobase.kernel.EpaKernel;
+import macrobase.kernel.GaussianKernel;
+import macrobase.kernel.Kernel;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.linear.DiagonalMatrix;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.greaterThan;

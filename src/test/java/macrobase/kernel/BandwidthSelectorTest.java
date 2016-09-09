@@ -1,5 +1,6 @@
-package macrobase.kde;
+package macrobase.kernel;
 
+import macrobase.kernel.BandwidthSelector;
 import macrobase.util.TinyDataSource;
 import org.junit.Test;
 

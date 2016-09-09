@@ -1,4 +1,4 @@
-package macrobase.kde;
+package macrobase.kernel;
 
 public class EpaKernel extends Kernel {
     @Override

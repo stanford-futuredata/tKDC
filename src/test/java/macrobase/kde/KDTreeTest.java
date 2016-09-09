@@ -11,8 +11,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
-public class NKDTreeTest {
-    private static final Logger log = LoggerFactory.getLogger(NKDTreeTest.class);
+public class KDTreeTest {
+    private static final Logger log = LoggerFactory.getLogger(KDTreeTest.class);
 
     private static List<double[]> loadVerySimple() throws Exception {
         return new TinyDataSource().get();
@@ -21,13 +21,13 @@ public class NKDTreeTest {
     @Test
     public void testConstruction() throws Exception {
         List<double[]> data = loadVerySimple();
-        NKDTree node = (new NKDTree()).setLeafCapacity(2).build(data);
+        KDTree node = (new KDTree()).setLeafCapacity(2).build(data);
         assertEquals(0, node.getSplitDimension());
         assertEquals(data.size(), node.getNBelow());
 
         // Check that points are distributed among children
-        NKDTree lo = node.getLoChild();
-        NKDTree hi = node.getHiChild();
+        KDTree lo = node.getLoChild();
+        KDTree hi = node.getHiChild();
         assertEquals(1, lo.getSplitDimension());
         assertEquals(1, lo.getSplitDimension());
         assertEquals(data.size(), lo.getNBelow() + hi.getNBelow());
@@ -47,7 +47,7 @@ public class NKDTreeTest {
         }
 
         // Get a Tree that is just a leaf.
-        node = new NKDTree().setLeafCapacity(50).build(data);
+        node = new KDTree().setLeafCapacity(50).build(data);
         boundaries = node.getBoundaries();
         for (int i=0; i<dimensions; i++) {
             assertArrayEquals(actualBoundaries[i], boundaries[i], 1e-7);
@@ -58,7 +58,7 @@ public class NKDTreeTest {
     @Test
     public void testEstimateDistances() throws Exception {
         List<double[]> data = loadVerySimple();
-        NKDTree node = new NKDTree().setLeafCapacity(2).build(data);
+        KDTree node = new KDTree().setLeafCapacity(2).build(data);
         double[] zeroArray = {0, 0, 0};
         for (double[] datum : data) {
             // Check that minimum distance is zero if the point is inside.
@@ -83,7 +83,7 @@ public class NKDTreeTest {
     @Test
     public void testIsInsideBoundaries() throws Exception {
         List<double[]> data = loadVerySimple();
-        NKDTree node = new NKDTree().setLeafCapacity(2).build(data);
+        KDTree node = new KDTree().setLeafCapacity(2).build(data);
         for (double[] datum : data) {
             assertTrue(node.isInsideBoundaries(datum));
         }
@@ -92,7 +92,7 @@ public class NKDTreeTest {
     @Test
     public void testIsOutsideBoundaries() throws Exception {
         List<double[]> data = loadVerySimple();
-        NKDTree node = new NKDTree().setLeafCapacity(2).build(data);
+        KDTree node = new KDTree().setLeafCapacity(2).build(data);
 
         double[] metrics = {-1, -1, -1};
         assertFalse(node.isInsideBoundaries(metrics));
@@ -101,7 +101,7 @@ public class NKDTreeTest {
     @Test
     public void testToString() throws Exception {
         List<double[]> data = loadVerySimple();
-        NKDTree node = new NKDTree().setLeafCapacity(2).build(data);
+        KDTree node = new KDTree().setLeafCapacity(2).build(data);
         String str = node.toString();
         assertThat(str.length(), greaterThan(Integer.valueOf(data.size())));
     }
@@ -117,7 +117,7 @@ public class NKDTreeTest {
         weirdSplit.add(new double[] {10});
         weirdSplit.add(new double[] {10});
 
-        NKDTree node = new NKDTree()
+        KDTree node = new KDTree()
                 .setLeafCapacity(2)
                 .setSplitByWidth(true)
                 .build(weirdSplit);

@@ -1,5 +1,8 @@
 package macrobase.kde;
 
+import macrobase.kernel.BandwidthSelector;
+import macrobase.kernel.GaussianKernel;
+import macrobase.kernel.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

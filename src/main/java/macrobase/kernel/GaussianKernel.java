@@ -1,4 +1,4 @@
-package macrobase.kde;
+package macrobase.kernel;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -54,8 +54,8 @@ public class GaussianKernel extends Kernel {
         }
         return FastMath.scalb(dimFactor * bwFactor, -(int)(.5*dist2*1.4));
     }
-    @Override
 
+    @Override
     public double lowerBound(double[] d) {
         double dist2 = 0.0;
         for (int i=0; i < d.length; i++) {

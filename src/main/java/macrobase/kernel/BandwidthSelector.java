@@ -1,4 +1,4 @@
-package macrobase.kde;
+package macrobase.kernel;
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 

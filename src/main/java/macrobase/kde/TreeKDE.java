@@ -1,5 +1,8 @@
 package macrobase.kde;
 
+import macrobase.kernel.BandwidthSelector;
+import macrobase.kernel.GaussianKernel;
+import macrobase.kernel.Kernel;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class NTreeKDE {
-    private static final Logger log = LoggerFactory.getLogger(NTreeKDE.class);
+public class TreeKDE {
+    private static final Logger log = LoggerFactory.getLogger(TreeKDE.class);
 
     // ** Basic stats parameters
     private int numPoints;
@@ -19,7 +22,7 @@ public class NTreeKDE {
     private boolean ignoreSelf=false;
 
     // ** Tree parameters
-    private NKDTree tree;
+    private KDTree tree;
     // Whether the user provided a pre-populated tree
     private boolean trainedTree = false;
     // Total density error tolerance
@@ -37,18 +40,18 @@ public class NTreeKDE {
     private double unscaledCutoff;
     private double selfPointDensity;
 
-    public NTreeKDE(NKDTree tree) {
+    public TreeKDE(KDTree tree) {
         this.tree = tree;
     }
 
-    public NTreeKDE setIgnoreSelf(boolean b) {this.ignoreSelf = b; return this;}
-    public NTreeKDE setTolerance(double t) {this.tolerance = t; return this;}
-    public NTreeKDE setCutoff(double cutoff) {this.cutoff = cutoff; return this;}
-    public NTreeKDE setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
-    public NTreeKDE setKernel(Kernel k) {this.kernel = k; return this;}
-    public NTreeKDE setTrainedTree(NKDTree tree) {this.tree=tree; this.trainedTree=true; return this;}
+    public TreeKDE setIgnoreSelf(boolean b) {this.ignoreSelf = b; return this;}
+    public TreeKDE setTolerance(double t) {this.tolerance = t; return this;}
+    public TreeKDE setCutoff(double cutoff) {this.cutoff = cutoff; return this;}
+    public TreeKDE setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
+    public TreeKDE setKernel(Kernel k) {this.kernel = k; return this;}
+    public TreeKDE setTrainedTree(KDTree tree) {this.tree=tree; this.trainedTree=true; return this;}
 
-    public NKDTree getTree() {return this.tree;}
+    public KDTree getTree() {return this.tree;}
 
     public double[] getBandwidth() {return bandwidth;}
 
@@ -65,8 +68,8 @@ public class NTreeKDE {
         }
         if (kernel == null) {
             kernel = new GaussianKernel();
+            kernel.initialize(bandwidth);
         }
-        kernel.initialize(bandwidth);
         this.selfPointDensity = kernel.density(new double[bandwidth.length]);
 
         if (!trainedTree) {
@@ -154,7 +157,7 @@ public class NTreeKDE {
         }
     }
 
-    private double exactDensity(NKDTree t, double[] d) {
+    private double exactDensity(KDTree t, double[] d) {
         double score = 0.0;
         for (double[] dChild : t.getItems()) {
             double[] diff = d.clone();
