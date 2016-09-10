@@ -42,9 +42,13 @@ public class TreeKDETest {
             List<double[]> data,
             double tol,
             double cutoff,
-            boolean ignoreSelf
+            boolean ignoreSelf,
+            boolean splitByWidth
     ) {
-        KDTree tree = new KDTree().setLeafCapacity(3);
+        KDTree tree = new KDTree()
+                .setLeafCapacity(3)
+                .setSplitByWidth(splitByWidth)
+                ;
         TreeKDE kde = new TreeKDE(tree)
                 .setTolerance(tol)
                 .setCutoff(cutoff)
@@ -81,36 +85,42 @@ public class TreeKDETest {
         data.add(new double[] {0.0, 0.0});
         data.add(new double[] {1.0, 1.0});
 
-        approxTest(data, 0.0, Double.MAX_VALUE, true);
+        approxTest(data, 0.0, Double.MAX_VALUE, true, true);
     }
 
     @Test
     public void testIgnoreSelfExact() throws Exception {
         List<double[]> data = tinyData;
-        approxTest(data, 0.0, Double.MAX_VALUE, true);
+        approxTest(data, 0.0, Double.MAX_VALUE, true, true);
+    }
+
+    @Test
+    public void testExactSplitMedian() throws Exception {
+        List<double[]> data = tinyData;
+        approxTest(data, 0.0, Double.MAX_VALUE, false, false);
     }
 
     @Test
     public void testTolerance() throws Exception {
         List<double[]> data = tinyData;
-        approxTest(data, 1e-5, 0.0, false);
+        approxTest(data, 1e-5, 0.0, false, true);
     }
 
     @Test
     public void testCutoff() throws Exception {
         List<double[]> data = tinyData;
-        approxTest(data, 0.0, 7e-4, false);
+        approxTest(data, 0.0, 7e-4, false, true);
     }
 
     @Test
     public void testToleranceCutoff() throws Exception {
         List<double[]> data = tinyData;
-        approxTest(data, 1e-5, 7e-4, false);
+        approxTest(data, 1e-5, 7e-4, false, true);
     }
 
     @Test
     public void testIgnoreSelfApprox() throws Exception {
         List<double[]> data = tinyData;
-        approxTest(data, 1e-7, 1e-6, true);
+        approxTest(data, 1e-7, 1e-6, true, true);
     }
 }

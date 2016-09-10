@@ -1,5 +1,6 @@
 package macrobase.kde;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AlgebraUtils {
@@ -19,5 +20,16 @@ public class AlgebraUtils {
             boundaries[i][1] = maxI;
         }
         return boundaries;
+    }
+
+    public static String array2dToString(double[][] data) {
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        for (double[] curRow : data) {
+            s.append(Arrays.toString(curRow));
+            s.append(",");
+        }
+        s.append("]");
+        return s.toString().trim();
     }
 }

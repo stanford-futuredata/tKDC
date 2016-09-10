@@ -2,6 +2,10 @@ package macrobase.kde;
 
 import macrobase.kernel.Kernel;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Class used to tracking the weight contributions of different regions of space.
  * Stored in a priority queue and split when we need more refined estimates.

@@ -7,9 +7,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class TreeKDE {
     private static final Logger log = LoggerFactory.getLogger(TreeKDE.class);
@@ -51,6 +49,8 @@ public class TreeKDE {
     public TreeKDE setKernel(Kernel k) {this.kernel = k; return this;}
     public TreeKDE setTrainedTree(KDTree tree) {this.tree=tree; this.trainedTree=true; return this;}
 
+    public double getCutoff() {return this.cutoff;}
+    public double getTolerance() {return this.tolerance;}
     public KDTree getTree() {return this.tree;}
 
     public double[] getBandwidth() {return bandwidth;}
@@ -81,32 +81,57 @@ public class TreeKDE {
         }
     }
 
+    public static Comparator<ScoreEstimate> scoreEstimateComparator = (o1, o2) -> {
+        if (o1.totalWMax < o2.totalWMax) {
+            return 1;
+        } else if (o1.totalWMax > o2.totalWMax) {
+            return -1;
+        } else {
+            return 0;
+        }
+    };
+
     /**
      * Calculates density * N
      * @param d query point
      * @return unnormalized density
      */
     private double pqScore(double[] d) {
-        ScoreEstimate curEstimate = new ScoreEstimate(this.kernel, this.tree, d);
-        Comparator<ScoreEstimate> c = (o1, o2) -> {
-            if (o1.totalWMax < o2.totalWMax) {
-                return 1;
-            } else if (o1.totalWMax > o2.totalWMax) {
-                return -1;
-            } else {
-                return 0;
-            }
-        };
-        PriorityQueue<ScoreEstimate> pq = new PriorityQueue<>(100, c);
-        pq.add(curEstimate);
+        // Initialize Score Estimates
 
-        double totalWMin = curEstimate.totalWMin;
-        double totalWMax = curEstimate.totalWMax;
-        if (ignoreSelf) {
-            totalWMin = curEstimate.totalWMin - selfPointDensity;
-            totalWMax = curEstimate.totalWMax - selfPointDensity;
+        // Nodes in ascending order (deepest leaf first)
+        List<KDTree> initialChildList = new LinkedList<>();
+        if (false) {
+            KDTree curNode = this.tree;
+            while (!curNode.isLeaf()) {
+                KDTree[] curNodeChildren = curNode.getChildren(d);
+                curNode = curNodeChildren[0];
+                initialChildList.add(0, curNodeChildren[1]);
+            }
+            initialChildList.add(0, curNode);
+        } else {
+            initialChildList = Collections.singletonList(this.tree);
         }
-        long curNodesProcessed = 1;
+
+        double totalWMin = 0.0;
+        double totalWMax = 0.0;
+        long curNodesProcessed = 0;
+        if (ignoreSelf) {
+            totalWMin -= selfPointDensity;
+            totalWMax -= selfPointDensity;
+        }
+
+        PriorityQueue<ScoreEstimate> pq = new PriorityQueue<>(100, scoreEstimateComparator);
+        for (KDTree childNode : initialChildList) {
+            ScoreEstimate childNodeEstimate = new ScoreEstimate(this.kernel, childNode, d);
+            pq.add(childNodeEstimate);
+            totalWMin += childNodeEstimate.totalWMin;
+            totalWMax += childNodeEstimate.totalWMax;
+            if (totalWMin > unscaledCutoff) {
+                totalWMax = Double.MAX_VALUE;
+            }
+            curNodesProcessed++;
+        }
 
 //        System.out.println("\nScoring : "+Arrays.toString(d));
 //        System.out.println("tolerance: "+unscaledTolerance);
@@ -124,12 +149,11 @@ public class TreeKDE {
                 useMinAsFinalScore = true;
                 break;
             }
-            curEstimate = pq.poll();
-//            System.out.println("current box:\n"+ DiagnosticsUtils.array2dToString(curEstimate.tree.getBoundaries()));
+            ScoreEstimate curEstimate = pq.poll();
+//            System.out.println("current box:\n"+ AlgebraUtils.array2dToString(curEstimate.tree.getBoundaries()));
 //            System.out.println("split: "+curEstimate.tree.getSplitDimension() + ":"+curEstimate.tree.getSplitValue());
             totalWMin -= curEstimate.totalWMin;
             totalWMax -= curEstimate.totalWMax;
-
 
             if (curEstimate.tree.isLeaf()) {
                 double exact = exactDensity(curEstimate.tree, d);

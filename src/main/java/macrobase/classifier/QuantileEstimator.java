@@ -72,7 +72,7 @@ public class QuantileEstimator {
                 curCutoff = curQuantValues.get(pCutoff);
                 curTarget = curQuantValues.get(pTarget);
                 curTolerance = curQuantValues.get(pTarget) - curQuantValues.get(pTol);
-                log.debug("Estimated q {} for {}", curTarget, rSize);
+                log.debug("Estimated q:{} for n:{}", curTarget, rSize);
                 log.debug(curQuantValues.toString());
 
                 if (rSize == metrics.size()) {

@@ -2,6 +2,7 @@ package macrobase.kde;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 import java.util.*;
 
@@ -73,15 +74,24 @@ public class KDTree {
 
             double min = Double.MAX_VALUE;
             double max = -Double.MAX_VALUE;
+            double[] splitValues = new double[endIdx-startIdx];
             for (int j=startIdx;j<endIdx;j++) {
                 double curVal = data[j][splitDimension];
+                splitValues[j-startIdx] = curVal;
                 if (curVal < min) { min = curVal; }
                 if (curVal > max) { max = curVal; }
             }
             boundaries[splitDimension][0] = min;
             boundaries[splitDimension][1] = max;
 
-            this.splitValue = 0.5 * (boundaries[splitDimension][0] + boundaries[splitDimension][1]);
+            Percentile p = new Percentile();
+            p.setData(splitValues);
+            if (splitByWidth) {
+                this.splitValue = 0.5 * (p.evaluate(10) + p.evaluate(90));
+//            this.splitValue = 0.5 * (boundaries[splitDimension][0] + boundaries[splitDimension][1]);
+            } else {
+                this.splitValue = p.evaluate(50);
+            }
             int l = startIdx;
             int r = endIdx - 1;
             while (true) {
@@ -208,6 +218,18 @@ public class KDTree {
 
     public KDTree getHiChild() {
         return this.hiChild;
+    }
+
+    public KDTree[] getChildren(double[] d) {
+        KDTree[] c = new KDTree[2];
+        if (d[splitDimension] < splitValue) {
+            c[0] = this.loChild;
+            c[1] = this.hiChild;
+        } else {
+            c[0] = this.hiChild;
+            c[1] = this.loChild;
+        }
+        return c;
     }
 
     public boolean isLeaf() {
