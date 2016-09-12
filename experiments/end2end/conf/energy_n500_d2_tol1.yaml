@@ -1,6 +1,6 @@
 inputPath: "us_energy_1p0_metrics.csv"
 inputColumns: [0,1]
-inputRows: 10000
+inputRows: 500000
 
 tKDEConf:
   percentile: 0.01
@@ -11,10 +11,8 @@ tKDEConf:
   ignoreSelfScoring: true
 
   calculateCutoffs: true
-  tolMultiplier: .5
-  cutoffMultiplier: 1.2
-  tolAbsolute: 2.540162931731176E-8
-  cutoffAbsolute: 3.646100514684586E-7
+  tolMultiplier: .01
+  cutoffMultiplier: 1.5
 
   leafSize: 20
   splitByWidth: true

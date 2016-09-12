@@ -1,27 +1,37 @@
 package macrobase.kde;
 
 import macrobase.util.TinyDataSource;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
 public class KDTreeTest {
     private static final Logger log = LoggerFactory.getLogger(KDTreeTest.class);
+    public static List<double[]> verySimpleData;
+    public static KDTree verySimpleTree;
 
     private static List<double[]> loadVerySimple() throws Exception {
         return new TinyDataSource().get();
     }
 
+    @BeforeClass
+    public static void setUp() throws Exception{
+        verySimpleData = loadVerySimple();
+        verySimpleTree = new KDTree()
+                .setLeafCapacity(2)
+                .build(verySimpleData);
+    }
+
     @Test
     public void testConstruction() throws Exception {
-        List<double[]> data = loadVerySimple();
-        KDTree node = (new KDTree()).setLeafCapacity(2).build(data);
+        KDTree node = verySimpleTree;
+        List<double[]> data = verySimpleData;
         assertEquals(0, node.getSplitDimension());
         assertEquals(data.size(), node.getNBelow());
 
@@ -57,8 +67,8 @@ public class KDTreeTest {
 
     @Test
     public void testEstimateDistances() throws Exception {
-        List<double[]> data = loadVerySimple();
-        KDTree node = new KDTree().setLeafCapacity(2).build(data);
+        List<double[]> data = verySimpleData;
+        KDTree node = verySimpleTree;
         double[] zeroArray = {0, 0, 0};
         for (double[] datum : data) {
             // Check that minimum distance is zero if the point is inside.
@@ -82,8 +92,8 @@ public class KDTreeTest {
 
     @Test
     public void testIsInsideBoundaries() throws Exception {
-        List<double[]> data = loadVerySimple();
-        KDTree node = new KDTree().setLeafCapacity(2).build(data);
+        List<double[]> data = verySimpleData;
+        KDTree node = verySimpleTree;
         for (double[] datum : data) {
             assertTrue(node.isInsideBoundaries(datum));
         }
@@ -91,8 +101,7 @@ public class KDTreeTest {
 
     @Test
     public void testIsOutsideBoundaries() throws Exception {
-        List<double[]> data = loadVerySimple();
-        KDTree node = new KDTree().setLeafCapacity(2).build(data);
+        KDTree node = verySimpleTree;
 
         double[] metrics = {-1, -1, -1};
         assertFalse(node.isInsideBoundaries(metrics));
@@ -100,8 +109,8 @@ public class KDTreeTest {
 
     @Test
     public void testToString() throws Exception {
-        List<double[]> data = loadVerySimple();
-        KDTree node = new KDTree().setLeafCapacity(2).build(data);
+        List<double[]> data = verySimpleData;
+        KDTree node = verySimpleTree;
         String str = node.toString();
         assertThat(str.length(), greaterThan(Integer.valueOf(data.size())));
     }
@@ -126,5 +135,18 @@ public class KDTreeTest {
         assertEquals(6, node.getHiChild().getNBelow());
 
         assertEquals(1, node.getHiChild().getLoChild().getNBelow());
+    }
+
+    @Test
+    public void testIndices() throws Exception {
+        List<double[]> data = verySimpleData;
+        KDTree node = verySimpleTree;
+        Set<Integer> idxs = new HashSet<>(data.size());
+        for (int i : verySimpleTree.idxs) {
+            idxs.add(i);
+        }
+        for (int i=0;i<data.size();i++){
+            assertTrue("indices contain "+i, idxs.contains(i));
+        }
     }
 }

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-mvn exec:java
+mvn exec:java -Dexec.args="$*"

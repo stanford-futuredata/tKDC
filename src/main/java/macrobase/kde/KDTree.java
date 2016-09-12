@@ -7,20 +7,24 @@ import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import java.util.*;
 
 public class KDTree {
-    // Core Data
-    protected int k;
-    protected KDTree loChild;
-    protected KDTree hiChild;
-    protected ArrayList<double[]> leafItems;
-
     // Parameters
     private int leafCapacity = 20;
     private boolean splitByWidth = false;
 
-    // Statistics
+    // Core Data
+    private int k;
+    private KDTree loChild;
+    private KDTree hiChild;
+    private ArrayList<double[]> leafItems;
+
+    // Tracking element locations
+    public int[] idxs;
+    public int startIdx, endIdx;
+
+    // Calculated Statistics
     private int splitDimension;
-    protected int nBelow;
-    protected double[] mean;
+    private int nBelow;
+    private double[] mean;
     private double splitValue;
     // Array of (k,2) dimensions, of (min, max) pairs in all k dimensions
     private double[][] boundaries;
@@ -31,6 +35,7 @@ public class KDTree {
 
     public KDTree(KDTree parent, boolean loChild) {
         this.k = parent.k;
+        this.idxs = parent.idxs;
         this.splitDimension = (parent.splitDimension + 1) % k;
         this.boundaries = new double[k][2];
         for (int i=0;i<k;i++) {
@@ -57,21 +62,26 @@ public class KDTree {
     }
 
     public KDTree build(List<double[]> data) {
+        int n = data.size();
         this.k = data.get(0).length;
+        this.idxs = new int[n];
+        this.splitDimension = 0;
         this.boundaries = AlgebraUtils.getBoundingBoxRaw(data);
         // Make a local copy of the data since we're going to sort it
-        double[][] dataArray = new double[data.size()][k];
-        for (int i=0;i<dataArray.length;i++) {
+        double[][] dataArray = new double[n][k];
+        for (int i=0;i<n;i++) {
             dataArray[i] = data.get(i);
+            this.idxs[i] = i;
         }
         return buildRec(dataArray, 0, dataArray.length);
     }
 
     private KDTree buildRec(double[][] data, int startIdx, int endIdx) {
         this.nBelow = endIdx - startIdx;
+        this.startIdx = startIdx;
+        this.endIdx = endIdx;
 
         if (endIdx - startIdx > this.leafCapacity) {
-
             double min = Double.MAX_VALUE;
             double max = -Double.MAX_VALUE;
             double[] splitValues = new double[endIdx-startIdx];
@@ -105,6 +115,10 @@ public class KDTree {
                     double[] tmp = data[l];
                     data[l]= data[r];
                     data[r]= tmp;
+
+                    int tmpI = idxs[l];
+                    this.idxs[l] = idxs[r];
+                    this.idxs[r] = tmpI;
                 } else {
                     break;
                 }

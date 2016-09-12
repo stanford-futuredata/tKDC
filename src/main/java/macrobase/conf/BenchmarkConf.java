@@ -11,11 +11,17 @@ public class BenchmarkConf {
     public String inputPath;
     public List<Integer> inputColumns;
     public int inputRows;
+    public int numToScore;
 
     public TreeKDEConf tKDEConf;
 
     public static BenchmarkConf load(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        return mapper.readValue(new File(fileName), BenchmarkConf.class);
+        BenchmarkConf newConf = mapper.readValue(new File(fileName), BenchmarkConf.class);
+
+        if (newConf.numToScore == 0) {
+            newConf.numToScore = newConf.inputRows;
+        }
+        return newConf;
     }
 }

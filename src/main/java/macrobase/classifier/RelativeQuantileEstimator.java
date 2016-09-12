@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-public class QuantileEstimator {
-    private static final Logger log = LoggerFactory.getLogger(QuantileEstimator.class);
+public class RelativeQuantileEstimator {
+    private static final Logger log = LoggerFactory.getLogger(RelativeQuantileEstimator.class);
 
     public TreeKDEConf tConf;
     public KernelFactory kFactory;
@@ -24,7 +24,7 @@ public class QuantileEstimator {
     public double cutoff;
     public double tolerance;
 
-    public QuantileEstimator(TreeKDEConf tConf) {
+    public RelativeQuantileEstimator(TreeKDEConf tConf) {
         this.tConf = tConf;
         kFactory = new KernelFactory(tConf.kernel);
     }
@@ -39,6 +39,12 @@ public class QuantileEstimator {
         double curTolerance = -1;
         double curTarget = -1;
 
+        double pCutoff = tConf.cutoffMultiplier * tConf.percentile * 100;
+        double pTol = (1-tConf.tolMultiplier) * tConf.percentile * 100;
+        double pTarget = tConf.percentile * 100;
+        double[] pValues = {pCutoff, pTol, pTarget};
+        log.debug("Tracking percentiles: {}", Arrays.toString(pValues));
+
         // Cache existing trees for reuse
         KDTree oldTree = null;
         while (rSize <= metrics.size()) {
@@ -47,19 +53,27 @@ public class QuantileEstimator {
             if (oldTree == null) {
                 oldTree = trainTree(curData);
             }
-            curTarget = calcQuantile(
+            Percentile pCalc = calcQuantiles(
                     metrics.subList(0, rSize),
                     oldTree,
                     curCutoff,
                     curTolerance
             );
-            if (curTarget > curCutoff && curCutoff > 0) {
+
+            TreeMap<Double, Double> curQuantValues = new TreeMap<>();
+            for (double pV : pValues) {
+                curQuantValues.put(pV, pCalc.evaluate(pV));
+            }
+
+            if (curQuantValues.get(pTarget) > curCutoff && curCutoff > 0) {
                 log.debug("Bad Cutoff {} for {}, retrying", curCutoff, rSize);
                 curCutoff *= 4;
             } else {
-                curCutoff = tConf.cutoffMultiplier * curTarget;
-                curTolerance = tConf.tolMultiplier * curTarget;
+                curCutoff = curQuantValues.get(pCutoff);
+                curTarget = curQuantValues.get(pTarget);
+                curTolerance = curQuantValues.get(pTarget) - curQuantValues.get(pTol);
                 log.debug("Estimated q:{} for n:{}", curTarget, rSize);
+                log.debug(curQuantValues.toString());
 
                 if (rSize == metrics.size()) {
                     break;
@@ -85,7 +99,7 @@ public class QuantileEstimator {
         return t.build(data);
     }
 
-    public double calcQuantile(
+    public Percentile calcQuantiles(
             List<double[]> data,
             KDTree tree,
             double curCutoff,
@@ -122,6 +136,7 @@ public class QuantileEstimator {
                 (float)numSamples * 1000/(elapsed));
 
         Percentile p = new Percentile();
-        return p.evaluate(densities, tConf.percentile * 100);
+        p.setData(densities);
+        return p;
     }
 }

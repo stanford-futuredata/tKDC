@@ -30,4 +30,31 @@ public class AlgebraUtilsTest {
         assertEquals(-9.0, bbox[2][0], 1e-10);
         assertEquals(6.0, bbox[2][1], 1e-10);
     }
+
+    @Test
+    public void testBoundingBoxDiff() {
+        double[][] box1 = {
+                {1,4},
+                {2,5},
+                {3,6}
+        };
+        double[][] box2 = {
+                {0,1},
+                {3,4},
+                {9,10}
+        };
+
+        double[][] minMaxVectors = AlgebraUtils.getMinMaxDistanceBetweenBoxes(
+                box1,box2
+        );
+        double[][] distanceVectors = {
+                {0, 0, 3},
+                {4, 2, 7}
+        };
+        for (int i = 0; i < minMaxVectors.length; i++) {
+            for (int j = 0; j < minMaxVectors[0].length; j++) {
+                assertEquals(distanceVectors[i][j], minMaxVectors[i][j], 1e-8);
+            }
+        }
+    }
 }
