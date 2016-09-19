@@ -54,7 +54,7 @@ public class DualTreeKDEFactory {
         tKDE.setIgnoreSelf(tConf.ignoreSelfScoring);
 
         if (tConf.calculateCutoffs) {
-            QuantileEstimator q = new QuantileEstimator(tConf);
+            QuantileBoundEstimator q = new QuantileBoundEstimator(tConf);
             q.estimateQuantiles(data);
             tKDE.setCutoff(q.cutoff);
             tKDE.setTolerance(q.tolerance);

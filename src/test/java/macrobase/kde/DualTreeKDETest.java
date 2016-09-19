@@ -27,14 +27,14 @@ public class DualTreeKDETest {
         DualTreeKDE kde = new DualTreeKDE(tree).setTolerance(0.0);
         kde.train(data);
 
-        KDESimple kdeSimple = new KDESimple();
-        kdeSimple.train(data);
+        SimpleKDE simpleKDE = new SimpleKDE();
+        simpleKDE.train(data);
 
-        assertArrayEquals(kdeSimple.getBandwidth(), kde.getBandwidth(), 1e-10);
+        assertArrayEquals(simpleKDE.getBandwidth(), kde.getBandwidth(), 1e-10);
         double[] treeScores = kde.densities(data);
         for (int i = 0; i < data.size(); i++) {
             double[] datum = data.get(i);
-            double dSimple = kdeSimple.density(datum);
+            double dSimple = simpleKDE.density(datum);
             double dTree = treeScores[i];
             assertEquals(dSimple, dTree, dSimple*1e-10);
         }
@@ -63,18 +63,18 @@ public class DualTreeKDETest {
 
         for (int i=0;i<data.size();i++) {
             double[] d = data.get(i);
-            KDESimple kdeSimple = new KDESimple();
+            SimpleKDE simpleKDE = new SimpleKDE();
 
             if (!ignoreSelf) {
-                kdeSimple.train(data);
+                simpleKDE.train(data);
             } else {
                 ArrayList<double[]> subData = new ArrayList<>(data);
                 subData.remove(i);
-                kdeSimple.setBandwidth(kde.getBandwidth());
-                kdeSimple.train(subData);
+                simpleKDE.setBandwidth(kde.getBandwidth());
+                simpleKDE.train(subData);
             }
 
-            double trueDensity = kdeSimple.density(d);
+            double trueDensity = simpleKDE.density(d);
             double estDensity = treeScores[i];
 
             if (trueDensity < cutoff) {

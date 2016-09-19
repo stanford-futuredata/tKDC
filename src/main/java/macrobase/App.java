@@ -1,9 +1,10 @@
 package macrobase;
 
-import macrobase.classifier.TreeKDEFactory;
+import macrobase.classifier.KDEFactory;
 import macrobase.conf.BenchmarkConf;
 import macrobase.conf.TreeKDEConf;
 import macrobase.data.CSVDataSource;
+import macrobase.kde.SimpleKDE;
 import macrobase.kde.TreeKDE;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -41,27 +43,51 @@ public class App {
 
         TreeKDEConf tConf = benchmarkConf.tKDEConf;
 
-        StopWatch sw = new StopWatch();
-        sw.start();
-        TreeKDE tKDE = new TreeKDEFactory(tConf).getTreeKDE(metrics);
-        sw.stop();
-        log.info("Trained in {}", sw.toString());
-        long trainTime = sw.getTime();
-        log.info("Cutoff: {}, Tolerance: {}", tKDE.getCutoff(), tKDE.getTolerance());
-
         double[] densities = new double[benchmarkConf.numToScore];
-        sw.reset();
-        sw.start();
-        for (int i=0;i<densities.length;i++) {
-            double curDensity = tKDE.density(metrics.get(i));
-            densities[i] = curDensity;
+        long trainTime = 0;
+        long scoreTime = 0;
+        StopWatch sw = new StopWatch();
+
+        if (tConf.algorithm == TreeKDEConf.Algorithm.TREEKDE) {
+            sw.start();
+            TreeKDE tKDE = new KDEFactory(tConf).getTreeKDE(metrics);
+            log.info("Trained");
+            log.info("BW: {}", Arrays.toString(tKDE.getBandwidth()));
+            log.info("Cutoff: {}, Tolerance: {}", tKDE.getCutoff(), tKDE.getTolerance());
+            sw.stop();
+            trainTime = sw.getTime();
+
+            sw.reset();
+            sw.start();
+            for (int i = 0; i < densities.length; i++) {
+                double curDensity = tKDE.density(metrics.get(i));
+                densities[i] = curDensity;
+            }
+            sw.stop();
+            scoreTime = sw.getTime();
+        } else if (tConf.algorithm == TreeKDEConf.Algorithm.SIMPLEKDE) {
+            sw.start();
+            SimpleKDE kde = new KDEFactory(tConf).getSimpleKDE(metrics);
+            log.info("Trained");
+            log.info("BW: {}", Arrays.toString(kde.getBandwidth()));
+            sw.stop();
+            trainTime = sw.getTime();
+
+            sw.reset();
+            sw.start();
+            for (int i = 0; i < densities.length; i++) {
+                double curDensity = kde.density(metrics.get(i));
+                densities[i] = curDensity;
+            }
+
+            sw.stop();
+            scoreTime = sw.getTime();
         }
-        sw.stop();
-        long scoreTime = sw.getTime();
-        log.info("Scored in {}", sw.toString());
+        log.info("Trained in {}", trainTime);
+        log.info("Scored in {}", scoreTime);
         log.info("Scored {} @ {} / s",
                 densities.length,
-                (float)densities.length * 1000/(sw.getTime()));
+                (float)densities.length * 1000/(scoreTime));
         log.info("Total Processing: {}", (double)(trainTime+scoreTime)/1000);
 
         if (outputPath != null) {

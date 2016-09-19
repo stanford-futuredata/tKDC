@@ -4,7 +4,10 @@ inputRows: 10000
 
 tKDEConf:
   percentile: 0.01
+
   qSampleSize: 10000
+  qCutoffMultiplier: 1.5
+  qTolMultiplier: 0.01
 
   kernel: gaussian
   tolMultiplier: .1

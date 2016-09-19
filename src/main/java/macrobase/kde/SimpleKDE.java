@@ -8,20 +8,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class KDESimple {
-    private static final Logger log = LoggerFactory.getLogger(KDESimple.class);
+public class SimpleKDE {
+    private static final Logger log = LoggerFactory.getLogger(SimpleKDE.class);
 
     private List<double[]> trainPoints;
     private double[] bandwidth;
     private BandwidthSelector bwSelector;
     private Kernel kernel;
 
-    public KDESimple() {
+    public SimpleKDE() {
         bwSelector = new BandwidthSelector();
     }
 
-    public KDESimple setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
-    public KDESimple setKernel(Kernel k) {this.kernel = k; return this;}
+    public SimpleKDE setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
+    public SimpleKDE setKernel(Kernel k) {this.kernel = k; return this;}
 
     public double[] getBandwidth() {
         return bandwidth;

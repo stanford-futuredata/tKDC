@@ -14,30 +14,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-public class QuantileEstimator {
-    private static final Logger log = LoggerFactory.getLogger(QuantileEstimator.class);
+public class QuantileBoundEstimator {
+    private static final Logger log = LoggerFactory.getLogger(QuantileBoundEstimator.class);
 
     public TreeKDEConf tConf;
     public KernelFactory kFactory;
 
-    public double quantile;
+    public double qT, qL, qH;
     public double cutoff;
     public double tolerance;
 
-    public QuantileEstimator(TreeKDEConf tConf) {
+    public static final int startingSampleSize = 200;
+    public static double confidenceFactor = 2.5;
+
+    public QuantileBoundEstimator(TreeKDEConf tConf) {
         this.tConf = tConf;
         kFactory = new KernelFactory(tConf.kernel);
     }
 
     /**
-     * Figures out reservoir size and good starting quantiles
+     * Figures out reservoir size and quantile bounds
      * @return reservoir size
      */
     public int estimateQuantiles(List<double[]> metrics) {
-        int rSize = 200;
+        int rSize = startingSampleSize;
+        int sampleSize = startingSampleSize;
         double curCutoff = -1;
         double curTolerance = -1;
-        double curTarget = -1;
 
         // Cache existing trees for reuse
         KDTree oldTree = null;
@@ -47,32 +50,45 @@ public class QuantileEstimator {
             if (oldTree == null) {
                 oldTree = trainTree(curData);
             }
-            curTarget = calcQuantile(
+            Percentile pCalc = calcQuantiles(
                     metrics.subList(0, rSize),
+                    sampleSize,
                     oldTree,
                     curCutoff,
                     curTolerance
             );
-            if (curTarget > curCutoff && curCutoff > 0) {
-                log.debug("Bad Cutoff {} for {}, retrying", curCutoff, rSize);
+            double pT = tConf.percentile;
+            double pDelta = confidenceFactor * Math.sqrt(pT * (1-pT) / sampleSize);
+            double pL = pT - pDelta;
+            double pH = Math.min(1.0, pT + pDelta);
+            qT = pCalc.evaluate(100 * pT);
+            if (pL > 0.0) {
+                qL = pCalc.evaluate(100 * pL);
+            } else {
+                qL = 0.0;
+            }
+            qH = pCalc.evaluate(100 * pH);
+            log.debug("rSize: {}, cut: {}, tol: {}", rSize, curCutoff, curTolerance);
+            log.debug("pL: {}, pT: {}, pH: {}, qL: {}, qT: {}, qH: {}", pL, pT, pH, qL, qT, qH);
+
+            if (curCutoff <= qH && curCutoff > 0) {
+                log.debug("Bad Cutoff, retrying", curCutoff, rSize);
                 curCutoff *= 4;
             } else {
-                curCutoff = tConf.cutoffMultiplier * curTarget;
-                curTolerance = tConf.tolMultiplier * curTarget;
-                log.debug("Estimated q:{} for n:{}", curTarget, rSize);
-
                 if (rSize == metrics.size()) {
                     break;
                 } else {
+                    curCutoff = tConf.qCutoffMultiplier * qH;
+                    curTolerance = tConf.qTolMultiplier * qL;
                     rSize = Math.min(4 * rSize, metrics.size());
+                    sampleSize = Math.min(rSize, tConf.qSampleSize);
                     oldTree = null;
                 }
             }
         }
 
-        quantile = curTarget;
-        cutoff = curCutoff;
-        tolerance = curTolerance;
+        cutoff = qH;
+        tolerance = tConf.qTolMultiplier * qL;
         return rSize;
     }
 
@@ -85,8 +101,9 @@ public class QuantileEstimator {
         return t.build(data);
     }
 
-    public double calcQuantile(
+    public Percentile calcQuantiles(
             List<double[]> data,
+            int sampleSize,
             KDTree tree,
             double curCutoff,
             double curTolerance
@@ -109,7 +126,7 @@ public class QuantileEstimator {
         tKDE.setTrainedTree(tree);
         tKDE.train(data);
 
-        int numSamples = Math.min(data.size(), tConf.qSampleSize);
+        int numSamples = sampleSize;
         long start = System.currentTimeMillis();
         double[] densities = new double[numSamples];
         for (int i=0; i < numSamples; i++) {
@@ -122,6 +139,7 @@ public class QuantileEstimator {
                 (float)numSamples * 1000/(elapsed));
 
         Percentile p = new Percentile();
-        return p.evaluate(densities, tConf.percentile * 100);
+        p.setData(densities);
+        return p;
     }
 }

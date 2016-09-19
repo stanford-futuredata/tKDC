@@ -10,5 +10,6 @@ public class BenchmarkConfTest {
         BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test.yaml");
         assertEquals(true, bConf.tKDEConf.ignoreSelfScoring);
         assertEquals(3, bConf.inputColumns.size());
+        assertEquals(TreeKDEConf.Algorithm.TREEKDE, bConf.tKDEConf.algorithm);
     }
 }

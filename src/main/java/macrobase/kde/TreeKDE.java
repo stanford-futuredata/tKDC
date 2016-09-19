@@ -149,6 +149,11 @@ public class TreeKDE {
                 useMinAsFinalScore = true;
                 break;
             }
+//            else if (totalWMax < unscaledCutoff) {
+//                numNodesProcessed[1] += curNodesProcessed;
+//                finalCutoff[1]++;
+//                break;
+//            }
             ScoreEstimate curEstimate = pq.poll();
 //            System.out.println("current box:\n"+ AlgebraUtils.array2dToString(curEstimate.tree.getBoundaries()));
 //            System.out.println("split: "+curEstimate.tree.getSplitDimension() + ":"+curEstimate.tree.getSplitValue());

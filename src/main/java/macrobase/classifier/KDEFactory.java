@@ -1,6 +1,7 @@
 package macrobase.classifier;
 
 import macrobase.conf.TreeKDEConf;
+import macrobase.kde.SimpleKDE;
 import macrobase.kde.KDTree;
 import macrobase.kde.TreeKDE;
 import macrobase.kernel.BandwidthSelector;
@@ -9,10 +10,10 @@ import macrobase.kernel.KernelFactory;
 
 import java.util.List;
 
-public class TreeKDEFactory {
+public class KDEFactory {
     public TreeKDEConf tConf;
 
-    public TreeKDEFactory(TreeKDEConf tConf) {
+    public KDEFactory(TreeKDEConf tConf) {
         this.tConf = tConf;
     }
 
@@ -53,7 +54,7 @@ public class TreeKDEFactory {
         tKDE.setIgnoreSelf(tConf.ignoreSelfScoring);
 
         if (tConf.calculateCutoffs) {
-            QuantileEstimator q = new QuantileEstimator(tConf);
+            QuantileBoundEstimator q = new QuantileBoundEstimator(tConf);
             q.estimateQuantiles(data);
             tKDE.setCutoff(q.cutoff);
             tKDE.setTolerance(q.tolerance);
@@ -61,9 +62,18 @@ public class TreeKDEFactory {
             tKDE.setCutoff(tConf.cutoffAbsolute);
             tKDE.setTolerance(tConf.tolAbsolute);
         }
-
         tKDE.train(data);
 
         return tKDE;
+    }
+
+    public SimpleKDE getSimpleKDE(List<double[]> data) {
+        double[] bw = getBandwidth(data);
+        Kernel k = getKernel(bw);
+        SimpleKDE kde = new SimpleKDE()
+                .setBandwidth(bw)
+                .setKernel(k);
+        kde.train(data);
+        return kde;
     }
 }

@@ -7,7 +7,7 @@ public class KernelFactory {
 
     public KernelFactory(String kernel) {
         if (kernel.equals("gaussian")) {
-            supplier =  GaussianKernel::new;
+            supplier = GaussianKernel::new;
         } else {
             supplier = EpaKernel::new;
         }

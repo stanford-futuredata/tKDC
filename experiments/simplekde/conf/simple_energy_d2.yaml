@@ -1,0 +1,9 @@
+inputPath: "us_energy_1p0_metrics.csv"
+inputColumns: [0,1]
+inputRows: 500000
+numToScore: 1000
+
+tKDEConf:
+  algorithm: SIMPLEKDE
+  kernel: gaussian
+  bwMultiplier: 1.0

@@ -1,11 +1,15 @@
 inputPath: "us_energy_1p0_metrics.csv"
 inputColumns: [0,1,2,3]
 inputRows: 500000
-numToScore: 1000
+numToScore: 50000
 
 tKDEConf:
+  algorithm: TREEKDE
   percentile: 0.01
+
   qSampleSize: 10000
+  qCutoffMultiplier: 1.5
+  qTolMultiplier: 0.01
 
   kernel: gaussian
   bwMultiplier: 1.0
@@ -13,12 +17,7 @@ tKDEConf:
 
   calculateCutoffs: true
   tolMultiplier: 0.0
-  cutoffMultiplier: 1e10
+  cutoffMultiplier: 1.5
 
   leafSize: 20
   splitByWidth: true
-
-  useGrid: true
-  gridSizes:
-    - 0.8
-    - 0.5

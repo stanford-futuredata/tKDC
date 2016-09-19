@@ -3,6 +3,7 @@ inputColumns: [0,1,2]
 inputRows: 2
 
 tKDEConf:
+  algorithm: TREEKDE
   percentile: 0.01
   qSampleSize: 10000
 

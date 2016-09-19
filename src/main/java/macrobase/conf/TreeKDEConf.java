@@ -11,15 +11,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TreeKDEConf {
+    // High Level Algorithm
+    public enum Algorithm {
+        TREEKDE, SIMPLEKDE
+    }
+    public Algorithm algorithm = Algorithm.TREEKDE;
     // Classifier
     public double percentile = 0.01;
     // Quantile Estimation
     public int qSampleSize = 10000;
+    public double qTolMultiplier = 0.01;
+    public double qCutoffMultiplier = 1.5;
     // KDE
     public String kernel = "gaussian";
     public double bwMultiplier = 1.0;
     public boolean ignoreSelfScoring = false;
-
     public boolean calculateCutoffs = true;
     public double tolMultiplier = 0.1;
     public double cutoffMultiplier = 1.5;

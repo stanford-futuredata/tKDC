@@ -2,16 +2,10 @@
 set -e
 set -o pipefail
 
-D=experiments/end2end
-#./run.sh $D/conf/energy_n500_d2_tol1.yaml  $D/scores/energy_n500_d2_tol1.csv  | tee $D/output/energy_n500_d2_tol1.txt
-#./run.sh $D/conf/energy_n500_d4_tol1.yaml  $D/scores/energy_n500_d4_tol1.csv  | tee $D/output/energy_n500_d4_tol1.txt
-#./run.sh $D/conf/energy_n500_d8_tol1.yaml  $D/scores/energy_n500_d8_tol1.csv  | tee $D/output/energy_n500_d8_tol1.txt
-#./run.sh $D/conf/energy_n500_d2_tol10.yaml $D/scores/energy_n500_d2_tol10.csv | tee $D/output/energy_n500_d2_tol10.txt
-#./run.sh $D/conf/energy_n500_d4_tol10.yaml $D/scores/energy_n500_d4_tol10.csv | tee $D/output/energy_n500_d4_tol10.txt
-#./run.sh $D/conf/energy_n500_d8_tol10.yaml $D/scores/energy_n500_d8_tol10.csv | tee $D/output/energy_n500_d8_tol10.txt
-./run.sh $D/conf/energy_n50_d2_tol1.yaml  $D/scores/energy_n50_d2_tol1.csv  | tee $D/output/energy_n50_d2_tol1.txt
-./run.sh $D/conf/energy_n50_d4_tol1.yaml  $D/scores/energy_n50_d4_tol1.csv  | tee $D/output/energy_n50_d4_tol1.txt
-./run.sh $D/conf/energy_n50_d8_tol1.yaml  $D/scores/energy_n50_d8_tol1.csv  | tee $D/output/energy_n50_d8_tol1.txt
-./run.sh $D/conf/energy_n50_d2_tol10.yaml $D/scores/energy_n50_d2_tol10.csv | tee $D/output/energy_n50_d2_tol10.txt
-./run.sh $D/conf/energy_n50_d4_tol10.yaml $D/scores/energy_n50_d4_tol10.csv | tee $D/output/energy_n50_d4_tol10.txt
-./run.sh $D/conf/energy_n50_d8_tol10.yaml $D/scores/energy_n50_d8_tol10.csv | tee $D/output/energy_n50_d8_tol10.txt
+D=experiments/cutofftolerance
+./run.sh $D/conf/tol0p0cut1p0.yaml $D/scores/tol0p0cut1p0.csv | tee $D/output/tol0p0cut1p0.txt
+./run.sh $D/conf/tol0p0cut1p5.yaml $D/scores/tol0p0cut1p5.csv | tee $D/output/tol0p0cut1p5.txt
+./run.sh $D/conf/tol0p0cutInf.yaml $D/scores/tol0p0cutInf.csv | tee $D/output/tol0p0cutInf.txt
+./run.sh $D/conf/tol0p1cut1p0.yaml $D/scores/tol0p1cut1p0.csv | tee $D/output/tol0p1cut1p0.txt
+./run.sh $D/conf/tol0p1cut1p5.yaml $D/scores/tol0p1cut1p5.csv | tee $D/output/tol0p1cut1p5.txt
+./run.sh $D/conf/tol0p1cutInf.yaml $D/scores/tol0p1cutInf.csv | tee $D/output/tol0p1cutInf.txt

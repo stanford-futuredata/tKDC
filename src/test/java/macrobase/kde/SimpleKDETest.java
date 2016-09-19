@@ -8,7 +8,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class KDESimpleTest {
+public class SimpleKDETest {
     protected List<double[]> tinyData(int n) {
         List<double[]> data = new ArrayList<>();
         for (int i = 0; i < n; ++i) {
@@ -22,7 +22,7 @@ public class KDESimpleTest {
 
     @Test
     public void oneDTest() {
-        KDESimple kde = new KDESimple();
+        SimpleKDE kde = new SimpleKDE();
 
         List<double[]> data = tinyData(5);
 
@@ -38,7 +38,7 @@ public class KDESimpleTest {
     @Test
     public void threeDTest() throws Exception {
         List<double[]> data = new TinyDataSource().get();
-        KDESimple kde = new KDESimple()
+        SimpleKDE kde = new SimpleKDE()
                 .setBandwidth(new double[]{2, 2, 2});
         kde.train(data);
         assertEquals(6.64640837, -Math.log(kde.density(data.get(0))), 1e-7);
