@@ -1,5 +1,7 @@
 package macrobase.kde;
 
+import macrobase.kernel.GaussianKernel;
+import macrobase.kernel.Kernel;
 import macrobase.util.TinyDataSource;
 import org.junit.Test;
 
@@ -43,6 +45,18 @@ public class SimpleKDETest {
         kde.train(data);
         assertEquals(6.64640837, -Math.log(kde.density(data.get(0))), 1e-7);
         assertEquals(7.20467317, -Math.log(kde.density(data.get(3))), 1e-7);
+    }
+
+    @Test
+    public void testIgnoreSelf() throws Exception {
+        List<double[]> data = tinyData(2);
+        double[] bw = {1};
+        Kernel k = new GaussianKernel().initialize(bw);
+        SimpleKDE kde = new SimpleKDE()
+                .setBandwidth(bw)
+                .setIgnoreSelf(true)
+                .train(data);
+        assertEquals(k.density(bw), kde.density(bw), 1e-10);
     }
 
 }

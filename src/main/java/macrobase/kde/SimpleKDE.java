@@ -8,13 +8,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class SimpleKDE {
+public class SimpleKDE implements DensityEstimator {
     private static final Logger log = LoggerFactory.getLogger(SimpleKDE.class);
 
-    private List<double[]> trainPoints;
-    private double[] bandwidth;
     private BandwidthSelector bwSelector;
+
+    private double[] bandwidth;
     private Kernel kernel;
+    private boolean ignoreSelf = false;
+
+    private List<double[]> trainPoints;
+    private double selfPointDensity;
 
     public SimpleKDE() {
         bwSelector = new BandwidthSelector();
@@ -22,12 +26,16 @@ public class SimpleKDE {
 
     public SimpleKDE setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
     public SimpleKDE setKernel(Kernel k) {this.kernel = k; return this;}
+    public SimpleKDE setIgnoreSelf(boolean ignoreSelf) {
+        this.ignoreSelf = ignoreSelf;
+        return this;
+    }
 
     public double[] getBandwidth() {
         return bandwidth;
     }
 
-    public void train(List<double[]> data) {
+    public SimpleKDE train(List<double[]> data) {
         this.trainPoints = data;
         // Only calculate bandwidth if it hasn't been set by user
         if (bandwidth == null) {
@@ -37,6 +45,9 @@ public class SimpleKDE {
             kernel = new GaussianKernel();
         }
         kernel.initialize(bandwidth);
+        this.selfPointDensity = kernel.density(new double[bandwidth.length]);
+
+        return this;
     }
 
     private double rawDensity(double[] d) {
@@ -53,7 +64,11 @@ public class SimpleKDE {
     }
 
     public double density(double[] d) {
-        return rawDensity(d) / trainPoints.size();
+        if (ignoreSelf) {
+            return (rawDensity(d) - selfPointDensity) / (trainPoints.size() - 1);
+        } else {
+            return rawDensity(d) / trainPoints.size();
+        }
     }
 
 }

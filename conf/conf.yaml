@@ -7,7 +7,7 @@ tKDEConf:
   algorithm: TREEKDE
   percentile: 0.01
 
-  qSampleSize: 10000
+  qSampleSize: 20000
   qCutoffMultiplier: 1.5
   qTolMultiplier: 0.01
 
@@ -16,10 +16,8 @@ tKDEConf:
   ignoreSelfScoring: true
 
   calculateCutoffs: true
-  tolMultiplier: .1
-  cutoffMultiplier: 1.2
-  tolAbsolute: 2.540162931731176E-8
-  cutoffAbsolute: 3.646100514684586E-7
+  tolAbsolute: 2.7695628084620103E-9
+  cutoffAbsolute: 3.6969495300325006E-7
 
   leafSize: 20
   splitByWidth: true
@@ -27,4 +25,3 @@ tKDEConf:
   useGrid: true
   gridSizes:
     - 0.8
-    - 0.5

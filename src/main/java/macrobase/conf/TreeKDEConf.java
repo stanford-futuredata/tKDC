@@ -27,8 +27,6 @@ public class TreeKDEConf {
     public double bwMultiplier = 1.0;
     public boolean ignoreSelfScoring = false;
     public boolean calculateCutoffs = true;
-    public double tolMultiplier = 0.1;
-    public double cutoffMultiplier = 1.5;
     public double tolAbsolute = 0.0;
     public double cutoffAbsolute = Double.MAX_VALUE;
     // Tree

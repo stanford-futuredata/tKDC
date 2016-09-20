@@ -4,12 +4,13 @@ import macrobase.kernel.BandwidthSelector;
 import macrobase.kernel.GaussianKernel;
 import macrobase.kernel.Kernel;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.math3.analysis.integration.gauss.SymmetricGaussIntegrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class TreeKDE {
+public class TreeKDE implements DensityEstimator {
     private static final Logger log = LoggerFactory.getLogger(TreeKDE.class);
 
     // ** Basic stats parameters
@@ -55,7 +56,7 @@ public class TreeKDE {
 
     public double[] getBandwidth() {return bandwidth;}
 
-    public void train(List<double[]> data) {
+    public TreeKDE train(List<double[]> data) {
         if (data.isEmpty()) {
             throw new RuntimeException("Empty Training Data");
         }
@@ -79,6 +80,7 @@ public class TreeKDE {
             sw.stop();
             log.debug("built kd-tree on {} points in {}", data.size(), sw.toString());
         }
+        return this;
     }
 
     public static Comparator<ScoreEstimate> scoreEstimateComparator = (o1, o2) -> {
@@ -149,9 +151,9 @@ public class TreeKDE {
                 useMinAsFinalScore = true;
                 break;
             }
-//            else if (totalWMax < unscaledCutoff) {
-//                numNodesProcessed[1] += curNodesProcessed;
-//                finalCutoff[1]++;
+//            else if (totalWMax < .5 * unscaledCutoff) {
+//                numNodesProcessed[2] += curNodesProcessed;
+//                finalCutoff[2]++;
 //                break;
 //            }
             ScoreEstimate curEstimate = pq.poll();
@@ -201,13 +203,17 @@ public class TreeKDE {
     }
 
     public void showDiagnostics() {
-        log.debug("Final Loop Cutoff: tol {}, totalcutoff {}, completion {}",
+        log.info("Final Loop Cutoff: tol {}, > cutoff {}, < cutoff {}, completion {}",
                 finalCutoff[0],
                 finalCutoff[1],
-                finalCutoff[2]);
-        log.debug("Avg # of nodes processed: tol {}, totalcutoff {}",
+                finalCutoff[2],
+                finalCutoff[3]
+                );
+        log.info("Avg # of nodes processed: tol {}, > cutoff {}, < cutoff {}, completion {}",
                 (double)numNodesProcessed[0]/finalCutoff[0],
-                (double)numNodesProcessed[1]/finalCutoff[1]
+                (double)numNodesProcessed[1]/finalCutoff[1],
+                (double)numNodesProcessed[2]/finalCutoff[2],
+                (double)numNodesProcessed[3]/finalCutoff[3]
                 );
     }
 

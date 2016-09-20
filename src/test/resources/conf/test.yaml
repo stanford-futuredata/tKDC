@@ -8,8 +8,6 @@ tKDEConf:
   qSampleSize: 10000
 
   kernel: gaussian
-  tolMultiplier: .1
-  cutoffMultiplier: 1.5
   bwMultiplier: 1.0
   ignoreSelfScoring: true
 

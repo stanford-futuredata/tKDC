@@ -1,6 +1,7 @@
 package macrobase.classifier;
 
 import macrobase.conf.TreeKDEConf;
+import macrobase.kde.CompositeGrid;
 import macrobase.kde.KDTree;
 import macrobase.kde.TreeKDE;
 import macrobase.kernel.BandwidthSelector;
@@ -23,6 +24,8 @@ public class QuantileBoundEstimator {
     public double qT, qL, qH;
     public double cutoff;
     public double tolerance;
+    // Cache existing tree for reuse
+    public KDTree tree;
 
     public static final int startingSampleSize = 200;
     public static double confidenceFactor = 2.5;
@@ -42,7 +45,6 @@ public class QuantileBoundEstimator {
         double curCutoff = -1;
         double curTolerance = -1;
 
-        // Cache existing trees for reuse
         KDTree oldTree = null;
         while (rSize <= metrics.size()) {
             List<double[]> curData = metrics.subList(0, rSize);
@@ -89,6 +91,7 @@ public class QuantileBoundEstimator {
 
         cutoff = qH;
         tolerance = tConf.qTolMultiplier * qL;
+        tree = oldTree;
         return rSize;
     }
 
@@ -130,7 +133,8 @@ public class QuantileBoundEstimator {
         long start = System.currentTimeMillis();
         double[] densities = new double[numSamples];
         for (int i=0; i < numSamples; i++) {
-            densities[i] = tKDE.density(data.get(i));
+            double[] curSample = data.get(i);
+            densities[i] = tKDE.density(curSample);
         }
         long elapsed = System.currentTimeMillis() - start;
         log.debug("Scored {} on {} @ {} / s",
