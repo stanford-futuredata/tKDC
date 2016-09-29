@@ -1,1 +1,1 @@
-us_energy_1p0_metrics.csv filter=lfs diff=lfs merge=lfs -text
+*.csv filter=lfs diff=lfs merge=lfs -text

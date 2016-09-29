@@ -1,7 +1,10 @@
 *.class
 target/
 .idea/
+.Rhistory
 .ipynb_checkpoints
+output/
+scores/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

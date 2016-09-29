@@ -1,4 +1,4 @@
-inputPath: "us_energy_1p0_metrics.csv"
+inputPath: "data/us_energy_1p0_metrics.csv"
 inputColumns: [0,1]
 inputRows: 500000
 numToScore: 0

@@ -26,8 +26,9 @@ public class TreeKDE implements DensityEstimator {
     private boolean trainedTree = false;
     // Total density error tolerance
     private double tolerance = 0;
-    // Cutoff point at which point we no longer need accuracy
-    private double cutoff = Double.MAX_VALUE;
+    // Upper and lower cutoff points to define region of interest
+    private double cutoffH = Double.MAX_VALUE;
+    private double cutoffL = 0.0;
 
     // ** Diagnostic Measurements
     public long finalCutoff[] = new long[10];
@@ -36,7 +37,8 @@ public class TreeKDE implements DensityEstimator {
 
     // ** Cached values
     private double unscaledTolerance;
-    private double unscaledCutoff;
+    private double unscaledCutoffH;
+    private double unscaledCutoffL;
     private double selfPointDensity;
 
     public TreeKDE(KDTree tree) {
@@ -45,12 +47,14 @@ public class TreeKDE implements DensityEstimator {
 
     public TreeKDE setIgnoreSelf(boolean b) {this.ignoreSelf = b; return this;}
     public TreeKDE setTolerance(double t) {this.tolerance = t; return this;}
-    public TreeKDE setCutoff(double cutoff) {this.cutoff = cutoff; return this;}
+    public TreeKDE setCutoffH(double cutoff) {this.cutoffH = cutoff; return this;}
+    public TreeKDE setCutoffL(double cutoff) {this.cutoffL = cutoff; return this;}
     public TreeKDE setBandwidth(double[] bw) {this.bandwidth = bw; return this;}
     public TreeKDE setKernel(Kernel k) {this.kernel = k; return this;}
     public TreeKDE setTrainedTree(KDTree tree) {this.tree=tree; this.trainedTree=true; return this;}
 
-    public double getCutoff() {return this.cutoff;}
+    public double getCutoffH() {return this.cutoffH;}
+    public double getCutoffL() {return this.cutoffL;}
     public double getTolerance() {return this.tolerance;}
     public KDTree getTree() {return this.tree;}
 
@@ -62,7 +66,8 @@ public class TreeKDE implements DensityEstimator {
         }
         this.numPoints = data.size();
         this.unscaledTolerance = tolerance * numPoints;
-        this.unscaledCutoff = cutoff * numPoints;
+        this.unscaledCutoffH = cutoffH * numPoints;
+        this.unscaledCutoffL = cutoffL * numPoints;
 
         if (bandwidth == null) {
             bandwidth = new BandwidthSelector().findBandwidth(data);
@@ -100,21 +105,6 @@ public class TreeKDE implements DensityEstimator {
      */
     private double pqScore(double[] d) {
         // Initialize Score Estimates
-
-        // Nodes in ascending order (deepest leaf first)
-        List<KDTree> initialChildList = new LinkedList<>();
-        if (false) {
-            KDTree curNode = this.tree;
-            while (!curNode.isLeaf()) {
-                KDTree[] curNodeChildren = curNode.getChildren(d);
-                curNode = curNodeChildren[0];
-                initialChildList.add(0, curNodeChildren[1]);
-            }
-            initialChildList.add(0, curNode);
-        } else {
-            initialChildList = Collections.singletonList(this.tree);
-        }
-
         double totalWMin = 0.0;
         double totalWMax = 0.0;
         long curNodesProcessed = 0;
@@ -124,16 +114,11 @@ public class TreeKDE implements DensityEstimator {
         }
 
         PriorityQueue<ScoreEstimate> pq = new PriorityQueue<>(100, scoreEstimateComparator);
-        for (KDTree childNode : initialChildList) {
-            ScoreEstimate childNodeEstimate = new ScoreEstimate(this.kernel, childNode, d);
-            pq.add(childNodeEstimate);
-            totalWMin += childNodeEstimate.totalWMin;
-            totalWMax += childNodeEstimate.totalWMax;
-            if (totalWMin > unscaledCutoff) {
-                totalWMax = Double.MAX_VALUE;
-            }
-            curNodesProcessed++;
-        }
+        ScoreEstimate initialEstimate = new ScoreEstimate(this.kernel, this.tree, d);
+        pq.add(initialEstimate);
+        totalWMin += initialEstimate.totalWMin;
+        totalWMax += initialEstimate.totalWMax;
+        curNodesProcessed++;
 
 //        System.out.println("\nScoring : "+Arrays.toString(d));
 //        System.out.println("tolerance: "+unscaledTolerance);
@@ -145,17 +130,17 @@ public class TreeKDE implements DensityEstimator {
                 numNodesProcessed[0] += curNodesProcessed;
                 finalCutoff[0]++;
                 break;
-            } else if (totalWMin > unscaledCutoff) {
+            } else if (totalWMin > unscaledCutoffH) {
                 numNodesProcessed[1] += curNodesProcessed;
                 finalCutoff[1]++;
                 useMinAsFinalScore = true;
                 break;
             }
-//            else if (totalWMax < .5 * unscaledCutoff) {
-//                numNodesProcessed[2] += curNodesProcessed;
-//                finalCutoff[2]++;
-//                break;
-//            }
+            else if (totalWMax < unscaledCutoffL) {
+                numNodesProcessed[2] += curNodesProcessed;
+                finalCutoff[2]++;
+                break;
+            }
             ScoreEstimate curEstimate = pq.poll();
 //            System.out.println("current box:\n"+ AlgebraUtils.array2dToString(curEstimate.tree.getBoundaries()));
 //            System.out.println("split: "+curEstimate.tree.getSplitDimension() + ":"+curEstimate.tree.getSplitValue());

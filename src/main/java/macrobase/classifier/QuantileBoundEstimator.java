@@ -22,7 +22,8 @@ public class QuantileBoundEstimator {
     public KernelFactory kFactory;
 
     public double qT, qL, qH;
-    public double cutoff;
+    public double cutoffH;
+    public double cutoffL;
     public double tolerance;
     // Cache existing tree for reuse
     public KDTree tree;
@@ -42,7 +43,8 @@ public class QuantileBoundEstimator {
     public int estimateQuantiles(List<double[]> metrics) {
         int rSize = startingSampleSize;
         int sampleSize = startingSampleSize;
-        double curCutoff = -1;
+        double curCutoffH = -1;
+        double curCutoffL = -1;
         double curTolerance = -1;
 
         KDTree oldTree = null;
@@ -56,7 +58,8 @@ public class QuantileBoundEstimator {
                     metrics.subList(0, rSize),
                     sampleSize,
                     oldTree,
-                    curCutoff,
+                    curCutoffH,
+                    curCutoffL,
                     curTolerance
             );
             double pT = tConf.percentile;
@@ -70,17 +73,25 @@ public class QuantileBoundEstimator {
                 qL = 0.0;
             }
             qH = pCalc.evaluate(100 * pH);
-            log.debug("rSize: {}, cut: {}, tol: {}", rSize, curCutoff, curTolerance);
+            log.debug("rSize: {}, cutH: {}, cutL: {} tol: {}", rSize, curCutoffH, curCutoffL, curTolerance);
             log.debug("pL: {}, pT: {}, pH: {}, qL: {}, qT: {}, qH: {}", pL, pT, pH, qL, qT, qH);
 
-            if (curCutoff <= qH && curCutoff > 0) {
-                log.debug("Bad Cutoff, retrying", curCutoff, rSize);
-                curCutoff *= 4;
-            } else {
+            boolean cutoffHBad = curCutoffH <= qH && curCutoffH > 0;
+            boolean cutoffLBad = curCutoffL >= qL && curCutoffL > 0;
+            if (cutoffHBad) {
+                log.debug("Bad CutoffH");
+                curCutoffH *= 4;
+            }
+            if (cutoffLBad) {
+                log.debug("Bad CutoffL");
+                curCutoffL /= 4;
+            }
+            if (!cutoffHBad && !cutoffLBad){
                 if (rSize == metrics.size()) {
                     break;
                 } else {
-                    curCutoff = tConf.qCutoffMultiplier * qH;
+                    curCutoffH = tConf.qCutoffMultiplier * qH;
+                    curCutoffL = qL / tConf.qCutoffMultiplier;
                     curTolerance = tConf.qTolMultiplier * qL;
                     rSize = Math.min(4 * rSize, metrics.size());
                     sampleSize = Math.min(rSize, tConf.qSampleSize);
@@ -89,7 +100,8 @@ public class QuantileBoundEstimator {
             }
         }
 
-        cutoff = qH;
+        cutoffH = qH;
+        cutoffL = qL;
         tolerance = tConf.qTolMultiplier * qL;
         tree = oldTree;
         return rSize;
@@ -108,7 +120,8 @@ public class QuantileBoundEstimator {
             List<double[]> data,
             int sampleSize,
             KDTree tree,
-            double curCutoff,
+            double curCutoffH,
+            double curCutoffL,
             double curTolerance
     ) {
         double[] curBW = new BandwidthSelector()
@@ -123,8 +136,11 @@ public class QuantileBoundEstimator {
         tKDE.setBandwidth(curBW);
         tKDE.setKernel(k);
         tKDE.setIgnoreSelf(tConf.ignoreSelfScoring);
-        if (curCutoff > 0) {
-            tKDE.setCutoff(curCutoff).setTolerance(curTolerance);
+        if (curCutoffH >= 0) {
+            tKDE
+                    .setCutoffH(curCutoffH)
+                    .setCutoffL(curCutoffL)
+                    .setTolerance(curTolerance);
         }
         tKDE.setTrainedTree(tree);
         tKDE.train(data);

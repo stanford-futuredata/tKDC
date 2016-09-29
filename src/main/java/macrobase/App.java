@@ -51,7 +51,10 @@ public class App {
         long trainTime = sw.getTime();
         log.info("Trained in: {}", sw.toString());
         log.info("BW: {}", Arrays.toString(classifier.bandwidth));
-        log.info("Cutoff: {}, Tolerance: {}", classifier.cutoff, classifier.tolerance);
+        log.info("CutoffH: {}, CutoffL: {} Tolerance: {}",
+                classifier.cutoffH,
+                classifier.cutoffL,
+                classifier.tolerance);
 
         sw.reset();
         sw.start();
@@ -61,7 +64,9 @@ public class App {
         }
         sw.stop();
         long scoreTime = sw.getTime();
-        ((TreeKDE)classifier.kde).showDiagnostics();
+        if (classifier.kde instanceof TreeKDE) {
+            ((TreeKDE) classifier.kde).showDiagnostics();
+        }
         log.info("Scored in {}", sw.toString());
         log.info("Scored @ {} / s",
                 (float)densities.length * 1000/(scoreTime));
@@ -69,6 +74,7 @@ public class App {
 
         if (outputPath != null) {
             BufferedWriter out = Files.newBufferedWriter(Paths.get(outputPath));
+            out.write("density\n");
             for (double d : densities) {
                 out.write(Double.toString(d)+"\n");
             }

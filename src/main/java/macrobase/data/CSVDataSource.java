@@ -12,6 +12,7 @@ public class CSVDataSource implements DataSource {
     public String fileName;
     public List<Integer> columns;
     public int limit = Integer.MAX_VALUE;
+    public boolean hasHeader = true;
 
     public CSVDataSource(String fileName, List<Integer> columns) {
         this.fileName = fileName;
@@ -25,6 +26,11 @@ public class CSVDataSource implements DataSource {
         }
     }
 
+    public CSVDataSource setHasHeader(boolean flag) {
+        this.hasHeader = flag;
+        return this;
+    }
+
     public CSVDataSource setLimit(int limit) {
         this.limit = limit;
         return this;
@@ -33,9 +39,11 @@ public class CSVDataSource implements DataSource {
     @Override
     public List<double[]> get() throws Exception {
         Reader in = new FileReader(fileName);
-        Iterable<CSVRecord> records = CSVFormat.RFC4180
-                .withFirstRecordAsHeader()
-                .parse(in);
+        CSVFormat format = CSVFormat.RFC4180;
+        if (hasHeader) {
+            format = format.withFirstRecordAsHeader();
+        }
+        Iterable<CSVRecord> records = format.parse(in);
 
         int n = columns.size();
         ArrayList<double[]> results = new ArrayList<>();

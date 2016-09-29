@@ -16,7 +16,7 @@ public class KDEClassifier implements DensityEstimator {
     public TreeKDEConf tConf;
 
     public double[] bandwidth;
-    public double cutoff, tolerance;
+    public double cutoffH, cutoffL, tolerance;
     public KDTree tree;
     public DensityEstimator kde;
     public CompositeGrid grids;
@@ -34,11 +34,12 @@ public class KDEClassifier implements DensityEstimator {
         if (tConf.calculateCutoffs) {
             QuantileBoundEstimator q = new QuantileBoundEstimator(tConf);
             q.estimateQuantiles(data);
-            cutoff = q.cutoff;
+            cutoffH = q.cutoffH;
+            cutoffL = q.cutoffL;
             tolerance = q.tolerance;
             tree = q.tree;
         } else {
-            cutoff = tConf.cutoffAbsolute;
+            cutoffH = tConf.cutoffAbsolute;
             tolerance = tConf.tolAbsolute;
         }
 
@@ -55,7 +56,8 @@ public class KDEClassifier implements DensityEstimator {
                     .setKernel(kernel)
                     .setTrainedTree(tree)
                     .setIgnoreSelf(tConf.ignoreSelfScoring)
-                    .setCutoff(cutoff)
+                    .setCutoffH(cutoffH)
+                    .setCutoffL(cutoffL)
                     .setTolerance(tolerance)
                     .train(data);
             kde = tkde;
@@ -68,12 +70,12 @@ public class KDEClassifier implements DensityEstimator {
             kde = sKDE;
         }
 
-        if (tConf.useGrid) {
+        if (tConf.calculateCutoffs && tConf.useGrid) {
             grids = new CompositeGrid(
                     kernel,
                     bandwidth,
                     tConf.gridSizes,
-                    cutoff)
+                    cutoffH)
                     .setIgnoreSelf(tConf.ignoreSelfScoring)
                     .train(data);
         }

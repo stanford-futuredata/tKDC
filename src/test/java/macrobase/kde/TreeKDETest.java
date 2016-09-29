@@ -41,7 +41,7 @@ public class TreeKDETest {
     private void approxTest(
             List<double[]> data,
             double tol,
-            double cutoff,
+            double cutoffH,
             boolean ignoreSelf,
             boolean splitByWidth
     ) {
@@ -51,7 +51,7 @@ public class TreeKDETest {
                 ;
         TreeKDE kde = new TreeKDE(tree)
                 .setTolerance(tol)
-                .setCutoff(cutoff)
+                .setCutoffH(cutoffH)
                 .setIgnoreSelf(ignoreSelf);
         kde.train(data);
 
@@ -73,7 +73,7 @@ public class TreeKDETest {
             double trueDensity = simpleKDE.density(d);
             double estDensity = kde.density(d);
 
-            if (trueDensity < cutoff) {
+            if (trueDensity < cutoffH) {
                 assertEquals(trueDensity, estDensity, checkTol);
             }
         }
