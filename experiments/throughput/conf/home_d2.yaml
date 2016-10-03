@@ -1,5 +1,5 @@
-inputPath: "data/us_energy_1p0_metrics.csv"
-inputColumns: [0,1,2,3,4,5,6,7]
+inputPath: "data/home_sensor.csv"
+inputColumns: [3,4]
 inputRows: 500000
 numToScore: 0
 

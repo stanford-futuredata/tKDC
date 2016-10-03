@@ -2,14 +2,15 @@
 set -e
 set -o pipefail
 
-D=experiments/simplekde
-for i in 2 4
+D=experiments/throughput
+
+for i in 1 2 4
 do
     echo "Running room $i"
     ./run.sh $D/conf/room_d$i.yaml  $D/scores/room_d$i.csv  | tee $D/output/room_d$i.txt
 done
 
-for i in 2 4 8
+for i in 1 2 4 8
 do
     echo "Running energy $i"
     ./run.sh $D/conf/energy_d$i.yaml  $D/scores/energy_d$i.csv  | tee $D/output/energy_d$i.txt

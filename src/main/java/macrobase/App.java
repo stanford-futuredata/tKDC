@@ -58,9 +58,11 @@ public class App {
 
         sw.reset();
         sw.start();
-        double[] densities = new double[metrics.size()];
-        for (int i = 0; i < densities.length; i++) {
-            densities[i] = classifier.density(metrics.get(i));
+        int densitySize = Math.min(metrics.size(), benchmarkConf.numToScore);
+        double[] densities = new double[densitySize];
+        for (int i = 0; i < benchmarkConf.numToScore; i++) {
+            int modI = i % densities.length;
+            densities[modI] = classifier.density(metrics.get(modI));
         }
         sw.stop();
         long scoreTime = sw.getTime();
@@ -69,7 +71,7 @@ public class App {
         }
         log.info("Scored in {}", sw.toString());
         log.info("Scored @ {} / s",
-                (float)densities.length * 1000/(scoreTime));
+                (float)benchmarkConf.numToScore * 1000/(scoreTime));
         log.info("Total Processing: {}", (double)(trainTime+scoreTime)/1000);
 
         if (outputPath != null) {
@@ -82,7 +84,7 @@ public class App {
         }
 
         Arrays.sort(densities);
-        int expectedNumOutliers = (int)(metrics.size() * tConf.percentile);
+        int expectedNumOutliers = (int)(densities.length * tConf.percentile);
         double quantile = densities[expectedNumOutliers];
         log.info("{} percentile: {}", tConf.percentile, quantile);
     }

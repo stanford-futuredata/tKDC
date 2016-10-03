@@ -1,9 +1,15 @@
-inputPath: "us_energy_1p0_metrics.csv"
+inputPath: "data/us_energy_1p0_metrics.csv"
 inputColumns: [0,1,2,3,4,5,6,7]
 inputRows: 500000
 numToScore: 1000
 
 tKDEConf:
   algorithm: SIMPLEKDE
+  percentile: 0.01
+
   kernel: gaussian
   bwMultiplier: 1.0
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  useGrid: false
