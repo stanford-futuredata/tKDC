@@ -14,7 +14,7 @@ public class TreeKNN {
     // Parameters
     public int k;
     public double[] bw;
-    public double dLB = 0;
+    public double dLB = -1;
     public double dHB = Double.MAX_VALUE;
 
     public int numPoints;
@@ -37,8 +37,8 @@ public class TreeKNN {
         this.numPoints = data.size();
         if (tree == null) {
             this.tree = new KDTree().setSplitByWidth(true);
+            this.tree.build(data);
         }
-        this.tree.build(data);
         if (bw == null) {
             bw = new BandwidthSelector().findBandwidth(data);
         }
@@ -103,7 +103,10 @@ public class TreeKNN {
             return dLB * (k / lowHiCount[0]);
         } else if (numPoints - lowHiCount[1] <= k - 1) {
             return dHB * (k) / (numPoints - lowHiCount[1]);
-        } else if (points.size() == k - lowHiCount[0]) {
+        } else if (points.size() >= k - lowHiCount[0]) {
+            while (points.size() > k - lowHiCount[0]) {
+                points.poll();
+            }
             return points.poll();
         } else {
             throw new RuntimeException("Bad Score state");
@@ -133,9 +136,10 @@ public class TreeKNN {
         } else if (curNode.dL > dHB) {
 //            System.out.println("hi");
             lowHiCounts[1] += curNode.tree.getNBelow();
-        } else if (!points.isEmpty() && points.size() + lowHiCounts[0] >= k && curNode.dL > points.peek()) {
+        } else if (!points.isEmpty()
+                && points.size() + lowHiCounts[0] >= k
+                && curNode.dL > points.peek()) {
 //            System.out.println("Pruned node");
-            //
         } else if (curNode.tree.isLeaf()) {
 //            System.out.println("leaf");
             for (double[] item : curNode.tree.getItems()) {
@@ -148,17 +152,16 @@ public class TreeKNN {
                 } else if (itemDist >= dHB) {
                     lowHiCounts[1]++;
                 } else {
-                    if (points.size() < k - lowHiCounts[0] || itemDist < points.peek()) {
-                        points.add(itemDist);
-                    }
-                    if (points.size() > k - lowHiCounts[0]) {
-                        points.poll();
-                    }
+                    points.add(itemDist);
                 }
             }
         } else {
 //            System.out.println("added");
             addNode = true;
+        }
+
+        while (!points.isEmpty() && points.size() + lowHiCounts[0] > k) {
+            points.poll();
         }
 //        System.out.println("low: "+lowHiCounts[0]+"hi: "+lowHiCounts[1]);
 //        System.out.println("points: "+points.size()+ " peek: "+points.peek());

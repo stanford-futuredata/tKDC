@@ -41,7 +41,10 @@ public class TreeKNNTest {
                 .train(data);
         double bL = 8.0;
         double bH = 10.0;
-        KDTree tree = new KDTree().setLeafCapacity(2).setSplitByWidth(true);
+        KDTree tree = new KDTree()
+                .setLeafCapacity(2)
+                .setSplitByWidth(true)
+                .build(data);
         TreeKNN tknn = new TreeKNN(3)
                 .setBandwidth(bw)
                 .setBounds(bL, bH)

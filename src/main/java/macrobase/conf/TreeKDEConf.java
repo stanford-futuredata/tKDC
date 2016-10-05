@@ -13,7 +13,7 @@ import java.util.List;
 public class TreeKDEConf {
     // High Level Algorithm
     public enum Algorithm {
-        TREEKDE, SIMPLEKDE
+        TREEKDE, SIMPLEKDE, TREEKNN
     }
     public Algorithm algorithm = Algorithm.TREEKDE;
     // Classifier
