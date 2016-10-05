@@ -16,6 +16,7 @@ public class KDTree {
     private KDTree loChild;
     private KDTree hiChild;
     private ArrayList<double[]> leafItems;
+    private boolean trained = false;
 
     // Tracking element locations
     public int[] idxs;
@@ -24,7 +25,7 @@ public class KDTree {
     // Calculated Statistics
     private int splitDimension;
     private int nBelow;
-    private double[] mean;
+//    private double[] mean;
     private double splitValue;
     // Array of (k,2) dimensions, of (min, max) pairs in all k dimensions
     private double[][] boundaries;
@@ -73,7 +74,8 @@ public class KDTree {
             dataArray[i] = data.get(i);
             this.idxs[i] = i;
         }
-        return buildRec(dataArray, 0, dataArray.length);
+        buildRec(dataArray, 0, dataArray.length);
+        return this;
     }
 
     private KDTree buildRec(double[][] data, int startIdx, int endIdx) {
@@ -105,10 +107,10 @@ public class KDTree {
             int l = startIdx;
             int r = endIdx - 1;
             while (true) {
-                while (data[l][splitDimension] < splitValue && (l<r)) {
+                while ((l < endIdx) && data[l][splitDimension] < splitValue) {
                     l++;
                 }
-                while (data[r][splitDimension] >= splitValue && (l<r)) {
+                while ((r >= startIdx) && data[r][splitDimension] >= splitValue) {
                     r--;
                 }
                 if (l < r) {
@@ -123,18 +125,18 @@ public class KDTree {
                     break;
                 }
             }
-            if (l==startIdx || l ==endIdx-1) {
-                this.splitValue = data[l][splitDimension];
+            if (l==startIdx || l==endIdx) {
                 l = (startIdx + endIdx) / 2;
+                this.splitValue = data[l][splitDimension];
             }
             this.loChild = new KDTree(this, true).buildRec(data, startIdx, l);
             this.hiChild = new KDTree(this, false).buildRec(data, l, endIdx);
 
-            this.mean = new double[k];
-            for (int i = 0; i < k; i++) {
-                this.mean[i] = (loChild.mean[i] * loChild.getNBelow() + hiChild.mean[i] * hiChild.getNBelow())
-                        / (loChild.getNBelow() + hiChild.getNBelow());
-            }
+//            this.mean = new double[k];
+//            for (int i = 0; i < k; i++) {
+//                this.mean[i] = (loChild.mean[i] * loChild.getNBelow() + hiChild.mean[i] * hiChild.getNBelow())
+//                        / (loChild.getNBelow() + hiChild.getNBelow());
+//            }
         } else {
             this.leafItems = new ArrayList<>(leafCapacity);
 
@@ -142,17 +144,19 @@ public class KDTree {
             for (int j=startIdx;j<endIdx;j++) {
                 double[] d = data[j];
                 leafItems.add(d);
-                for (int i = 0; i < k; i++) {
-                    sum[i] += d[i];
-                }
+//                for (int i = 0; i < k; i++) {
+//                    sum[i] += d[i];
+//                }
             }
 
-            for (int i = 0; i < k; i++) {
-                sum[i] /= this.nBelow;
-            }
-
-            this.mean = sum;
+//            for (int i = 0; i < k; i++) {
+//                sum[i] /= this.nBelow;
+//            }
+//
+//            this.mean = sum;
         }
+
+        trained = true;
         return this;
     }
 
@@ -214,10 +218,6 @@ public class KDTree {
         return this.leafItems;
     }
 
-    public double[] getMean() {
-        return this.mean;
-    }
-
     public int getNBelow() {
         return nBelow;
     }
@@ -276,11 +276,24 @@ public class KDTree {
                 out.put("hi", hiChild.toMap(verbose));
             }
         }
+        if (verbose) {
+            out.put("sIdx", this.startIdx);
+            out.put("eIdx", this.endIdx);
+        }
         return out;
     }
 
     public String toString() {
+        if (!trained) {
+            return "Untrained Tree";
+        } else {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.toJson(toMap(false));
+        }
+    }
+
+    public String rawString() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(toMap(false));
+        return gson.toJson(toMap(true));
     }
 }
