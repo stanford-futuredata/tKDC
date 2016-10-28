@@ -24,4 +24,4 @@ tKDEConf:
 
   useGrid: true
   gridSizes:
-    - 0.8
+    - 1.0

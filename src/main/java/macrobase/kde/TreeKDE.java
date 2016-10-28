@@ -34,6 +34,7 @@ public class TreeKDE implements DensityEstimator {
     public long finalCutoff[] = new long[10];
     public long numNodesProcessed[] = new long[10];
     public int numScored = 0;
+    public int numKernels = 0;
 
     // ** Cached values
     private double unscaledTolerance;
@@ -115,6 +116,7 @@ public class TreeKDE implements DensityEstimator {
 
         PriorityQueue<ScoreEstimate> pq = new PriorityQueue<>(100, scoreEstimateComparator);
         ScoreEstimate initialEstimate = new ScoreEstimate(this.kernel, this.tree, d);
+        numKernels += 2;
         pq.add(initialEstimate);
         totalWMin += initialEstimate.totalWMin;
         totalWMax += initialEstimate.totalWMax;
@@ -149,10 +151,12 @@ public class TreeKDE implements DensityEstimator {
 
             if (curEstimate.tree.isLeaf()) {
                 double exact = exactDensity(curEstimate.tree, d);
+                numKernels += curEstimate.tree.getNBelow();
                 totalWMin += exact;
                 totalWMax += exact;
             } else {
                 ScoreEstimate[] children = curEstimate.split(this.kernel, d);
+                numKernels += children.length * 2;
                 curNodesProcessed += 2;
                 for (ScoreEstimate child : children) {
                     totalWMin += child.totalWMin;
@@ -211,5 +215,10 @@ public class TreeKDE implements DensityEstimator {
         } else {
             return pqScore(d) / numPoints;
         }
+    }
+
+    @Override
+    public int getNumKernels() {
+        return numKernels;
     }
 }

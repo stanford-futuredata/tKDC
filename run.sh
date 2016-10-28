@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-mvn exec:java -Dexec.args="$*"
+mvn exec:java@kde -Dexec.args="$*"

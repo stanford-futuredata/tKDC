@@ -4,18 +4,18 @@ set -o pipefail
 
 D=experiments/sklearn
 
-# for t in 0.0 0.1
-# do
-#     python3 $D/sklearn_perf.py \
-#     --path data/room.csv --n 20000 --numScore 20000 --tol $t --cols 2 5 \
-#     --out $D/scores/room_d2_t$t.csv \
-#     | tee $D/output/room_d2_t$t.txt
-
-#     python3 $D/sklearn_perf.py \
-#     --path data/room.csv --n 20000 --numScore 20000 --tol $t --cols 2 5 3 6 \
-#     --out $D/scores/room_d4_t$t.csv \
-#     | tee $D/output/room_d4_t$t.txt
-# done
+#for t in 0.0 0.1
+#do
+#    python3 $D/sklearn_perf.py \
+#    --path data/room.csv --n 20000 --numScore 20000 --tol $t --cols 2 5 \
+#    --out $D/scores/room_d2_t$t.csv \
+#    | tee $D/output/room_d2_t$t.txt
+#
+#    python3 $D/sklearn_perf.py \
+#    --path data/room.csv --n 20000 --numScore 20000 --tol $t --cols 2 5 3 6 \
+#    --out $D/scores/room_d4_t$t.csv \
+#    | tee $D/output/room_d4_t$t.txt
+#done
 
 for i in 2 4 8
 do

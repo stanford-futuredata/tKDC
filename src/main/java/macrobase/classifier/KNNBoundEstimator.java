@@ -18,7 +18,6 @@ public class KNNBoundEstimator {
     private static final Logger log = LoggerFactory.getLogger(KNNBoundEstimator.class);
 
     public TreeKDEConf tConf;
-    public int k;
 
     public double[] bw;
     public Metric metric;
@@ -30,9 +29,8 @@ public class KNNBoundEstimator {
     public static final int startingSampleSize = 200;
     public static double confidenceFactor = 2.5;
 
-    public KNNBoundEstimator(TreeKDEConf tConf, int k) {
+    public KNNBoundEstimator(TreeKDEConf tConf) {
         this.tConf = tConf;
-        this.k = k;
     }
 
     /**
@@ -49,7 +47,7 @@ public class KNNBoundEstimator {
         int sampleSize = startingSampleSize;
         double curDH = -1;
         double curDL = -1;
-        int curK = Math.max(2, rSize * k / metrics.size());
+        int curK = Math.max(2, rSize * tConf.k / metrics.size());
         log.debug("BW: {}", bw);
 
         KDTree oldTree = null;
@@ -82,24 +80,25 @@ public class KNNBoundEstimator {
             log.debug("pL: {}, pT: {}, pH: {}, qL: {}, qT: {}, qH: {}", pL, pT, pH, qL, qT, qH);
 
             boolean cutoffHBad = curDH <= qH && curDH > 0;
-            boolean cutoffLBad = curDL >= qL && curDL > 0;
+//            boolean cutoffLBad = curDL >= qL && curDL > 0;
+            boolean cutoffLBad = false;
             if (cutoffHBad) {
                 log.debug("Bad CutoffH");
                 curDH *= 4;
             }
-            if (cutoffLBad) {
-                log.debug("Bad CutoffL");
-                curDL /= 4;
-            }
+//            if (cutoffLBad) {
+//                log.debug("Bad CutoffL");
+//                curDL /= 4;
+//            }
             if (!cutoffHBad && !cutoffLBad){
                 if (rSize == metrics.size()) {
                     break;
                 } else {
                     curDH = tConf.qCutoffMultiplier * qH;
-                    curDL = qL / tConf.qCutoffMultiplier;
+//                    curDL = qL / tConf.qCutoffMultiplier;
                     rSize = Math.min(4 * rSize, metrics.size());
                     sampleSize = Math.min(rSize, tConf.qSampleSize);
-                    curK = Math.max(2, rSize * k / metrics.size());
+                    curK = Math.max(2, rSize * tConf.k / metrics.size());
                     oldTree = null;
                 }
             }

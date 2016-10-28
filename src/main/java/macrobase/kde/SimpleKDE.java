@@ -71,4 +71,9 @@ public class SimpleKDE implements DensityEstimator {
         }
     }
 
+    @Override
+    public int getNumKernels() {
+        return trainPoints.size();
+    }
+
 }

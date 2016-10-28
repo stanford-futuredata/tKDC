@@ -2,10 +2,8 @@
 set -e
 set -o pipefail
 
-D=experiments/cutofftolerance
-./run.sh $D/conf/tol0p0cut1p0.yaml $D/scores/tol0p0cut1p0.csv | tee $D/output/tol0p0cut1p0.txt
-./run.sh $D/conf/tol0p0cut1p5.yaml $D/scores/tol0p0cut1p5.csv | tee $D/output/tol0p0cut1p5.txt
-./run.sh $D/conf/tol0p0cutInf.yaml $D/scores/tol0p0cutInf.csv | tee $D/output/tol0p0cutInf.txt
-./run.sh $D/conf/tol0p1cut1p0.yaml $D/scores/tol0p1cut1p0.csv | tee $D/output/tol0p1cut1p0.txt
-./run.sh $D/conf/tol0p1cut1p5.yaml $D/scores/tol0p1cut1p5.csv | tee $D/output/tol0p1cut1p5.txt
-./run.sh $D/conf/tol0p1cutInf.yaml $D/scores/tol0p1cutInf.csv | tee $D/output/tol0p1cutInf.txt
+D=experiments/factors
+for i in 1 2 3 4 5 6
+do
+    ./run.sh $D/conf/c$i.yaml $D/scores/c$i.csv | tee $D/output/c$i.txt
+done

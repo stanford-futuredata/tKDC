@@ -39,7 +39,8 @@ public class KDEClassifier implements DensityEstimator {
             tolerance = q.tolerance;
             tree = q.tree;
         } else {
-            cutoffH = tConf.cutoffAbsolute;
+            cutoffH = tConf.cutoffHAbsolute;
+            cutoffL = tConf.cutoffLAbsolute;
             tolerance = tConf.tolAbsolute;
         }
 
@@ -70,7 +71,7 @@ public class KDEClassifier implements DensityEstimator {
             kde = sKDE;
         }
 
-        if (tConf.calculateCutoffs && tConf.useGrid) {
+        if (tConf.useGrid) {
             grids = new CompositeGrid(
                     kernel,
                     bandwidth,
@@ -90,5 +91,10 @@ public class KDEClassifier implements DensityEstimator {
             }
         }
         return kde.density(d);
+    }
+
+    @Override
+    public int getNumKernels() {
+        return kde.getNumKernels();
     }
 }

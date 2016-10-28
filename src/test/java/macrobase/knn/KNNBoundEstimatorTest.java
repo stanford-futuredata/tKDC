@@ -21,10 +21,10 @@ public class KNNBoundEstimatorTest {
 
     @Test
     public void check1Percent() throws Exception {
-        BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test_med.yaml");
+        BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test_med_knn.yaml");
         List<double[]> energyData = getData(bConf);
 
-        KNNBoundEstimator qEstimator = new KNNBoundEstimator(bConf.tKDEConf, 20);
+        KNNBoundEstimator qEstimator = new KNNBoundEstimator(bConf.tKDEConf);
         qEstimator.estimateQuantiles(energyData);
         // Value calculated from sklearn
         // bandwidth: [ 49.84778156, 10.74687233]

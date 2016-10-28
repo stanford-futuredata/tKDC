@@ -16,8 +16,6 @@ tKDEConf:
   ignoreSelfScoring: true
 
   calculateCutoffs: true
-  tolAbsolute: 2.7695628084620103E-9
-  cutoffAbsolute: 3.6969495300325006E-7
 
   leafSize: 20
   splitByWidth: true

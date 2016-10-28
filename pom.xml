@@ -23,9 +23,26 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
-                <configuration>
-                    <mainClass>macrobase.App</mainClass>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>kde</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>macrobase.KDEApp</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>spark</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>macrobase.SparkApp</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
@@ -94,6 +111,16 @@
             <groupId>de.lmu.ifi.dbs.elki</groupId>
             <artifactId>elki</artifactId>
             <version>0.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.10</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.10</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 

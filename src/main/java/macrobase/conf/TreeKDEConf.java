@@ -28,7 +28,10 @@ public class TreeKDEConf {
     public boolean ignoreSelfScoring = false;
     public boolean calculateCutoffs = true;
     public double tolAbsolute = 0.0;
-    public double cutoffAbsolute = Double.MAX_VALUE;
+    public double cutoffHAbsolute = Double.MAX_VALUE;
+    public double cutoffLAbsolute = 0.0;
+    // KNN
+    public int k = 10;
     // Tree
     public int leafSize = 20;
     public boolean splitByWidth = true;

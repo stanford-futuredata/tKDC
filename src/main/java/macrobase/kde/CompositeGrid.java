@@ -68,4 +68,9 @@ public class CompositeGrid implements DensityEstimator {
         }
         return 0.0;
     }
+
+    @Override
+    public int getNumKernels() {
+        return 0;
+    }
 }
