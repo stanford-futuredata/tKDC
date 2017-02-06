@@ -1,0 +1,334 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/times.h>
+#include "headers.h"
+//#include "ComputeKernel.h"
+#include "org_myorg_HadoopKernel.h"
+
+// The data set containing all the points.
+PPointT *dataSetPoints = NULL;
+// Number of points in the data set.
+IntT nPoints = 0;
+// The dimension of the points.
+IntT pointsDimension = 0;
+// RealT
+RealT t;
+
+PPointMatchStructT pmStruct;
+/*
+  Prints the usage of the LSHMain.
+ */
+void usage(char *programName){
+  printf("Usage: %s #pts_in_data_set dimension  data_set_file t_value\n", programName);
+}
+inline RealT diffclock(clock_t clock1,clock_t clock2)
+{
+    RealT diffticks=clock1-clock2;
+    RealT diffms=(diffticks)/CLOCKS_PER_SEC;
+    return diffms;
+}
+
+inline PPointT readPoint(FILE *fileHandle){
+  PPointT p;
+  RealT sqrLength = 0;
+  FAILIF(NULL == (p = (PPointT)MALLOC(sizeof(PointT))));
+  FAILIF(NULL == (p->coordinates = (RealT*)MALLOC(pointsDimension * sizeof(RealT))));
+  for(IntT d = 0; d < pointsDimension; d++){
+    FSCANF_REAL(fileHandle, &(p->coordinates[d]));
+  }
+  //fscanf(fileHandle, "%[^\n]", sBuffer);
+  p->index = -1;
+  return p;
+}
+
+inline void readPointRS(FILE *fileHandle){
+  RealT dummy;
+  for(IntT d = 0; d < pointsDimension; d++){
+    FSCANF_REAL(fileHandle, &(dummy));
+  }
+}
+// Reads in the data set points from <filename> in the array
+// <dataSetPoints>. Each point get a unique number in the field
+// <index> to be easily indentifiable.
+void readDataSetFromFileRS(char *filename, int nRSample){
+  FILE *f = fopen(filename, "rt");
+  FAILIF(f == NULL);
+  int dummy;
+  RealT dummy1, dummy2;
+  FAILIF(NULL == (dataSetPoints = (PPointT*)MALLOC(nRSample * sizeof(PPointT))));
+  for(IntT i = 0; i < nRSample; i++){
+    dataSetPoints[i] = readPoint(f);
+    dataSetPoints[i]->index = i;
+    dataSetPoints[i]->tag = 0;
+    //printf("index = %d, first cord = %f\n",i,dataSetPoints[i]->coordinates[0]);
+  }
+  for(IntT i = nRSample; i < nPoints; i++){
+	readPointRS(f);
+	IntT r = genRandomInt(0,i);
+	if(r<nRSample){
+		free(dataSetPoints[r]);
+		dataSetPoints[r] = readPoint(f);
+	}
+  } 
+}
+
+inline PPointT readPointFloat(RealT *singledata){
+    PPointT p;
+    FAILIF(NULL == (p = (PPointT)MALLOC(sizeof(PointT))));
+    p->coordinates = singledata;
+    p->index = -1;
+    return p;
+}
+
+void randSample(float** data, int nRSample, RealT* minarr, RealT* maxarr){
+    RealT* cor;
+    FAILIF(NULL == (dataSetPoints = (PPointT*)MALLOC(nRSample * sizeof(PPointT))));
+    for(IntT i = 0; i < nRSample; i++){
+        dataSetPoints[i] = readPointFloat(data[i]);
+        dataSetPoints[i]->index = i;
+        dataSetPoints[i]->tag = 0;
+        cor = data[i];
+        if(i == 0){
+            for(IntT j = 0; j<pointsDimension; j++){
+                minarr[j] = cor[j];
+                maxarr[j] = cor[j];
+            }
+        }else{
+            for(IntT j = 0; j<pointsDimension; j++){
+                if(cor[j] < minarr[j]){
+                    minarr[j] = cor[j];
+                }
+                if(cor[j] > maxarr[j]){
+                    maxarr[j] = cor[j];
+                }
+            }
+        }
+    }
+    for(IntT i = nRSample; i < nPoints; i++){
+        IntT r = genRandomInt(0,i);
+        if(r<nRSample){
+            //free(dataSetPoints[r]->coordinates);
+            dataSetPoints[r]->coordinates = data[i];
+	       	cor = data[i];
+            for(IntT j = 0; j<pointsDimension; j++){
+                if(cor[j] < minarr[j]){
+                    minarr[j] = cor[j];
+                }
+                if(cor[j] > maxarr[j]){
+                    maxarr[j] = cor[j];
+                }
+            }
+        }
+    }
+
+}
+
+void printoutfile(PPointT* dataSetPoints, int nRSample){
+	for(IntT i = 0 ; i<nRSample; i++){
+		printf("i = %d, c1 = %f, c2 =%f\n",i,dataSetPoints[i]->coordinates[0],dataSetPoints[i]->coordinates[1]);
+	}
+}
+void readDataSetFromFile(char *filename){
+  FILE *f = fopen(filename, "rt");
+  FAILIF(f == NULL);
+
+  //fscanf(f, "%d %d ", &nPoints, &pointsDimension);
+  //FSCANF_DOUBLE(f, &thresholdR);
+  //FSCANF_DOUBLE(f, &successProbability);
+  //fscanf(f, "\n");
+  FAILIF(NULL == (dataSetPoints = (PPointT*)MALLOC(nPoints * sizeof(PPointT))));
+  for(IntT i = 0; i < nPoints; i++){
+    dataSetPoints[i] = readPoint(f);
+    dataSetPoints[i]->index = i;
+    dataSetPoints[i]->tag = 0;
+    //printf("index = %d, first cord = %f\n",i,dataSetPoints[i]->coordinates[0]);
+  }
+}
+
+void freeDataPoints(PPointT* dataSetPoints, IntT nPoints){
+	PPointT p;
+	for(IntT i = 0; i<nPoints; i++){
+		p = dataSetPoints[i];
+		free(p);
+	}
+	free(dataSetPoints);
+}
+
+
+float** getFloatArrSample(PPointT *dataSet,IntT nPoints, IntT dim){
+    float** sample;
+    FILE *fp;
+    fp = fopen("naivesample.txt","w");
+    FAILIF(NULL == (sample = (float**)MALLOC(sizeof(float*)*nPoints)));
+    for(IntT i = 0; i<nPoints; i++){
+        FAILIF(NULL == (sample[i] = (float*)MALLOC(sizeof(float)*dim)));
+        for(IntT j = 0; j<dim; j++){
+            sample[i][j] = dataSet[i]->coordinates[j];
+        }
+        fprintf(fp,"%f %f\n",sample[i][0],sample[i][1]);
+    }
+    fclose(fp);
+    return sample;
+}
+
+
+void readDataSetFromArray(RealT** data, int nRSample, RealT* minarr, RealT* maxarr){
+	RealT* cor;
+    FAILIF(NULL == (dataSetPoints = (PPointT*)MALLOC(nRSample * sizeof(PPointT))));
+    for(IntT i = 0; i < nRSample; i++){
+    	//printf("i = %d\n",i); 
+	   dataSetPoints[i] = readPointFloat(data[i]);
+        dataSetPoints[i]->index = i;
+        dataSetPoints[i]->tag = 0;
+		cor = data[i];
+        if(i == 0){
+            for(IntT j = 0; j<pointsDimension; j++){
+                minarr[j] = cor[j];
+                maxarr[j] = cor[j];
+            }
+        }else{
+            for(IntT j = 0; j<pointsDimension; j++){
+                if(cor[j] < minarr[j]){
+                    minarr[j] = cor[j];
+                }
+                if(cor[j] > maxarr[j]){
+                    maxarr[j] = cor[j];
+                }
+            }
+        }
+     }
+}
+
+float** run(float**data,int lnPoints,int lpointsDimension, float lt,int*nSample){
+	clock_t begin,begin1;
+	clock_t end;
+  	// Parse part of the command-line parameters.
+
+	begin1 = clock();
+	nPoints = lnPoints;
+    pointsDimension = lpointsDimension;
+
+    t = lt;
+    RealT eps = t;
+
+	RealT delta = 0.001;
+	IntT nRSample = ceil( ( 1.0 / (eps*eps) ) * log( 1.0 / delta ) );
+
+	initRandom();
+	IntT originalnPoints;
+	RealT* minarr;
+    RealT* maxarr;
+	RealT** sample;
+    FAILIF(NULL == (minarr = (RealT*)MALLOC(sizeof(RealT)*pointsDimension)));
+    FAILIF(NULL == (maxarr = (RealT*)MALLOC(sizeof(RealT)*pointsDimension)));
+	
+	
+	if(nRSample > nPoints){
+        DPRINTF1("Don't need to do random sampling\n");
+        readDataSetFromArray(data,nPoints,minarr, maxarr);
+        originalnPoints = nPoints;
+    }else{
+
+        randSample(data,nRSample,minarr,maxarr);
+        nPoints = nRSample;
+        originalnPoints = nRSample;
+    }
+
+
+	PPointT *originalDataSet = dataSetPoints;
+	IntT k = ceil(4/eps*sqrt(log(4/eps))*log(4/eps));
+	printf("nPoints = %d, k = %d\n",nPoints,k);
+	if(k > nRSample){
+ 	   DPRINTF1("If we want to achieve eps, we can't do reduce, just use the original data\n");
+	}
+	IntT nofr = log(nPoints/k)/log(2);
+	dataSetPoints = originalDataSet;
+	DPRINTF4("\nk = %d, number of round = %d, eps = %f\n", k, nofr,eps);
+	
+	for(IntT v = 0; v<nofr;v++){
+
+  		pmStruct = newPMatchStructure(nPoints, pointsDimension,20000* t);
+  		for(IntT i = 0; i<log(1/t)+2; i++){
+            constructHash(i,pmStruct,dataSetPoints,minarr,maxarr);
+            getMatchPairs(pmStruct,dataSetPoints);
+            //DPRINTF5("v = %d, i = %d, construct = %f, match = %f\n",v,i,construct,match);
+		}
+  		matchArb(pmStruct,dataSetPoints);  
+		if(v != 0){
+			//freeDataPoints(dataSetPoints,nPoints);
+			free(dataSetPoints);
+		}
+		//printf("free freeDataPoints\n");
+		dataSetPoints =  getSamplePoint(pmStruct,originalDataSet,pointsDimension);
+  		nPoints = pmStruct->nMPoints;
+  //compute the error
+  		if(v == nofr-1){
+			sample = getFloatArrSample(dataSetPoints,nPoints,pointsDimension);
+            *nSample = nPoints;
+			end = clock();	
+			printf("time = %f\n", RealT(diffclock(end,begin1)));
+   		}
+  		freePMatchStructure(pmStruct);
+	}
+ 	freeDataPoints(originalDataSet,originalnPoints);
+	//freeDataPoints(dataSetPoints,nPoints);
+	printf("free freeDataPoints final\n");
+	free(minarr);
+    free(maxarr);
+	return sample;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_org_myorg_HadoopKernel_start (JNIEnv * env, jobject obj, jobjectArray dataarr, jfloat t) {
+    int nPoints = env -> GetArrayLength(dataarr);
+        jfloatArray jdata =  (jfloatArray)env->GetObjectArrayElement(dataarr, 0);
+        int dimension = env -> GetArrayLength(jdata);
+
+        float **localArray;
+        localArray = new float*[nPoints];
+        for(int i=0; i<nPoints; ++i){
+            jfloatArray oneDim = (jfloatArray)env->GetObjectArrayElement(dataarr, i);
+            jfloat *jdata=env->GetFloatArrayElements(oneDim, 0);
+            //allocate localArray[i] using len2
+            localArray[i] = new float[dimension];
+            for(int j=0; j<dimension; ++j) {
+                localArray[i][j]= jdata[j];
+            }
+            env->ReleaseFloatArrayElements(oneDim,jdata, 0);
+        }
+        float ft = t;
+        int numSample;
+		printf("before run nPoints = %d, dimension = %d , ft = %f\n",nPoints,dimension,ft);
+        float **sample = run(localArray,nPoints,dimension,ft,&numSample);
+		printf("after run\n");
+        // Get the float array class
+        jclass floatArrayClass = env->FindClass("[F");
+
+        // Check if we properly got the float array class
+        if (floatArrayClass == NULL)
+        {
+            // Ooops
+            return NULL;
+        }
+        // Create the returnable 2D array
+        jobjectArray myReturnable2DArray = env->NewObjectArray((jsize) numSample, floatArrayClass, NULL);
+
+        // Go through the first dimension and add the second dimension arrays
+        for (unsigned int i = 0; i < numSample; i++)
+        {
+            jfloatArray floatArray = env->NewFloatArray(dimension);
+            env->SetFloatArrayRegion(floatArray, (jsize) 0, (jsize) dimension, (jfloat*) sample[i]);
+            env->SetObjectArrayElement( myReturnable2DArray, (jsize) i, floatArray);
+            env->DeleteLocalRef(floatArray);
+        }
+
+        // Return a Java consumable 2D float array
+        for(IntT i = 0; i <numSample; i++){
+            free(sample[i]);
+        }
+        free(sample);
+        for(IntT i = 0; i<nPoints; i++){
+            free(localArray[i]);
+        }
+        free(localArray);
+        return myReturnable2DArray;
+}

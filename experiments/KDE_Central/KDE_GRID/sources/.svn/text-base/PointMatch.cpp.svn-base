@@ -1,0 +1,389 @@
+#include "headers.h"
+
+inline RealT* min(PPointT *p, IntT nPoints, IntT pDimension){
+	RealT* minarr = NULL;
+	FAILIF(NULL == (minarr = (RealT*)MALLOC(sizeof(RealT)*pDimension)));
+	//printf("npoints = %d\n",nPoints);
+	for(IntT i = 0; i<nPoints; i++){
+		RealT* cor = p[i]->coordinates;
+		if(i == 0){
+			for(IntT j = 0; j<pDimension; j++){
+				minarr[j] = cor[j];
+			}
+		}else{
+			for(IntT j = 0; j<pDimension; j++){
+				if(cor[j] < minarr[j]){
+					minarr[j] = cor[j];
+				}
+			}
+		}
+	}
+	return minarr;
+}
+
+
+inline RealT* max(PPointT *p, IntT nPoints, IntT pDimension){
+        RealT* maxarr = NULL;
+        FAILIF(NULL == (maxarr = (RealT*)MALLOC(sizeof(RealT)*pDimension)));
+        for(IntT i = 0; i<nPoints; i++){
+                RealT* cor = p[i]->coordinates;
+                if(i == 0){
+                        for(IntT j = 0; j<pDimension; j++){
+                                maxarr[j] = cor[j];
+                        }
+                }else{
+                        for(IntT j = 0; j<pDimension; j++){
+                                if(cor[j] > maxarr[j]){
+                                        maxarr[j] = cor[j];
+                                }
+                        }
+                }
+        }
+        return maxarr;
+}
+
+
+PPointMatchStructT newPMatchStructure(IntT nPoints, IntT pDimension, RealT t){
+	PPointMatchStructT pmatch;
+	FAILIF(NULL == (pmatch = (PPointMatchStructT)MALLOC(sizeof(PointMatchStructT))));
+
+	//pmatch->pmHashStruct = newUHashStructure(nPoints, t);
+	pmatch->round = int(floor(log(1/t)+2));
+	pmatch->t = t;
+	pmatch->nPoints = nPoints;
+	pmatch->pDimension = pDimension;
+	pmatch->matchedPoint = NULL;
+	pmatch->pmHashStruct = NULL;
+    pmatch->nMPoints = 0;
+	return pmatch;
+}
+
+//construct hash for each round, we only care about the data with tag!= -1
+void constructHash(IntT round, PPointMatchStructT pmatch, PPointT *dataSet, RealT* minArr, RealT* maxArr){
+	
+	IntT nPoints = pmatch->nPoints; 
+    IntT pDimension = pmatch->pDimension;
+	pmatch->minCoor = minArr;//min(dataSet, nPoints, pDimension);
+	pmatch->maxCoor = maxArr; //max(dataSet, nPoints, pDimension);
+
+	//DPRINTF1(pmatch->pmHashStruct);
+	if(pmatch->pmHashStruct == NULL){
+		pmatch->pmHashStruct = newUHashStructure(nPoints, pmatch->t);
+
+	}//else{
+		//clearUHashStructure(pmatch->pmHashStruct); already been cleared during the match process
+	//}
+	PUHashStructureT hashstruct = pmatch->pmHashStruct;
+	IntT num=0;
+	for(IntT i = 0; i<nPoints; i++){
+		//if(dataSet[i]->tag != 0)DPRINTF("TAG = %d\n",dataSet[i]->tag);
+		if(dataSet[i]->tag == 0){
+			addBucketEntry(i,round,hashstruct,dataSet[i], pmatch->minCoor,pmatch->maxCoor, pDimension,nPoints);
+			//num++;
+		}else{
+			//DPRINTF("Point number %d has been taged\n",i);
+		}
+
+	}
+	//DPRINTF("num = %d\n",num);
+	//printHashBucket(pmatch->pmHashStruct, nPoints);
+}
+
+void matchArb(PPointMatchStructT pmatch,PPointT *dataSet){
+    IntT nPoints = pmatch->nPoints;
+    IntT pDimension = pmatch->pDimension;
+    PPairPointsT mp = NULL;
+    IntT num = 0;
+	IntT lasttag = 0;
+	//DPRINTF("pmatch->nMPoints = %d\n",pmatch->nMPoints);
+    for(IntT i = 0; i<nPoints; i++){
+        if(dataSet[i]->tag == 0){
+			//DPRINTF("Point Number = %d\n", i);
+            num++;
+            if(num > 0 && num % 2 == 0){
+
+                    PPairPointsT mp;
+                    FAILIF(NULL == (mp = (PPairPointsT)MALLOC(sizeof(PairPointsT))));
+                    FAILIF(NULL == (mp->index = (IntT*)MALLOC(sizeof(IntT)*2)));
+                    mp->index[0] = dataSet[i]->index;
+                    mp->index[1] = dataSet[lasttag]->index;
+                    if(pmatch->matchedPoint == NULL){
+                        pmatch->matchedPoint = mp;
+                        mp->nextPair = NULL;
+                        //DPRINTF1("Matched!\n");
+                    }else{
+                          //link right after the first pair
+                          PPairPointsT temp = pmatch->matchedPoint->nextPair;
+                          pmatch->matchedPoint->nextPair = mp;
+                          mp->nextPair = temp;
+                    }
+
+                    //then mark the datasets
+                    dataSet[i]->tag = -1;
+                    dataSet[lasttag]->tag = -1;
+
+                    pmatch->nMPoints++;
+            }else{
+                lasttag = i;
+            }
+        }
+    }
+}
+
+void getMatchPairs(PPointMatchStructT pmatch,PPointT *dataSet){
+    IntT nPoints = pmatch->nPoints;
+    IntT pDimension = pmatch->pDimension;
+    PUHashStructureT uhash = pmatch->pmHashStruct;
+    PBucketEntryT bucketEntry;
+    PBucketEntryT compEntry;
+    PBucketEntryT matchedEntry;
+    for(IntT i = 0; i < nPoints; i++){
+
+        //should add here for next point
+        PGBucketT bucket = uhash->llHashTable[i];
+        //DPRINTF("!!!!!!!!!! i  = %d\n", i);
+        while(bucket != NULL){
+            //for each buck's entry, find the pair points.
+            //so go through each entry, find the min distance with that entry
+            //market the pointIndex to -1 when it is got matched
+            //and the go to the next entry with pointindex!= -1
+            bucketEntry = &(bucket->firstEntry);
+            while(bucketEntry != NULL){
+                //DPRINTF("pointIndex  = %d\n", bucketEntry->pointIndex);
+                while(bucketEntry->pointIndex == -1){
+
+                    bucketEntry = bucketEntry->nextEntry;
+
+                    //if next point is null, then the current bucket has been cleaned and we need to process the next bucket
+                    if(bucketEntry == NULL){
+                        break;
+                    }
+                }
+                if(bucketEntry == NULL){
+                     break;
+                }
+                compEntry = bucketEntry->nextEntry;
+                RealT minDist = -1;
+                IntT findIndex;
+                
+				if(compEntry != NULL){
+                    //DPRINTF("cmpIndex  = %d\n", compEntry->pointIndex);
+
+                    while(compEntry->pointIndex == -1){
+                        compEntry = compEntry->nextEntry;
+                        if(compEntry == NULL){
+                            //Can't find a compare entry that has index != -1
+                            break;
+                        }
+                    }
+                    //DPRINTF("compEntryIndex = %d\n",compEntry->pointIndex);
+                    //DPRINTF("bucketIndex = %d\n",bucketEntry->pointIndex);
+
+                    //$RealT dist = distance(pDimension,dataSet[bucketEntry->pointIndex],dataSet[compEntry->pointIndex]);
+                    if(compEntry != NULL){
+                        matchedEntry = compEntry;
+                        findIndex = compEntry->pointIndex;
+                        minDist = 1;
+                    }
+                    //$compEntry = compEntry->nextEntry;
+
+                }
+
+				//find the mindist entry, then mark both of the two entries and put them into the pmatch.matchedPoint list
+
+                //if there is only one point left in the bucket, wait for the next round
+                //DPRINTF("mindist = %f\n",minDist);
+                if(minDist < 0){
+                    // put the bucketEntry into head of the unusedEntry
+                    if(bucketEntry != &(bucket->firstEntry)){
+
+                        PBucketEntryT tempEntry = bucketEntry;
+                        bucketEntry = bucketEntry->nextEntry;
+                        tempEntry->nextEntry = uhash->unusedPBucketEntrys;
+                        uhash->unusedPBucketEntrys = tempEntry;
+                    }
+                    break;
+                }else{
+                    PPairPointsT mp;
+                    FAILIF(NULL == (mp = (PPairPointsT)MALLOC(sizeof(PairPointsT))));
+                    FAILIF(NULL == (mp->index = (IntT*)MALLOC(sizeof(IntT)*2)));
+                    //DPRINTF("bucketEntry->pointIndex  = %d\n", bucketEntry->pointIndex);
+                    //DPRINTF("matchedEntry->pointIndex  = %d\n", findIndex);
+                    mp->index[0] = dataSet[bucketEntry->pointIndex]->index;
+                    mp->index[1] = dataSet[findIndex]->index;
+                    if(pmatch->matchedPoint == NULL){
+                        pmatch->matchedPoint = mp;
+                        mp->nextPair = NULL;
+                        //DPRINTF1("Matched!\n");
+                    }else{
+                          //link right after the first pair
+                          PPairPointsT temp = pmatch->matchedPoint->nextPair;
+                          pmatch->matchedPoint->nextPair = mp;
+                          mp->nextPair = temp;
+                    }
+                    //then mark the datasets
+                     dataSet[bucketEntry->pointIndex]->tag = -1;
+                     dataSet[findIndex]->tag = -1;
+					//DPRINTF6("numofMP= %d, index 1 = %d, index 2 = %d. tag1 = %d, tag2 = %d\n",pmatch->nMPoints,bucketEntry->pointIndex,findIndex,dataSet[findIndex]->tag,dataSet[bucketEntry->pointIndex]->tag);
+                    bucketEntry->pointIndex = -1;
+                    matchedEntry->pointIndex = -1;
+                    pmatch->nMPoints++;
+                    //DPRINTF("number of matched points: %d\n",pmatch->nMPoints);
+                    //the current entry has been checked, so we could realease it.
+                    if(bucketEntry != &(bucket->firstEntry)){
+                        PBucketEntryT tempEntry = bucketEntry;
+                        bucketEntry = bucketEntry->nextEntry;
+                        tempEntry->nextEntry = uhash->unusedPBucketEntrys;
+                        uhash->unusedPBucketEntrys = tempEntry;
+                    }
+                }
+            }
+            //the current buckets has been checked, so we could realease it.
+            //put it clear
+
+            uhash->llHashTable[i] = bucket->nextGBucketInChain;
+
+            PGBucketT tempBucket = bucket;
+            tempBucket->nextGBucketInChain = uhash->unusedPGBuckets;
+            uhash->unusedPGBuckets = tempBucket;
+
+            bucket = uhash->llHashTable[i];
+            //check for the next bucket in the chain
+            //DPRINTF1("I am here\n");
+        }
+
+    }
+}
+
+//write out the sample point to a file
+PPointT * getSamplePoint(PPointMatchStructT pmatch, PPointT *dataSet, IntT pDimension){
+	
+	PPointT *newdataset;
+	PPairPointsT matchedPoint = pmatch->matchedPoint;
+	
+	//IntT pmatch->nMPoints = pmatch->nMPoints;
+	FILE *fp;
+    //fp=fopen("sample.txt", "w");
+	FAILIF(NULL == (pmatch->sampleIndex = (IntT*)MALLOC(sizeof(IntT)*pmatch->nMPoints)));
+	FAILIF(NULL == (newdataset = (PPointT*)MALLOC(pmatch->nMPoints * sizeof(PPointT))));
+	for(IntT i = 0; i<pmatch->nMPoints; i++){
+		IntT randindex = genRandomInt(0,1);
+		//printf("randindex = %d\n",randindex);
+		//printf("match = %d\n",matchedPoint->index[0]);
+		matchedPoint->chPointIndex = matchedPoint->index[randindex];
+		//DPRINTF3("i = %d, choose point index = %d\n", i, randindex);
+		pmatch->sampleIndex[i] = matchedPoint->chPointIndex;
+		/*for(IntT j = 0; j< pDimension; j++){
+			fprintf(fp, "%f ", dataSet[matchedPoint->chPointIndex]->coordinates[j]);
+		}
+	    fprintf(fp,"\n");
+		*/
+		if(dataSet[pmatch->sampleIndex[i]]->tag == 0){
+        //??? keep it here    DPRINTF("i = %d\n",pmatch->sampleIndex[i]);
+        }
+		//dataSet[matchedPoint->index[0]]->tag = 2;
+        //dataSet[matchedPoint->index[1]]->tag = 2;
+		newdataset[i] = dataSet[pmatch->sampleIndex[i]];
+		newdataset[i]->tag = 0;
+		//printf("i = %d, tag = %d\n", i, tag);	
+		//DPRINTF4("pmatch->sampleIndex[i] = %d, %d, %d\n",pmatch->sampleIndex[i],matchedPoint->index[0],matchedPoint->index[1]);
+	
+		/*if(matchedPoint->index[1] != pmatch->sampleIndex[i] && matchedPoint->index[0] != pmatch->sampleIndex[i]){
+			DPRINTF1("attention!! \n");
+		}*/
+		matchedPoint = matchedPoint->nextPair;
+	}
+	//for(IntT k = 0; k < 10000; k++){
+    //DPRINTF3("please inside original-tag %d = %d\n",k, dataSet[k]->tag);
+  //}
+	//fclose(fp);
+	return newdataset;
+}
+
+RealT* errEst(PPointT *dataSet, IntT nPoints, IntT* sampleIndex, IntT nSPoints, IntT pDimension, IntT nEval, RealT min, RealT max){
+	RealT*err = NULL;
+	FAILIF(NULL == (err = (RealT*)MALLOC(sizeof(RealT)*2)));
+	RealT* x;
+	RealT kdep = 0;
+	RealT kdes = 0;	
+	//for(IntT k = 0; k < nPoints; k++){
+	//	DPRINTF3("errData-tag %d = %d\n",k, dataSet[k]->tag);
+    //}
+	for(IntT i = 0; i<nEval; i++){
+
+		//get the point from uniform distribution
+		//for(IntT d = 0; d < pDimension; d++){
+		//	x[d] = genUniformRandom(min, max);
+		//}
+		
+		//get the point from the pointset
+		IntT randIndex = genRandomInt(0,nPoints-1);
+		//DPRINTF3("i = %d, randIndex = %d\n",i,randIndex);
+		x = dataSet[randIndex]->coordinates;
+		kdep = 0;
+		kdes = 0;
+		//IntT nnPoints = 0;
+		for(IntT k = 0; k < nPoints; k++){
+			//if(dataSet[k]->tag == 2 || dataSet[k]->tag == 0){
+			RealT temp = gauss(x,dataSet[k]->coordinates,pDimension);
+			//DPRINTF3("temp = %f, index = %d\n",temp,dataSet[k]->index);
+			kdep += temp;
+			//nnPoints++;
+			//DPRINTF("nnPoints = %d\n",nnPoints);
+			//}
+		}
+		for(IntT k = 0; k < nSPoints; k++){
+            kdes += gauss(x,dataSet[sampleIndex[k]]->coordinates,pDimension);               		//DPRINTF3("dataSet[sampleIndex[k]]->tag = %d\n",dataSet[sampleIndex[k]]->tag);
+			//DPRINTF("index = %d\n",dataSet[sampleIndex[k]]->index); 
+		}
+		//DPRINTF3("nPoints = %d, nSPoint = %d\n",nPoints, nSPoints);
+		kdep = kdep / nPoints;
+		kdes = kdes / nSPoints;
+		err[0] += (kdep - kdes)*(kdep - kdes);
+		//DPRINTF4("l_inf error = %f kdep = %f kdes = %f\n", fabs(kdep - kdes), kdep, kdes);
+		if(fabs(kdep - kdes) > err[1]){
+			err[1] = fabs(kdep - kdes); 
+		}
+
+	}
+	err[0] = sqrt(err[0]);
+	return err;
+}
+
+RealT gauss(RealT* x, RealT* p, IntT pDimension){
+	RealT result = 0;
+	RealT norm = 0;
+	for(IntT i = 0; i<pDimension; i++){
+		norm += (x[i] - p[i]) * (x[i] - p[i]);
+	}
+	norm = sqrt(norm);
+	result = exp(-norm);
+	return result;
+}
+void freePMatchStructure(PPointMatchStructT pmatch){
+	if (pmatch == NULL){
+   		 return;
+ 	}
+	//free(pmatch->minCoor); 
+	//free(pmatch->maxCoor);
+	
+	
+	PPairPointsT mpoints = pmatch->matchedPoint;
+	IntT count = 0;
+	while (mpoints != NULL){
+          PPairPointsT tempMP = mpoints;
+          mpoints = mpoints->nextPair;
+          free(tempMP->index);
+	  free(tempMP);
+	  count++;
+        }
+	pmatch->nMPoints = 0;
+	freeUHashStructure(pmatch->pmHashStruct);	
+	pmatch->pmHashStruct = NULL;
+	free(pmatch->sampleIndex);
+	pmatch->sampleIndex = NULL;
+	free(pmatch);
+	pmatch = NULL;
+	//DPRINTF("free matched points count = %d\n", count);
+}
+	

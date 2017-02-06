@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svnroot/apxkernelcode/!svn/ver/255/zKernelCentral
+END
+mtimer.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/apxkernelcode/!svn/ver/226/zKernelCentral/mtimer.h
+END
+zKernCentral.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/apxkernelcode/!svn/ver/260/zKernelCentral/zKernCentral.cpp
+END
+zKC.exe
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/apxkernelcode/!svn/ver/226/zKernelCentral/zKC.exe
+END
+randZKernCentral.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/apxkernelcode/!svn/ver/260/zKernelCentral/randZKernCentral.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/apxkernelcode/!svn/ver/255/zKernelCentral/Makefile
+END
+mtimer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/apxkernelcode/!svn/ver/226/zKernelCentral/mtimer.cpp
+END

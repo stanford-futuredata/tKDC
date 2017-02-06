@@ -1,0 +1,454 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Setup
+\end_layout
+
+\begin_layout Standard
+We are trying to classify the Kernel Density 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ according to a threshold 
+\begin_inset Formula $t$
+\end_inset
+
+ for a query point 
+\begin_inset Formula $x\in\mathbb{R}^{k}$
+\end_inset
+
+ and training set 
+\begin_inset Formula $\left|S\right|=n$
+\end_inset
+
+.
+ In other words, we are trying to identify if 
+\begin_inset Formula $p\left(x\right)>t$
+\end_inset
+
+.
+ Assume we have a radial kernel function 
+\begin_inset Formula $K(x)$
+\end_inset
+
+, then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p\left(x\right)=\frac{1}{n}\sum_{y\in S}K\left(y-x\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our algorithm (called IC2) for calculating 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ works by using a k-d tree to divide 
+\begin_inset Formula $S\subset\mathbb{R}^{k}$
+\end_inset
+
+ into a set of rectangular box regions 
+\begin_inset Formula $Boxes$
+\end_inset
+
+.
+ Each hyper-rectangle in 
+\begin_inset Formula $R\in Boxes$
+\end_inset
+
+ has well defined minimum and maximum distances to 
+\begin_inset Formula $x$
+\end_inset
+
+: 
+\begin_inset Formula $d_{R}^{min}\left(x\right)$
+\end_inset
+
+, 
+\begin_inset Formula $d_{R}^{max}\left(x\right)$
+\end_inset
+
+ and contains 
+\begin_inset Formula $n_{R}=\left|R\cap S\right|$
+\end_inset
+
+ points.
+ Thus we can estimate 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ using these boxes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+p^{min}\left(x\right) & =\frac{1}{n}\sum_{R}n_{R}K\left(d_{R}^{max}\left(x\right)\right)\\
+p^{max}\left(x\right) & =\frac{1}{n}\sum_{R}n_{R}K\left(d_{R}^{min}\left(x\right)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\Delta\left(x\right)=p^{max}\left(x\right)-p^{min}\left(x\right)$
+\end_inset
+
+ be the error of our estimate using 
+\begin_inset Formula $Boxes$
+\end_inset
+
+, then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta\left(x\right) & =\frac{1}{n}\sum_{R}n_{R}\left[K\left(d_{R}^{min}\left(x\right)\right)-K\left(d_{R}^{max}\left(x\right)\right)\right]\\
+ & =\frac{1}{n}\sum_{R}n_{R}\left[K\left(d_{R}^{min}\left(x\right)\right)-K\left(d_{R}^{min}\left(x\right)+\delta_{R}\left(x\right)\right)\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Where 
+\begin_inset Formula $\delta_{R}\left(x\right)=d_{R}^{max}\left(x\right)-d_{R}^{min}\left(x\right)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section
+Simplifying the Classification Algorithm
+\end_layout
+
+\begin_layout Standard
+This equation is hard to analyze since each box 
+\begin_inset Formula $R$
+\end_inset
+
+ has a different size.
+ This is because IC2 prioritizes creating smaller boxes where they are more
+ impactful.
+ However, it will be simplier to analyze a more naive algorithm which lets
+ 
+\begin_inset Formula $Boxes$
+\end_inset
+
+ be a uniform grid with bin width 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ This algorithm will be slower in practice than IC2 but easier to analyze
+ and we call it the grid refinement algorithm.
+\end_layout
+
+\begin_layout Standard
+In the grid refinement algorithm, we try successively finer and finer grids
+ to get better density estimates until we can either make a precise classificati
+on or we bottom out and instead evaluate the precise 
+\begin_inset Formula $K\left(x\right)$
+\end_inset
+
+ by raw summation.
+\end_layout
+
+\begin_layout Enumerate
+Start with 
+\begin_inset Formula $b$
+\end_inset
+
+ large enough for the entire dataset, and thus 
+\begin_inset Formula $\left|Boxes\right|=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+While 
+\begin_inset Formula $\left|Boxes\right|\leq n$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Calculate 
+\begin_inset Formula $p^{min}\left(x\right),p^{max}\left(x\right)$
+\end_inset
+
+ for 
+\begin_inset Formula $Boxes$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+If 
+\begin_inset Formula $p^{min}>t$
+\end_inset
+
+ or 
+\begin_inset Formula $p^{max}<t$
+\end_inset
+
+, 
+\series bold
+return
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $b\gets b/2$
+\end_inset
+
+ and recalculate 
+\begin_inset Formula $Boxes$
+\end_inset
+
+, so that 
+\begin_inset Formula $\left|Boxes'\right|=2^{k}\left|Boxes\right|$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Calculate the exact 
+\begin_inset Formula $K\left(x\right)$
+\end_inset
+
+ and 
+\series bold
+return
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For our analysis we focus on counting the number of kernel evaluations since
+ that is the bulk of the runtime in IC2.
+ We we ignore the cost of updating 
+\begin_inset Formula $Boxes$
+\end_inset
+
+ for grid refinement since it is not a concern for IC2.
+ 
+\end_layout
+
+\begin_layout Standard
+Also, since the number of kernel evaluations 
+\begin_inset Formula $Cost_{kernel}$
+\end_inset
+
+ depends on the query point 
+\begin_inset Formula $x$
+\end_inset
+
+ chosen, we will calculate 
+\begin_inset Formula $E_{x}\left[Cost_{kernel}\right]$
+\end_inset
+
+ for 
+\begin_inset Formula $x$
+\end_inset
+
+ drawn from a smooth underlying distribution with pdf 
+\begin_inset Formula $p_{0}\left(x\right)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+As 
+\begin_inset Formula $n$
+\end_inset
+
+ increases, we will show that this grid refinement algorithm, and thus IC2,
+ scale 
+\begin_inset Formula $O\left(n^{\left(k-1\right)/k}\right)$
+\end_inset
+
+ and are thus sub-linear in the number of kernel evaluations required.
+ 
+\end_layout
+
+\begin_layout Standard
+Our observation is that as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases say from 
+\begin_inset Formula $n$
+\end_inset
+
+ to 
+\begin_inset Formula $n+1$
+\end_inset
+
+, the vast majority of query points 
+\begin_inset Formula $x$
+\end_inset
+
+ will retain the exact same runtime cost: only 
+\begin_inset Formula $x$
+\end_inset
+
+ in borderline regions that required us to go to step 3 and calculate 
+\begin_inset Formula $K\left(x\right)$
+\end_inset
+
+ manually will pay the penalty of an additional point in 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ Thus we will estimate the fraction of query points 
+\begin_inset Formula $x$
+\end_inset
+
+ that will require us to evaluate 
+\begin_inset Formula $K\left(x\right)$
+\end_inset
+
+ manually.
+ 
+\end_layout
+
+\begin_layout Standard
+As 
+\begin_inset Formula $N\rightarrow\infty$
+\end_inset
+
+, 
+\begin_inset Formula $b\rightarrow0$
+\end_inset
+
+ we can use taylor's theorem and ignore all 
+\begin_inset Formula $o\left(b\right)$
+\end_inset
+
+ terms.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta\left(x\right) & \leq\frac{1}{n}\sum_{R}n_{R}\left[-b\sqrt{k}K'\left(d_{R}^{min}\left(x\right)\right)+o\left(b\right)\right]\\
+ & \leq b\sqrt{k}\frac{1}{n}\sum_{R}-n_{R}K'\left(d_{R}^{min}\left(x\right)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since 
+\begin_inset Formula $K'$
+\end_inset
+
+ is bounded, ultimately we have that 
+\begin_inset Formula $\boxed{\Delta\left(x\right)\sim b}$
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

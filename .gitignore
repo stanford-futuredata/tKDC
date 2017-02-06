@@ -6,6 +6,7 @@ target/
 .ipynb_checkpoints
 output/
 scores/
+*.pdf
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

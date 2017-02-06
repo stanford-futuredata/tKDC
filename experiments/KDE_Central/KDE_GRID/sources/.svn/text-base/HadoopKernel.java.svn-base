@@ -1,0 +1,227 @@
+package org.myorg;
+
+import java.io.*;
+import java.util.*;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.util.*;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+
+
+public class HadoopKernel extends Configured implements Tool {
+
+    public native float[][] start(float[][]data, float t);
+
+    public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, NullWritable, FloatArrayWritable> {
+
+      int dimension;
+      float eps;
+      String libFName;
+      OutputCollector<NullWritable, FloatArrayWritable> oc;
+
+      Vector<float[]> points;      
+
+      public void configure(JobConf job) {
+        dimension = job.getInt( "zKernel.dimension", 2 );
+        eps = job.getFloat( "zKernel.eps", 0.1f );
+
+        points = new Vector<float[]>();
+
+        Path[] libFiles = new Path[0];
+        try {
+          libFiles = DistributedCache.getLocalCacheFiles(job);
+        } catch (IOException ioe) {
+          System.err.println("Caught exception while getting cached files: " + StringUtils.stringifyException(ioe));
+        }
+
+        for( Path pathF : libFiles ) {
+          libFName = pathF.toString();
+          System.out.println( libFName );
+        }
+      }
+
+
+      public void map(LongWritable key, Text value, OutputCollector<NullWritable, FloatArrayWritable> output, Reporter reporter) throws IOException {
+
+         oc = output;
+
+         String[] parts = value.toString().split( " " );
+         if( parts.length < dimension ) return;
+         
+         float[] currentPt = new float[dimension];
+         for( int i = 0; i < dimension; ++i )
+                 currentPt[i] = Float.valueOf( parts[i] );
+
+         points.add( currentPt );
+      }
+
+      public void close() {
+
+        try {
+           float[][] pointArr = new float[points.size()][dimension];
+           for( int i = 0; i < points.size(); ++i )
+              pointArr[i] = points.get(i);
+   
+           System.load(libFName);
+           HadoopKernel myLib = new HadoopKernel();
+           float[][] sample = myLib.start(pointArr, eps);
+           
+           for( int i = 0; i < sample.length; ++i ) {
+   
+              FloatWritable[] fwa = new FloatWritable[dimension];
+              for( int j = 0; j < sample[i].length; ++j )
+                 fwa[j] = new FloatWritable( sample[i][j] );
+   
+              oc.collect( NullWritable.get(), new FloatArrayWritable( fwa ) );
+           } 
+        } catch(Exception e) {}
+      }
+    }
+
+    public static class Reduce extends MapReduceBase implements Reducer<NullWritable, FloatArrayWritable, NullWritable, FloatArrayWritable> {
+
+       float eps = 0;
+       int dimension = 0;
+       String libFName;
+       OutputCollector<NullWritable,FloatArrayWritable> oc;
+
+       Vector<float[]> points;
+ 
+       public void configure( JobConf job ) {
+          dimension = job.getInt( "zKernel.dimension", 2 );
+          eps = job.getFloat( "zKernel.eps", 0.1f );
+          points = new Vector<float[]>();
+
+
+          Path[] libFiles = new Path[0];
+          try {
+            libFiles = DistributedCache.getLocalCacheFiles(job);
+          } catch (IOException ioe) {
+            System.err.println("Caught exception while getting cached files: " + StringUtils.stringifyException(ioe));
+          }
+  
+          for( Path pathF : libFiles ) {
+            libFName = pathF.toString();
+            System.out.println( libFName );
+          }
+        }
+
+ 
+       public void reduce(NullWritable key, Iterator<FloatArrayWritable> values, OutputCollector<NullWritable, FloatArrayWritable> output, Reporter reporter) throws IOException {
+ 
+          oc = output;
+
+          while (values.hasNext()) {
+            FloatWritable[] fwa = (FloatWritable[]) values.next().toArray();
+
+            float[] currentPt = new float[dimension];
+            for( int i = 0; i < dimension; ++i )
+                 currentPt[i] = fwa[i].get();
+
+            points.add( currentPt );
+
+          }
+       }
+
+
+      public void close() {
+
+        try {
+           float[][] pointArr = new float[points.size()][dimension];
+           for( int i = 0; i < points.size(); ++i )
+              pointArr[i] = points.get(i);
+   
+           System.load(libFName);
+           HadoopKernel myLib = new HadoopKernel();
+           float[][] sample = myLib.start(pointArr, eps);
+           
+           for( int i = 0; i < sample.length; ++i ) {
+   
+              FloatWritable[] fwa = new FloatWritable[dimension];
+              for( int j = 0; j < sample[i].length; ++j )
+                 fwa[j] = new FloatWritable( sample[i][j] );
+   
+              oc.collect( NullWritable.get(), new FloatArrayWritable( fwa ) );
+           } 
+        } catch(Exception e) {}
+      }
+    }
+
+
+    public int run(String[] args) throws Exception {
+
+      if( args.length < 2 ) {
+         System.out.println( "Usage: <infile> <outdir> -lib <libFile> -eps <epsilon> -d <dimension>" );
+         return 1;
+      }
+
+      JobConf conf = new JobConf(getConf(), HadoopKernel.class);
+      conf.setJobName("HadoopKernel");
+
+      conf.setOutputKeyClass(NullWritable.class);
+      conf.setOutputValueClass(FloatArrayWritable.class);
+     
+      conf.setMapperClass(Map.class);
+      conf.setReducerClass(Reduce.class);
+      conf.setNumReduceTasks(1);
+
+      conf.setInputFormat(TextInputFormat.class);
+      conf.setOutputFormat(TextOutputFormat.class);
+
+      List<String> other_args = new ArrayList<String>();
+      for (int i=0; i < args.length; ++i) {
+        if ("-lib".equals(args[i])) {
+          DistributedCache.addCacheFile(new Path(args[++i]).toUri(), conf);
+        }
+        else if ("-eps".equals(args[i])) {
+          conf.setFloat( "zKernel.eps", Float.parseFloat( args[++i] ) );
+        }
+        else if( "-d".equals(args[i]) ) {
+          conf.setInt( "zKernel.dimension", Integer.parseInt( args[++i] ) );
+        }
+        else {
+          other_args.add(args[i]);
+        }
+      }
+
+      FileInputFormat.setInputPaths(conf, new Path(other_args.get(0)));
+      FileOutputFormat.setOutputPath(conf, new Path(other_args.get(1)));
+
+      long startTime = System.currentTimeMillis();
+      RunningJob rj = JobClient.runJob(conf);
+      long elapseTime = System.currentTimeMillis() - startTime;
+      String s = "Elapsed time (ms): " + elapseTime;
+
+      System.out.println( s );
+      FileWriter fstream = new FileWriter( "out.time.KDENaive", true );
+      BufferedWriter out = new BufferedWriter( fstream );
+      out.write(s);
+      out.newLine();
+      out.close();
+
+      Counters c = rj.getCounters();
+      Counters.Group cg = c.getGroup( "org.apache.hadoop.mapred.Task$Counter" );
+      Counters.Counter cc = cg.getCounterForName( "REDUCE_SHUFFLE_BYTES" );
+      s = "Communication (bytes): " + cc.getValue();
+      System.out.println(s);
+
+      fstream = new FileWriter( "out.comm.KDENaive", true );
+      out = new BufferedWriter( fstream );
+      out.write(s);
+      out.newLine();
+      out.close();
+
+
+
+      return 0;
+    }
+
+    public static void main(String[] args) throws Exception {
+      int res = ToolRunner.run(new Configuration(), new HadoopKernel(), args);
+      System.exit(res);
+    }
+}

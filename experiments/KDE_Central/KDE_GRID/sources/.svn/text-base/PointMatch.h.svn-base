@@ -1,0 +1,35 @@
+#ifndef POINTMATCH_INCLUDED
+#define POINTMATCH_INCLUDED
+
+typedef struct _PairPointsT{
+	IntT* index;
+	IntT chPointIndex;
+	_PairPointsT *nextPair;	
+}PairPointsT, *PPairPointsT;
+
+typedef struct _PointMatchStructT{
+
+ 	PUHashStructureT pmHashStruct;
+	IntT round;
+	RealT t;
+	IntT nPoints;
+	IntT pDimension;
+	PPairPointsT matchedPoint;
+	IntT* sampleIndex;
+	IntT nMPoints;
+	RealT* minCoor;
+	RealT* maxCoor;
+
+}PointMatchStructT, *PPointMatchStructT;
+
+//get min and max and construct hash
+PPointMatchStructT newPMatchStructure(IntT nPoints, IntT pDimension, RealT t);
+//void constructHash(IntT round, PPointMatchStructT pmatch, PPointT *dataSet);
+void constructHash(IntT round, PPointMatchStructT pmatch, PPointT *dataSet, RealT* minArr, RealT* maxArr);
+void getMatchPairs(PPointMatchStructT pmatch, PPointT *dataSet);
+PPointT *  getSamplePoint(PPointMatchStructT pmatch, PPointT *dataSet, IntT pDimension);
+RealT gauss(RealT* x, RealT* p, IntT pDimension);
+RealT* errEst(PPointT *dataSet, IntT nPoints, IntT* sampleIndex, IntT nSPoints, IntT pDimension, IntT nEval, RealT min, RealT max);
+void freePMatchStructure(PPointMatchStructT pmatch);
+void matchArb(PPointMatchStructT pmatch,PPointT *dataSet);
+#endif

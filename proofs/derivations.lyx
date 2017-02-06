@@ -1,0 +1,332 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+p_{\sigma}(x) & =\left(2\pi\sigma^{2}\right)^{-k/2}e^{-1/2\left(x/\sigma\right)^{2}}\\
+p_{0}\left(x\right) & =\left(2\pi\right)^{-k/2}e^{-1/2\left(x\right)^{2}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Multi-Grid Derivation
+\end_layout
+
+\begin_layout Standard
+Assume a spherically symmetric distribution lies in a 
+\begin_inset Formula $\left[-.5,.5\right]^{k}$
+\end_inset
+
+ cell.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $N$
+\end_inset
+
+ points with a grid width of 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ The discrepancy in pdfs is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{p} & =\sum\left(p\left(d_{i}\right)-p\left(d_{i}+dd_{i}\right)\right)\\
+ & \leq\sum\left(p\left(d_{i}\right)-p\left(d_{i}+b\sqrt{k}\right)\right)\\
+ & \leq\sum p'\left(d_{i}\right)b\sqrt{k}\\
+ & \leq b\sqrt{k}\sum p'\left(d_{i}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus the border region around 
+\begin_inset Formula $x_{c}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{0}(x_{c})=t$
+\end_inset
+
+ is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{x} & =\Delta_{p}/p'_{0}\left(x_{c}\right)\\
+ & =b\sqrt{k}p'_{0}\left(x_{c}\right)^{-1}\sum p_{\sigma}^{'}\left(d_{i}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we can calculate the fraction of probability mass 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+frac & =\Delta_{x}\cdot S_{k}^{k-1}(x_{c})p_{0}\left(x_{c}\right)\\
+ & =b\sqrt{k}S_{k}^{k-1}(x_{c})\frac{p_{0}\left(x_{c}\right)}{p'_{0}\left(x_{c}\right)}\sum p_{\sigma}^{'}\left(d_{i}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+b\sim\Delta_{p}\sim\Delta_{x}\sim frac
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Consider one particularly naive way of choosing cells to subdivide.
+ Rather than prioritize, we will do a breadth first traversal with midpoint-widt
+h splitting until we get 
+\begin_inset Formula $N$
+\end_inset
+
+ subcells.
+ 
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $N$
+\end_inset
+
+ points, keep subdividing cells into 
+\begin_inset Formula $2^{k}$
+\end_inset
+
+ subcells.
+ Stop when bounds are hit or we have 
+\begin_inset Formula $>N$
+\end_inset
+
+ cells with width 
+\begin_inset Formula $b=N^{-1/k}$
+\end_inset
+
+, in which case we add up all points (raw sum).
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $2^{k}N$
+\end_inset
+
+ points, do the same, but now we stop at width 
+\begin_inset Formula $b/2$
+\end_inset
+
+.
+ All queries which didn't require raw sum have the same computational cost.
+ All queries which relied on raw sum now could require up to 
+\begin_inset Formula $2^{k}N$
+\end_inset
+
+ more cell splits and 
+\begin_inset Formula $2^{k}N$
+\end_inset
+
+ more raw kernel evals.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F(2^{k}N)\leq F\left(N\right)+uN^{-1/k}\left(N\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F\left(N\right)=O\left(N^{\left(k-1\right)/k}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Single Box Derivation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma=N^{-1/\left(k+4\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{d}{ds}s^{k}p\left(s\sqrt{k}\right) & =\frac{d}{ds}s^{k}e^{-1/2\left(s\sqrt{k}/\sigma\right)^{2}}\\
+ & =ks^{k-1}+s^{k}\left(-s\sqrt{k}/\sigma\right)\sqrt{k}/\sigma\\
+ & =k-s^{2}k/\sigma^{2}\\
+ & =1-s^{2}/\sigma^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The containing box with the biggest contribution will have width 
+\begin_inset Formula $\sigma$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+W\left(x\right) & =\left(n/N\right)p\left(\sigma\sqrt{k}\right)\\
+ & \geq\left(\sigma^{k}p_{0}\left(x+\delta\right)\right)p\left(\sigma\sqrt{k}\right)\\
+ & =p_{0}\left(x+\delta\right)\left(2\pi\right)^{-k/2}e^{-1/2\left(\sqrt{k}\right)^{2}}\\
+ & =p_{0}\left(x+\delta\right)\left(2\pi\right)^{-k/2}e^{-k/2}\\
+ & =p_{0}\left(x+\delta\right)\left(2\pi e\right)^{-k/2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can stop based on just this box when:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+e^{-1/2\left(x+\sigma\sqrt{k}\right)^{2}}=e^{-1/2\left(x^{2}+\sigma^{2}k+2x\sigma\sqrt{k}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+p_{0}\left(x+\sigma\sqrt{k}\right) & >t\left(2\pi e\right)^{k/2}\\
+p_{0}\left(x\right)e^{-x\sigma\sqrt{k}} & >t\left(2\pi e\right)^{k/2}\\
+p_{0}\left(x\right) & >t\left(2\pi\right)^{k/2}e^{x\sigma\sqrt{k}}
+\end{align*}
+
+\end_inset
+
+ 
+\end_layout
+
+\end_body
+\end_document

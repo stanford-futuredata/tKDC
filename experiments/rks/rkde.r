@@ -9,7 +9,7 @@ parser$add_argument("--numScore", type="integer", required=TRUE)
 parser$add_argument("--cols", type="integer", nargs="+", required=TRUE)
 parser$add_argument("--out", default="")
 
-parser$add_argument("--binned", type="logical", default=TRUE)
+parser$add_argument("--binned", action="store_true" , default=FALSE)
 
 args = parser$parse_args()
 
@@ -31,13 +31,13 @@ fhat <- kde(
   x=metrics,
   binned=args$binned,
   H=diag(bw)**2,
-  eval.points = metrics[1:args$numScore,],
-  supp=10,
-  verbose = TRUE
+  eval.points=metrics[1:args$numScore,],
+  supp=5,
+  verbose=TRUE
 )
 print(proc.time() - ptm)
 densities = fhat["estimate"][[1]]
 
 if(args$out != ""){
-    write.csv(densities, file=args$out)
+    write.csv(densities, file=args$out, row.names=FALSE)
 }

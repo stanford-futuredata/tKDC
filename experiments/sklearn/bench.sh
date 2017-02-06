@@ -17,18 +17,34 @@ D=experiments/sklearn
 #    | tee $D/output/room_d4_t$t.txt
 #done
 
-for i in 2 4 8
-do
-    for t in 0.0 0.1
-    do
-        python3 $D/sklearn_perf.py \
-        --path data/us_energy_1p0_metrics.csv --n 500000 --numScore 1000 --tol $t --cols `seq -s " " 0 $(($i-1))` \
-        --out $D/scores/energy_d${i}_t$t.csv \
-        | tee $D/output/energy_d${i}_t$t.txt
+#for i in 2 4 8
+#do
+#    for t in 0.0 0.1
+#    do
+#        python3 $D/sklearn_perf.py \
+#        --path data/us_energy_1p0_metrics.csv --n 500000 --numScore 1000 --tol $t --cols `seq -s " " 0 $(($i-1))` \
+#        --out $D/scores/energy_d${i}_t$t.csv \
+#        | tee $D/output/energy_d${i}_t$t.txt
+#
+#        python3 $D/sklearn_perf.py \
+#        --path data/home_sensor.csv --n 500000 --numScore 1000 --tol $t --cols `seq -s " " 3 $(($i+2))` \
+#        --out $D/scores/home_d${i}_t$t.csv \
+#        | tee $D/output/home_d${i}_t$t.txt
+#    done
+#done
 
-        python3 $D/sklearn_perf.py \
-        --path data/home_sensor.csv --n 500000 --numScore 1000 --tol $t --cols `seq -s " " 3 $(($i+2))` \
-        --out $D/scores/home_d${i}_t$t.csv \
-        | tee $D/output/home_d${i}_t$t.txt
-    done
+#for i in 1 2 3 4 5 6 7 8
+for i in 6
+do
+    python3 $D/sklearn_perf.py \
+    --path data/us_energy_1p0_metrics.csv --n 500000 --numScore 2000 \
+    --tol 0.1 --cols `seq -s " " 0 $(($i-1))` \
+    --out $D/scores/energy_d${i}.csv \
+    | tee $D/output/energy_d${i}.txt
+
+    python3 $D/sklearn_perf.py \
+    --path data/home_sensor.csv --n 500000 --numScore 2000 \
+    --tol 0.1 --cols `seq -s " " 3 $(($i+2))` \
+    --out $D/scores/home_d${i}.csv \
+    | tee $D/output/home_d${i}.txt
 done

@@ -1,0 +1,46 @@
+#include "headers.h"
+
+void usage(char *programName){
+  printf("Usage: %s #pts_in_data_set dimension mu sigma \n", programName);
+}
+
+int main(int nargs, char **args){
+
+	if(nargs < 4){
+    		usage(args[0]);
+    		exit(1);
+ 	 }
+
+  	// Parse part of the command-line parameters.
+  	IntT nPoints = atoi(args[1]);
+  	IntT pointsDimension = atoi(args[2]);
+	RealT mu = atof(args[3]);
+	RealT sigma = atof(args[4]);
+	FILE *fp;
+	RealT d;
+	fp=fopen("randomdata.txt", "w");
+	for(IntT i = 0; i < nPoints/2; i++){
+		for(IntT j = 0; j< pointsDimension; j++){
+			d = genGaussianRandom();
+			if(j != pointsDimension - 1){
+				fprintf(fp,"%f ",d);
+			}else{
+				fprintf(fp,"%f",d);
+			}
+		}
+		fprintf(fp,"\n");	
+	}
+
+	for(IntT i = nPoints/2; i < nPoints; i++){
+                for(IntT j = 0; j< pointsDimension; j++){
+                        d = genGaussianRandom()*sigma+mu;
+                        if(j != pointsDimension - 1){
+                                fprintf(fp,"%f ",d);
+                        }else{
+                                fprintf(fp,"%f",d);
+                        }
+                }
+                fprintf(fp,"\n");
+        }
+	fclose(fp);
+}

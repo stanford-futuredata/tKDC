@@ -1,5 +1,5 @@
 inputPath: "data/home_sensor.csv"
-inputColumns: [3,4,5,6,7,8,9,10]
+inputColumns: [3, 4, 5, 6, 7, 8, 9, 10]
 inputRows: 500000
 numToScore: 1000
 
