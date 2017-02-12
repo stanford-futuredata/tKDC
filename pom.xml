@@ -34,12 +34,12 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>spark</id>
+                        <id>benchmark</id>
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>macrobase.SparkApp</mainClass>
+                            <mainClass>macrobase.Benchmark</mainClass>
                         </configuration>
                     </execution>
                 </executions>

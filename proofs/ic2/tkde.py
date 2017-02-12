@@ -34,6 +34,7 @@ class TKDE:
         box_kernels = 2
         exact_kernels = 0
         stopping_cause = "exact"
+        iters = 0
         while len(sub_trees) > 0:
             if self.threshold is not None:
                 if total_low > self.threshold:
@@ -47,9 +48,13 @@ class TKDE:
                 break
 
             cur_partial = heapq.heappop(sub_trees)
+            print("Iter: {}".format(iters))
+            print(total_high - total_low)
+            print(cur_partial)
             cur_tree = cur_partial.tree
             total_low -= cur_partial.low
             total_high -= cur_partial.high
+            iters += 1
 
             if cur_tree.is_leaf():
                 exact_weight = cur_tree.calc_exact(self.kernel, query)

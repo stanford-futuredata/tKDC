@@ -8,6 +8,7 @@ import org.apache.commons.math3.linear.DiagonalMatrix;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
@@ -27,6 +28,10 @@ public class KernelTest {
         x[0] = 5;
         assertThat(g.density(x), lessThan(g.upperBound(x)));
         assertThat(g.density(x), greaterThan(g.lowerBound(x)));
+
+        double p = 0.1;
+        x[0] = bw[0] * g.invDensity(p);
+        assertThat(g.density(x), closeTo(p, 1e-7));
 //        System.out.println(
 //                Arrays.toString(g.getBounds(new double[][]{{1.0},{3.0}}))
 //        );

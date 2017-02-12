@@ -18,4 +18,9 @@ public class EpaKernel extends Kernel {
         }
         return dimFactor * bwFactor * prod;
     }
+
+    @Override
+    public double invDensity(double p) {
+        return Math.sqrt(1-p/(dimFactor*bwFactor));
+    }
 }

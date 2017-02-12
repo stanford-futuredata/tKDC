@@ -1,0 +1,402 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+theorems-ams-bytype
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Body
+\end_layout
+
+\begin_layout Standard
+Suppose we have a 
+\begin_inset Formula $k$
+\end_inset
+
+-dimensional training dataset of size 
+\begin_inset Formula $N$
+\end_inset
+
+, whose underlying KDE density is 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $T\left(x\right)$
+\end_inset
+
+ be the computational cost of classifying a single query point 
+\begin_inset Formula $x$
+\end_inset
+
+ according to a density threshold 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ Since the algorithm does not retain any state between queries, each query
+ execution can be treated independently, so we will estimate the cost of
+ classifying a single query point 
+\begin_inset Formula $x$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If we allow for an error tolerance (via the threshold rule) of 
+\begin_inset Formula $p\left(x\right)\pm\epsilon$
+\end_inset
+
+ then for large enough 
+\begin_inset Formula $N$
+\end_inset
+
+ the cost is constant: we will simply split the kd-tree cells until the
+ differences between the largest and smallest density single point contribution
+ from each cell are less than 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ However, this will not happen until we reach relatively large 
+\begin_inset Formula $N\sim\epsilon^{-k}$
+\end_inset
+
+.
+ Thus we will focus on how our query time grows in the regime where the
+ threshold rule is negligible and we make exact classifications.
+ The cutoff rule is the source of most of our speedups in practice and it
+ turns out that 
+\series bold
+just the cutoff rule is sufficient
+\series default
+ for performing exact classification in sub-linear time.
+\end_layout
+
+\begin_layout Standard
+In this analysis, 
+\begin_inset Formula $T\left(x\right)$
+\end_inset
+
+ the cost of classifying 
+\begin_inset Formula $x$
+\end_inset
+
+ using IC2 is defined to be the total number of k-d tree nodes processed
+ via either splitting a parent node or evaluating the exact contribution
+ of a leaf node.
+ 
+\begin_inset Formula $T\left(x\right)=\text{Splits}\left(x\right)+\text{Leaves}\left(x\right)$
+\end_inset
+
+.
+ Since 
+\begin_inset Formula $T\left(x\right)$
+\end_inset
+
+ depends greatly on how close 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ is to the threshold 
+\begin_inset Formula $t$
+\end_inset
+
+, we will estimate the expected value
+\emph on
+ 
+\emph default
+of 
+\begin_inset Formula $T\left(x\right)$
+\end_inset
+
+ for 
+\begin_inset Formula $x$
+\end_inset
+
+ sampled from a query distribution 
+\begin_inset Formula $p_{q}\left(x\right)$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $F\left(N\right)$
+\end_inset
+
+ denote this expected cost such that 
+\begin_inset Formula $F\left(N\right)=E_{x\sim p_{q}}\left[T\left(x\right)\right]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We will show that 
+\begin_inset Formula $\boxed{F\left(N\right)=O\left(N^{\frac{k-1}{k}}\right)}$
+\end_inset
+
+, confirming that IC2 performs better than a naive scan or the baseline
+ near-radius KDE (rkde) algorithm which both require 
+\begin_inset Formula $O\left(N\right)$
+\end_inset
+
+ time per query.
+ 
+\end_layout
+
+\begin_layout Standard
+We can build up to this result via three lemmas.
+ First we describe how the precision of the IC2 density bounds improve as
+ we process more nodes.
+ Then we describe the how the fraction of expensive borderline queries descrease
+s with training set size 
+\begin_inset Formula $N$
+\end_inset
+
+.
+ Finally, these two lemmas let us derive a recurrence relation for the total
+ expected cost of computing queries and then solve for 
+\begin_inset Formula $F\left(N\right)$
+\end_inset
+
+.
+ More details for each of these lemmas and their justification are given
+ in the Appendix.
+\end_layout
+
+\begin_layout Standard
+IC2, like the grid based algorithms in [?], provides bounds whose precision
+ scales with the width of the node regions.
+ This lets us describe how the bounds improve as we process more nodes.
+\end_layout
+
+\begin_layout Lemma
+After processing 
+\begin_inset Formula $T$
+\end_inset
+
+ nodes, let 
+\begin_inset Formula $p_{T}^{\Delta}\left(x\right)=p_{T}^{max}\left(x\right)-p_{T}^{min}\left(x\right)$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $p_{T}^{\Delta}\left(x\right)\leq\delta_{0}T^{-1/k}$
+\end_inset
+
+ for a constant 
+\begin_inset Formula $\delta_{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now that we know how quickly our bounds converge, we can classify query
+ points into two types: those which require processing leaf nodes in IC2
+ and those which do not.
+ For some relatively far points, we will be able to classify 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ without processing a single leaf node: as soon as 
+\begin_inset Formula $p_{T}^{\Delta}\left(x\right)\leq\left|p\left(x\right)-t\right|$
+\end_inset
+
+ then either 
+\begin_inset Formula $p_{T}^{max}\left(x\right)<t$
+\end_inset
+
+ or 
+\begin_inset Formula $p_{T}^{min}\left(x\right)>t$
+\end_inset
+
+ and we can classify 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ On the other hand, for borderline points, we will always be able to evaluate
+ the exact kernel contributions from every leaf node in the k-d tree after
+ at most 
+\begin_inset Formula $N$
+\end_inset
+
+ steps.
+ Having more training points 
+\begin_inset Formula $N$
+\end_inset
+
+ allows us to obtain finer bounds 
+\begin_inset Formula $p_{T}^{\Delta}$
+\end_inset
+
+ on 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ before hitting leaf nodes, so the number of borderline points decreases
+ with 
+\begin_inset Formula $N$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Lemma
+\begin_inset Formula $P_{x\sim p_{q}}\left[p\left(x\right)\text{ is borderline}_{N}\right]\leq\delta_{0}N^{-1/k}q'\left(t\right)$
+\end_inset
+
+ where 
+\begin_inset Formula $q'\left(t\right)$
+\end_inset
+
+ describes the density of query points with 
+\begin_inset Formula $p\left(x\right)\approx t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that for points in regions far from the threshold, which do not require
+ any leaf node processing, IC2 does not get any more expensive as 
+\begin_inset Formula $N$
+\end_inset
+
+ increases: the bounds obtained region-based nodes remain the same in expectatio
+n.
+ 
+\series bold
+The only increase in cost as 
+\begin_inset Formula $N$
+\end_inset
+
+ grows comes from the borderline points
+\series default
+, so we can derive a recurrence relation bounding the growth rate of 
+\begin_inset Formula $F\left(N\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Lemma
+\begin_inset Formula $F\left(2^{k}N\right)\leq F\left(N\right)+P_{x\sim p_{q}}\left[p\left(x\right)\text{ borderline}_{N}\right]\left(2^{k}N\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, Theorem 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "thm:mainbound"
+
+\end_inset
+
+ gives our bound.
+ Notice how picking a threshold 
+\begin_inset Formula $t$
+\end_inset
+
+ in a sparse region will lead to faster evaluations through 
+\begin_inset Formula $q'\left(t\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Theorem
+\begin_inset CommandInset label
+LatexCommand label
+name "thm:mainbound"
+
+\end_inset
+
+
+\begin_inset Formula $F\left(N\right)\leq4N^{\frac{k-1}{k}}\delta_{0}q'\left(t\right)+C$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Appendix
+\end_layout
+
+\end_body
+\end_document

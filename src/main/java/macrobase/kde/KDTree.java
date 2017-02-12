@@ -12,10 +12,10 @@ public class KDTree {
     private boolean splitByWidth = false;
 
     // Core Data
-    private int k;
-    private KDTree loChild;
-    private KDTree hiChild;
-    private ArrayList<double[]> leafItems;
+    public int k;
+    public KDTree loChild;
+    public KDTree hiChild;
+    public ArrayList<double[]> leafItems;
     private boolean trained = false;
 
     // Tracking element locations

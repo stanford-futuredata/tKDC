@@ -1,5 +1,0 @@
-all: zKernCentral.cpp randZKernCentral.cpp mtimer.cpp
-	g++  -O3 -o zKC zKernCentral.cpp mtimer.cpp
-	g++ -O3 -o rZKC.exe randZKernCentral.cpp mtimer.cpp
-clean:
-	rm *.exe

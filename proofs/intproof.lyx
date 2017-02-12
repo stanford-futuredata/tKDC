@@ -1,0 +1,476 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Derivation
+\end_layout
+
+\begin_layout Standard
+Let us derive a worst case upper bound on the discrepancy for a more naive
+ algorithm (actual algorithm will have strictly better bounds)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{p} & \leq\sum\frac{n_{i}}{n}\left[K\left(d_{i}^{min}\right)-K\left(d_{i}^{min}+b_{i}\sqrt{k}\right)\right]\\
+ & \leq\sum b_{i}\sqrt{k}\frac{n_{i}}{n}K'\left(d_{i}^{taylor}\right)\\
+ & \leq K_{max}^{'}\sqrt{k}\sum b_{i}\frac{n_{i}}{n}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus, reducing the bin sizes will linearly improve 
+\begin_inset Formula $\Delta_{p}$
+\end_inset
+
+.
+ The worst case initial upper bound for a single box 
+\begin_inset Formula $\delta_{0}$
+\end_inset
+
+ in this case is 
+\begin_inset Formula 
+\[
+\delta_{0}=K_{max}^{'}d_{diag}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Key insight: Based on linearity it takes 
+\begin_inset Formula $T=m^{k}$
+\end_inset
+
+ steps to for the upper bound error to go from 
+\begin_inset Formula $\delta_{0}$
+\end_inset
+
+ to 
+\begin_inset Formula $\delta_{0}/m$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta_{p}\leq\delta_{0}T^{-1/k}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $t$
+\end_inset
+
+ be the threshold pdf such that 
+\begin_inset Formula $p\left(x_{t}\right)=t$
+\end_inset
+
+, 
+\begin_inset Formula $p$
+\end_inset
+
+ is the underlying distribution pdf
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $T_{c}$
+\end_inset
+
+ be the number of steps taken before we can classify purely using box bounds:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{p} & =p\left(x\right)-t\\
+\delta_{0}T_{c}^{-1/k} & =p\left(x\right)-t\\
+T_{c} & =\delta_{0}^{k}\left(p\left(x\right)-t\right)^{-k}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+However, we also have to take into account bottoming out and doing a raw
+ calculation.
+ We bottom out after 
+\begin_inset Formula $N$
+\end_inset
+
+ steps or after achieving a precision of 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{p} & \leq\delta_{0}N^{-\frac{1}{k}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we need to assume that 
+\begin_inset Formula $N$
+\end_inset
+
+ is large enough for the taylor series to hold on 
+\begin_inset Formula $\Delta_{p}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Delta_{x} & \approx_{1}\Delta_{p}/\left(\frac{dp}{dx}\right)\\
+ & =\frac{\Delta_{p}}{p'\left(x_{t}\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+F\left(2^{k}N\right) & \leq F\left(N\right)+\Delta_{x}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)2^{k}N\\
+ & \leq F\left(N\right)+\delta_{0}N^{-\frac{1}{k}}p'\left(x_{t}\right)^{-1}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)2^{k}N\\
+ & \leq F\left(N\right)+2^{k}N^{\frac{k-1}{k}}\delta_{0}S^{k-1}\left(x_{t}\right)\frac{p\left(x_{t}\right)}{p'\left(x_{t}\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+F\left(N\right) & =CN^{\left(k-1\right)/k}\\
+C2^{k-1}N^{\left(k-1\right)/k} & =CN^{\left(k-1\right)/k}+2^{k}N^{\left(k-1\right)/k}\\
+C2^{k-1} & =C+2^{k}\\
+C & =\frac{2^{k}}{2^{k-1}-1}\leq4
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+F\left(N\right) & =4N^{\frac{k-1}{k}}\delta_{0}S^{k-1}\left(x_{t}\right)\frac{p\left(x_{t}\right)}{p'\left(x_{t}\right)}+C\\
+ & =4N^{\frac{k-1}{k}}K_{max}^{'}d_{diag}S^{k-1}\left(x_{t}\right)\frac{p\left(x_{t}\right)}{p'\left(x_{t}\right)}+C
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Worked out example
+\end_layout
+
+\begin_layout Standard
+2d, unit normal pdf, threshold at 
+\begin_inset Formula $x_{t}=1$
+\end_inset
+
+, kernel with bandwidth 
+\begin_inset Formula $\sigma=.1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+p\left(x\right) & =\left(2\pi\right)^{-k/2}e^{-1/2x^{2}}\\
+K\left(x\right) & =\left(2\pi\sigma^{2}\right)^{-k/2}e^{-1/2\left(x/\sigma\right)^{2}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+p'\left(x\right) & =p\left(x\right)\left(-x\right)\\
+K'\left(x\right) & =K\left(x\right)\left(-x/\sigma^{2}\right)\\
+K''\left(x\right) & =K\left(x\right)\sigma^{-2}\left(\left(\frac{x}{\sigma}\right)^{2}-1\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that 
+\begin_inset Formula $K^{'}\left(x\right)$
+\end_inset
+
+ is maximimized at 
+\begin_inset Formula $x=\sigma$
+\end_inset
+
+, so 
+\begin_inset Formula 
+\begin{align*}
+K_{max}^{'} & =K\left(\sigma\right)/\sigma
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we can work out some concrete numbers:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+K_{max}^{'} & =96.5\\
+\delta_{0} & =K_{max}^{'}d_{diag}\\
+ & =1365
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+S^{r-1}\left(x_{t}\right) & =12.6\\
+p\left(x_{t}\right) & =0.097\\
+p'\left(x_{t}\right) & =0.056
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+4\delta_{0}S^{r-1}\left(x_{t}\right)\frac{p\left(x_{t}\right)}{p'\left(x_{t}\right)}N^{\frac{k-1}{k}}=100000N^{\frac{k-1}{k}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Raw Integrals
+\end_layout
+
+\begin_layout Standard
+Now we can calculate the average cost by integrating both the boundary and
+ far regions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Cost=\int_{x_{t}}^{x_{t}+\Delta_{x}}\left[N\right]\left(S^{k-1}\left(r\right)p\left(r\right)dr\right)+\int_{x_{t}+\Delta_{x}}^{\infty}\left[T(r)\right]\left(S^{k-1}\left(r\right)p\left(r\right)dr\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We first calculate the boundary cost
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Boundary & \approx_{1}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)\Delta_{p}p'\left(x_{t}\right)^{-1}\\
+ & =N\Delta_{p}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-1}\\
+ & =N^{1-\frac{1}{k}}B^{\frac{1}{k}}\delta_{0}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-1}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Far & =\int_{x_{t}+\Delta_{x}}^{\infty}B\delta_{0}^{k}\left(p\left(r\right)-t\right)^{-k}\left(S^{k-1}\left(r\right)p\left(r\right)dr\right)\\
+ & \leq\int_{x_{t}+\Delta_{x}}^{x_{t2}}?+\int_{x_{t2}}^{\infty}?\\
+ & \leq\int_{x_{t}+\Delta_{x}}^{x_{t2}}?+?\\
+\int_{x_{t}+\Delta_{x}}^{x_{t2}}? & =\int_{x_{t}+\Delta_{x}}^{x_{t2}}B\delta_{0}^{k}\left(p\left(r\right)-t\right)^{-k}\left(S^{k-1}\left(r\right)p\left(r\right)dr\right)\\
+ & \approx_{1}\int_{x_{t}+\Delta_{x}}^{x_{t2}}B\delta_{0}^{k}\left(\left(r-x_{t}\right)p'\left(x_{t}\right)\right)^{-k}\left(S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)dr\right)\\
+ & =B\delta_{0}^{k}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-k}\int_{x_{t}+\Delta_{x}}^{x_{t2}}\left(r-x_{t}\right)^{-k}dr\\
+ & =?\left[-\frac{1}{k+1}\left(r-x_{t}\right)^{-k+1}\right]_{x_{t}+\Delta_{x}}^{x_{t2}}\\
+ & \leq?+B\delta_{0}^{k}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-k}\frac{1}{k+1}\left(\Delta_{x}\right)^{-k+1}\\
+ & \leq?+?\left(\left(\frac{N}{B}\right)^{-\frac{1}{k}}\delta_{0}p'\left(x_{t}\right)^{-1}\right)^{-k+1}\\
+ & \leq?+?\left(N^{\frac{k-1}{k}}B^{-\frac{k-1}{k}}\delta_{0}^{-k+1}p'\left(x_{t}\right)^{k-1}\right)\\
+ & \leq?+N^{\frac{k-1}{k}}B^{1/k}\delta_{0}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-1}\frac{1}{k+1}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\boxed{N^{\frac{k-1}{k}}B^{1/k}\delta_{0}S^{k-1}\left(x_{t}\right)p\left(x_{t}\right)p'\left(x_{t}\right)^{-1}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Notes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+q(x)=\left(2\pi\sigma^{2}\right)^{-k/2}e^{-1/2\left(x/\sigma\right)^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+q'\left(x\right) & =q\left(x\right)\left(-x/\sigma^{2}\right)\\
+q''\left(x\right) & =-\frac{1}{\sigma^{2}}q\left(x\right)+q'\left(x\right)\left(-\frac{x}{\sigma^{2}}\right)\\
+ & =\frac{q\left(x\right)}{\sigma^{2}}\left(\left(\frac{x}{\sigma}\right)^{2}-1\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+q\left(x+d\sigma\right)-q\left(x\right) & =Ce^{-\frac{1}{2}\left(\frac{1}{\sigma^{2}}\left(x^{2}+d^{2}\sigma^{2}+2xd\sigma\right)\right)}-q\left(x\right)\\
+ & =Ce^{-\frac{1}{2}\left(\frac{x^{2}}{\sigma^{2}}\right)}\left(e^{-\frac{1}{2}\left(d^{2}+2d\frac{x}{\sigma}\right)}-1\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,5 +1,6 @@
 package macrobase;
 
+import com.google.gson.Gson;
 import macrobase.classifier.KDEClassifier;
 import macrobase.classifier.KNNBoundEstimator;
 import macrobase.conf.BenchmarkConf;
@@ -46,8 +47,24 @@ public class KDEApp {
         return metrics;
     }
 
+    public static class BenchmarkNumbers {
+        public String algorithm = "ic2";
+        public String dataset;
+        public int dim;
+        public int num_train;
+        public int num_test;
+        public long train_time;
+        public long test_time;
+    }
+
     public static double processKDE(List<double[]> metrics) throws Exception {
         TreeKDEConf tConf = benchmarkConf.tKDEConf;
+
+        BenchmarkNumbers bn = new BenchmarkNumbers();
+        bn.dataset = benchmarkConf.inputPath;
+        bn.dim = metrics.get(0).length;
+        bn.num_train = metrics.size();
+        bn.num_test = benchmarkConf.numToScore;
 
         StopWatch sw = new StopWatch();
         KDEClassifier classifier = new KDEClassifier(tConf);
@@ -56,6 +73,7 @@ public class KDEApp {
         classifier.train(metrics);
         sw.stop();
         long trainTime = sw.getTime();
+        bn.train_time = trainTime;
         log.info("Trained in: {}", sw.toString());
         log.info("BW: {}", Arrays.toString(classifier.bandwidth));
         log.info("CutoffH: {}, CutoffL: {} Tolerance: {}",
@@ -76,6 +94,7 @@ public class KDEApp {
         if (classifier.kde instanceof TreeKDE) {
             ((TreeKDE) classifier.kde).showDiagnostics();
         }
+        bn.test_time = scoreTime;
         log.info("Scored in {}", sw.toString());
         log.info("Scored @ {} / s",
                 (float)benchmarkConf.numToScore * 1000/(scoreTime));
@@ -96,6 +115,9 @@ public class KDEApp {
         double quantile = densities[expectedNumOutliers];
         log.info("{} percentile: {}", tConf.percentile, quantile);
 
+        Gson gs = new Gson();
+        System.out.println("Parsed Output:");
+        System.out.println(gs.toJson(bn));
         return quantile;
     }
 
