@@ -1,5 +1,6 @@
 package macrobase.kde;
 
+import macrobase.kernel.BandwidthSelector;
 import macrobase.util.TinyDataSource;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,11 +24,16 @@ public class TreeKDETest {
     public void simpleTest() throws Exception {
         List<double[]> data = tinyData;
 
+        double[] bw = new BandwidthSelector().findBandwidth(data);
+
         KDTree tree = new KDTree().setLeafCapacity(3);
-        TreeKDE kde = new TreeKDE(tree).setTolerance(0.0);
+        TreeKDE kde = new TreeKDE(tree)
+                .setTolerance(0.0)
+                .setBandwidth(bw);
         kde.train(data);
 
-        SimpleKDE simpleKDE = new SimpleKDE();
+        SimpleKDE simpleKDE = new SimpleKDE()
+                .setBandwidth(bw);
         simpleKDE.train(data);
 
         assertArrayEquals(simpleKDE.getBandwidth(), kde.getBandwidth(), 1e-10);
@@ -45,11 +51,14 @@ public class TreeKDETest {
             boolean ignoreSelf,
             boolean splitByWidth
     ) {
+        double[] bw = new BandwidthSelector().findBandwidth(data);
+
         KDTree tree = new KDTree()
                 .setLeafCapacity(3)
                 .setSplitByWidth(splitByWidth)
                 ;
         TreeKDE kde = new TreeKDE(tree)
+                .setBandwidth(bw)
                 .setTolerance(tol)
                 .setCutoffH(cutoffH)
                 .setIgnoreSelf(ignoreSelf);
@@ -62,7 +71,9 @@ public class TreeKDETest {
             SimpleKDE simpleKDE = new SimpleKDE();
 
             if (!ignoreSelf) {
-                simpleKDE.train(data);
+                simpleKDE
+                        .setBandwidth(bw)
+                        .train(data);
             } else {
                 ArrayList<double[]> subData = new ArrayList<>(data);
                 subData.remove(i);

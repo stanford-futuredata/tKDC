@@ -16,7 +16,6 @@ public class BenchmarkConfTest {
     @Test
     public void testColumnRange() throws Exception {
         BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test_colrange.yaml");
-        assertEquals(2, bConf.inputColumns.size());
-        assertEquals(1, bConf.inputColumns.get(0).intValue());
+        assertEquals(1, bConf.startColumn);
     }
 }
