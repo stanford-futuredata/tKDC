@@ -1,0 +1,16 @@
+[INFO] --- exec-maven-plugin:1.5.0:java (kde) @ tKDE-experiments ---
+2017-02-13T15:40:24.668 INFO  [macrobase.KDEApp] - Loaded 2242560 in 00:00:08.387
+2017-02-13T15:40:25.165 DEBUG [macrobase.classifier.KDEClassifier] - Set up Kernel
+2017-02-13T15:40:29.178 DEBUG [macrobase.classifier.KDEClassifier] - Trained Tree
+2017-02-13T15:40:29.191 INFO  [macrobase.KDEApp] - Trained in: 00:00:04.518
+2017-02-13T15:40:29.191 INFO  [macrobase.KDEApp] - BW: [39.16277681426166, 95.68941100146334, 8.216390203677099, 52.92375818593184, 1.8672909617222542, 46.29054743217361, 24.59913937893611, 22.163442890755718]
+2017-02-13T15:40:29.191 INFO  [macrobase.KDEApp] - CutoffH: 1.7976931348623157E308, CutoffL: 0.0 Tolerance: 2.0E-21
+2017-02-13T15:41:18.916 INFO  [macrobase.kde.TreeKDE] - Final Loop Cutoff: tol 100, > cutoff 0, < cutoff 0, completion 0
+2017-02-13T15:41:18.917 INFO  [macrobase.kde.TreeKDE] - Avg # of nodes processed: tol 186938.54, > cutoff NaN, < cutoff NaN, completion NaN
+2017-02-13T15:41:18.917 INFO  [macrobase.KDEApp] - Scored in 00:00:49.722
+2017-02-13T15:41:18.917 INFO  [macrobase.KDEApp] - Scored @ 2.011182 / s
+2017-02-13T15:41:18.918 INFO  [macrobase.KDEApp] - Total Processing: 54.24
+2017-02-13T15:41:18.918 INFO  [macrobase.KDEApp] - Avg # Kernels: 1550906.24
+2017-02-13T15:41:18.918 INFO  [macrobase.KDEApp] - 0.01 percentile: 7.536572303689452E-20
+Parsed Output:
+{"algorithm":"ic2","dataset":"bigdata/tmy3.csv","dim":8,"num_train":2242560,"num_test":100,"train

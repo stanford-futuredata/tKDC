@@ -1,0 +1,15 @@
+2017-02-12T20:12:42.311 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.002133933638723863, pT: 0.01, pH: 0.017866066361276137, qL: 0.007658374563783687, qT: 0.01202493202038681, qH: 0.013039327817831459
+2017-02-12T20:12:42.311 DEBUG [macrobase.classifier.KDEClassifier] - Set up Kernel
+2017-02-12T20:12:42.311 DEBUG [macrobase.classifier.KDEClassifier] - Trained Tree
+2017-02-12T20:12:42.311 INFO  [macrobase.KDEApp] - Trained in: 00:04:25.987
+2017-02-12T20:12:42.311 INFO  [macrobase.KDEApp] - BW: 1000.0
+2017-02-12T20:12:42.312 INFO  [macrobase.KDEApp] - CutoffH: 0.013039327817831459, CutoffL: 0.007658374563783687 Tolerance: 7.658374563783687E-5
+2017-02-12T20:13:04.876 INFO  [macrobase.kde.TreeKDE] - Final Loop Cutoff: tol 0, > cutoff 198, < cutoff 0, completion 2
+2017-02-12T20:13:04.876 INFO  [macrobase.kde.TreeKDE] - Avg # of nodes processed: tol NaN, > cutoff 8191.0, < cutoff NaN, completion 0.0
+2017-02-12T20:13:04.876 INFO  [macrobase.KDEApp] - Scored in 00:00:22.563
+2017-02-12T20:13:04.876 INFO  [macrobase.KDEApp] - Scored @ 8.86407 / s
+2017-02-12T20:13:04.876 INFO  [macrobase.KDEApp] - Total Processing: 288.55
+2017-02-12T20:13:04.877 INFO  [macrobase.KDEApp] - Total # Kernels: 7905949
+2017-02-12T20:13:04.877 INFO  [macrobase.KDEApp] - 0.01 percentile: 0.013039544189608286
+Parsed Output:
+{"algorithm":"ic2","dataset":"bigdata/mnist.csv","dim":784,"num_train":70000,"num_test":200,"train_time":265987,"test_time":22563}

@@ -25,22 +25,9 @@ public class KernelTest {
         x[0] = 0;
         assertEquals(1.0/Math.sqrt(2*Math.PI), g.density(x), 1e-10);
 
-        x[0] = 5;
-        assertThat(g.density(x), lessThan(g.upperBound(x)));
-        assertThat(g.density(x), greaterThan(g.lowerBound(x)));
-
         double p = 0.1;
         x[0] = bw[0] * g.invDensity(p);
         assertThat(g.density(x), closeTo(p, 1e-7));
-//        System.out.println(
-//                Arrays.toString(g.getBounds(new double[][]{{1.0},{3.0}}))
-//        );
-//        System.out.println(
-//                Arrays.toString(g.getBounds(new double[][]{{1.0},{2.0}}))
-//        );
-//        System.out.println(
-//                Arrays.toString(g.getBounds(new double[][]{{1.0},{1.0}}))
-//        );
     }
 
     @Test

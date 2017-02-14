@@ -34,11 +34,20 @@ public class KDEApp {
         }
         benchmarkConf = BenchmarkConf.load(confPath);
 
+        CSVDataSource ds;
+        if (benchmarkConf.inputColumns == null) {
+            ds = new CSVDataSource(
+                    benchmarkConf.inputPath,
+                    benchmarkConf.startColumn,
+                    benchmarkConf.endColumn);
+        } else {
+            ds = new CSVDataSource(
+                    benchmarkConf.inputPath,
+                    benchmarkConf.inputColumns);
+        }
         StopWatch sw = new StopWatch();
         sw.start();
-        List<double[]> metrics = new CSVDataSource(
-                benchmarkConf.inputPath,
-                benchmarkConf.inputColumns)
+        List<double[]> metrics = ds
                 .setLimit(benchmarkConf.inputRows)
                 .get();
         sw.stop();
@@ -55,6 +64,7 @@ public class KDEApp {
         public int num_test;
         public long train_time;
         public long test_time;
+        public long num_kernels;
     }
 
     public static double processKDE(List<double[]> metrics) throws Exception {
@@ -75,7 +85,11 @@ public class KDEApp {
         long trainTime = sw.getTime();
         bn.train_time = trainTime;
         log.info("Trained in: {}", sw.toString());
-        log.info("BW: {}", Arrays.toString(classifier.bandwidth));
+        if (tConf.bwValue > 0) {
+            log.info("BW: {}", classifier.bandwidth[0]);
+        } else {
+            log.info("BW: {}", Arrays.toString(classifier.bandwidth));
+        }
         log.info("CutoffH: {}, CutoffL: {} Tolerance: {}",
                 classifier.cutoffH,
                 classifier.cutoffL,
@@ -85,21 +99,24 @@ public class KDEApp {
         sw.start();
         int densitySize = Math.min(metrics.size(), benchmarkConf.numToScore);
         double[] densities = new double[densitySize];
+        long numKernels = 0;
         for (int i = 0; i < benchmarkConf.numToScore; i++) {
             int modI = i % densities.length;
             densities[modI] = classifier.density(metrics.get(modI));
+            numKernels += classifier.getNumKernels();
         }
         sw.stop();
         long scoreTime = sw.getTime();
         if (classifier.kde instanceof TreeKDE) {
             ((TreeKDE) classifier.kde).showDiagnostics();
         }
+        bn.num_kernels = numKernels;
         bn.test_time = scoreTime;
         log.info("Scored in {}", sw.toString());
         log.info("Scored @ {} / s",
                 (float)benchmarkConf.numToScore * 1000/(scoreTime));
         log.info("Total Processing: {}", (double)(trainTime+scoreTime)/1000);
-        log.info("Total # Kernels: {}", classifier.kde.getNumKernels());
+        log.info("Avg # Kernels: {}", (double)numKernels/benchmarkConf.numToScore);
 
         if (outputPath != null) {
             BufferedWriter out = Files.newBufferedWriter(Paths.get(outputPath));

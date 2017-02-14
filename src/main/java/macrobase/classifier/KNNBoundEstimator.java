@@ -40,6 +40,7 @@ public class KNNBoundEstimator {
     public int estimateQuantiles(List<double[]> metrics) {
         bw = new BandwidthSelector()
                 .setMultiplier(tConf.bwMultiplier)
+                .setValue(tConf.bwValue)
                 .findBandwidth(metrics);
         metric = new Metric(bw);
 

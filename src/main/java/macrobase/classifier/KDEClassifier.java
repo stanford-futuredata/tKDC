@@ -28,8 +28,13 @@ public class KDEClassifier implements DensityEstimator {
     public KDEClassifier train(List<double[]> data) {
         bandwidth = new BandwidthSelector()
                 .setMultiplier(tConf.bwMultiplier)
+                .setValue(tConf.bwValue)
+                .setUseStdDev(tConf.useStdDev)
                 .findBandwidth(data);
-        Kernel kernel = new KernelFactory(tConf.kernel).get().initialize(bandwidth);
+        Kernel kernel = new KernelFactory(tConf.kernel)
+                .get()
+                .setDenormalized(tConf.denormalized)
+                .initialize(bandwidth);
 
         if (tConf.calculateCutoffs) {
             QuantileBoundEstimator q = new QuantileBoundEstimator(tConf);
@@ -43,6 +48,7 @@ public class KDEClassifier implements DensityEstimator {
             cutoffL = tConf.cutoffLAbsolute;
             tolerance = tConf.tolAbsolute;
         }
+        log.debug("Set up Kernel");
 
         if (tConf.algorithm == TreeKDEConf.Algorithm.TREEKDE) {
             if (tree == null) {
@@ -51,6 +57,7 @@ public class KDEClassifier implements DensityEstimator {
                         .setLeafCapacity(tConf.leafSize)
                         .build(data);
             }
+            log.debug("Trained Tree");
 
             TreeKDE tkde = new TreeKDE(tree)
                     .setBandwidth(bandwidth)
@@ -62,6 +69,23 @@ public class KDEClassifier implements DensityEstimator {
                     .setTolerance(tolerance)
                     .train(data);
             kde = tkde;
+        } else if (tConf.algorithm == TreeKDEConf.Algorithm.RKDE) {
+            if (tree == null) {
+                tree = new KDTree()
+                        .setSplitByWidth(tConf.splitByWidth)
+                        .setLeafCapacity(tConf.leafSize)
+                        .build(data);
+            }
+            log.debug("Trained Tree");
+            RadiusKDE rkde = new RadiusKDE(tree)
+                    .setBandwidth(bandwidth)
+                    .setKernel(kernel)
+                    .setEpsilon(tolerance)
+                    .setIgnoreSelf(tConf.ignoreSelfScoring)
+                    .train();
+            log.debug("Radius KDE with Radius: {}", rkde.radius);
+            kde = rkde;
+
         } else {
             SimpleKDE sKDE = new SimpleKDE()
                     .setBandwidth(bandwidth)

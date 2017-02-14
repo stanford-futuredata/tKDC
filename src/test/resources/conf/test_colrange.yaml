@@ -1,0 +1,4 @@
+inputPath: "src/test/resources/micro.csv"
+inputColumnRange: 1-2
+inputRows: 2
+

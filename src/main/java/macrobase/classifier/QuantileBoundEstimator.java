@@ -125,11 +125,19 @@ public class QuantileBoundEstimator {
             double curTolerance
     ) {
         double[] curBW = new BandwidthSelector()
+                .setValue(tConf.bwValue)
                 .setMultiplier(tConf.bwMultiplier)
+                .setUseStdDev(tConf.useStdDev)
                 .findBandwidth(data);
-        log.debug("Calculating scores for bw: {} on n={}", curBW, data.size());
+        log.debug("Calculating scores for n={}", data.size());
+        if (tConf.bwValue > 0) {
+            log.debug("BW: {}", tConf.bwValue);
+        } else {
+            log.debug("BW: {}", curBW);
+        }
         Kernel k = kFactory
                 .get()
+                .setDenormalized(tConf.denormalized)
                 .initialize(curBW);
 
         TreeKDE tKDE = new TreeKDE(tree);

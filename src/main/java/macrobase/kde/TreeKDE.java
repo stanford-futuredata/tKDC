@@ -70,9 +70,6 @@ public class TreeKDE implements DensityEstimator {
         this.unscaledCutoffH = cutoffH * numPoints;
         this.unscaledCutoffL = cutoffL * numPoints;
 
-        if (bandwidth == null) {
-            bandwidth = new BandwidthSelector().findBandwidth(data);
-        }
         if (kernel == null) {
             kernel = new GaussianKernel();
             kernel.initialize(bandwidth);
@@ -116,7 +113,7 @@ public class TreeKDE implements DensityEstimator {
 
         PriorityQueue<ScoreEstimate> pq = new PriorityQueue<>(100, scoreEstimateComparator);
         ScoreEstimate initialEstimate = new ScoreEstimate(this.kernel, this.tree, d);
-        numKernels += 2;
+        numKernels = 2;
         pq.add(initialEstimate);
         totalWMin += initialEstimate.totalWMin;
         totalWMax += initialEstimate.totalWMax;

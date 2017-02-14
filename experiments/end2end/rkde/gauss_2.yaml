@@ -1,0 +1,22 @@
+inputPath: "bigdata/gauss_2.csv"
+inputColumnRange: 0-1
+inputRows: 1000000
+numToScore: 200
+
+tKDEConf:
+  algorithm: RKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: false
+  bwMultiplier: 1.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  tolAbsolute: 1.3e-5
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false

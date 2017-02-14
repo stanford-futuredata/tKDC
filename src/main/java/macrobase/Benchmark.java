@@ -126,7 +126,8 @@ public class Benchmark extends KDEApp {
     ) {
         int n = data.size();
         int k = data.get(0).length;
-        Kernel kernel = new GaussianKernel().initialize(bw);
+        Kernel kernel = new GaussianKernel()
+                .initialize(bw);
 
         long startTime = System.currentTimeMillis();
         KDTree t = new KDTree().setSplitByWidth(true).build(data);

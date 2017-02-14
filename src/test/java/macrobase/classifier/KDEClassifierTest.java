@@ -24,7 +24,7 @@ public class KDEClassifierTest {
         List<double[]> data = getData(bConf);
         List<double[]> trueDensities = new CSVDataSource(
                 "src/test/resources/simple_energy_d2_small.csv",
-                1
+                0,0
         ).get();
         double[] tDensities = new double[data.size()];
 

@@ -1,0 +1,27 @@
+inputPath: "bigdata/mnist.csv"
+inputColumnRange: 1-784
+inputRows: 0
+numToScore: 200
+
+tKDEConf:
+  algorithm: TREEKDE
+  percentile: 0.01
+
+  qSampleSize: 20000
+  qCutoffMultiplier: 1.2
+  qTolMultiplier: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  bwValue: 1000.0
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  cutoffHAbsolute: 1000000
+  cutoffLAbsolute: 0.0
+  tolAbsolute: 0.0001
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false

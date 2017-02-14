@@ -1,0 +1,153 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tKDE-experiments 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- exec-maven-plugin:1.5.0:java (kde) @ tKDE-experiments ---
+2017-02-13T14:05:11.599 INFO  [macrobase.KDEApp] - Loaded 2242560 in 00:00:07.096
+2017-02-13T14:05:12.662 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=200
+2017-02-13T14:05:12.663 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [98.18555891329105, 245.45219062321618, 21.24310660890417, 127.05926357837998, 11.258973564392763, 107.74688149647598, 60.84936444375089, 56.6484656742233]
+2017-02-13T14:05:12.701 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 200 on 200 @ 7407.407 / s
+2017-02-13T14:05:12.702 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 200, cutH: -1.0, cutL: -1.0 tol: -1.0
+2017-02-13T14:05:12.703 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: -0.007589059099337861, pT: 0.01, pH: 0.027589059099337863, qL: 0.0, qT: 3.71900652373746E-28, qH: 6.134721806100477E-26
+2017-02-13T14:05:12.719 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.720 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.732 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 80000.0 / s
+2017-02-13T14:05:12.732 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 9.202082709150716E-26, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.734 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 1.5513474342614336E-25, qH: 2.865704332458102E-22
+2017-02-13T14:05:12.735 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.736 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.736 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.747 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 80000.0 / s
+2017-02-13T14:05:12.748 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 3.6808330836602862E-25, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.749 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 4.140148113331843E-25, qH: 2.865704332458102E-22
+2017-02-13T14:05:12.750 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.751 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.751 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.759 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 114285.71 / s
+2017-02-13T14:05:12.760 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 1.4723332334641145E-24, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.763 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 4.140148113331843E-25, qH: 2.865704332458102E-22
+2017-02-13T14:05:12.763 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.763 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.766 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.772 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 133333.33 / s
+2017-02-13T14:05:12.773 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 5.889332933856458E-24, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.773 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 4.275358598631732E-25, qH: 2.865704332458102E-22
+2017-02-13T14:05:12.774 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.774 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.774 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.781 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 133333.33 / s
+2017-02-13T14:05:12.782 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 2.3557331735425832E-23, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.789 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 6.569682387933307E-25, qH: 2.865704332458102E-22
+2017-02-13T14:05:12.789 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.792 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.793 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.805 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 66666.664 / s
+2017-02-13T14:05:12.806 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 9.422932694170333E-23, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.807 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 6.583237865356526E-25, qH: 7.251408792154689E-22
+2017-02-13T14:05:12.807 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.807 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.807 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.815 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 100000.0 / s
+2017-02-13T14:05:12.815 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 3.769173077668133E-22, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.815 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 6.583237865356526E-25, qH: 8.28972396150779E-22
+2017-02-13T14:05:12.816 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.816 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.820 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.826 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 133333.33 / s
+2017-02-13T14:05:12.827 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 1.5076692310672532E-21, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.827 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 6.583237865356526E-25, qH: 1.7057301536974944E-21
+2017-02-13T14:05:12.827 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.828 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=800
+2017-02-13T14:05:12.828 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [72.65914464443094, 179.02885222864145, 15.381553022223587, 105.35671461629228, 6.01137207927416, 91.62154555162878, 44.852050570882795, 41.80205997633459]
+2017-02-13T14:05:12.837 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 800 on 800 @ 88888.89 / s
+2017-02-13T14:05:12.838 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 800, cutH: 6.030676924269013E-21, cutL: 0.0 tol: 0.0
+2017-02-13T14:05:12.839 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0012054704503310695, pT: 0.01, pH: 0.018794529549668933, qL: -6.938929936495033E-21, qT: 6.583237865356526E-25, qH: 2.2088065459280285E-21
+2017-02-13T14:05:12.855 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=3200
+2017-02-13T14:05:12.855 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [64.31842781870635, 158.1565062952985, 13.891820301872801, 88.90750072076106, 3.58680259845024, 75.51754674852698, 40.62003332434314, 36.5445806935605]
+2017-02-13T14:05:12.913 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 3200 on 3200 @ 56140.35 / s
+2017-02-13T14:05:12.914 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 3200, cutH: 3.3132098188920427E-21, cutL: -4.6259532909966885E-21 tol: -6.938929936495033E-23
+2017-02-13T14:05:12.914 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.005602735225165535, pT: 0.01, pH: 0.014397264774834466, qL: 2.0875566063778864E-21, qT: 3.62022203189818E-21, qH: 4.3848708830899866E-21
+2017-02-13T14:05:12.914 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:12.915 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=3200
+2017-02-13T14:05:12.917 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [64.31842781870635, 158.1565062952985, 13.891820301872801, 88.90750072076106, 3.58680259845024, 75.51754674852698, 40.62003332434314, 36.5445806935605]
+2017-02-13T14:05:12.986 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 3200 on 3200 @ 48484.848 / s
+2017-02-13T14:05:12.986 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 3200, cutH: 1.325283927556817E-20, cutL: -4.6259532909966885E-21 tol: -6.938929936495033E-23
+2017-02-13T14:05:12.987 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.005602735225165535, pT: 0.01, pH: 0.014397264774834466, qL: 2.0875566063778864E-21, qT: 5.178438343235033E-21, qH: 1.2439739442932418E-20
+2017-02-13T14:05:13.045 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=12800
+2017-02-13T14:05:13.045 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [59.73661299996479, 145.5133195299868, 12.466165139596429, 82.61742272114743, 2.9019952912851648, 72.26329165785968, 37.55938460499905, 34.016732056968905]
+2017-02-13T14:05:13.325 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 12800 on 12800 @ 46043.164 / s
+2017-02-13T14:05:13.325 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 12800, cutH: 1.8659609164398627E-20, cutL: 1.3917044042519243E-21 tol: 2.0875566063778866E-23
+2017-02-13T14:05:13.325 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0078013676125827675, pT: 0.01, pH: 0.012198632387417233, qL: 1.4712269568928835E-20, qT: 1.8713459185871574E-20, qH: 1.8846989390990916E-20
+2017-02-13T14:05:13.325 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:13.326 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=12800
+2017-02-13T14:05:13.327 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [59.73661299996479, 145.5133195299868, 12.466165139596429, 82.61742272114743, 2.9019952912851648, 72.26329165785968, 37.55938460499905, 34.016732056968905]
+2017-02-13T14:05:13.585 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 12800 on 12800 @ 49612.402 / s
+2017-02-13T14:05:13.585 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 12800, cutH: 7.463843665759451E-20, cutL: 1.3917044042519243E-21 tol: 2.0875566063778866E-23
+2017-02-13T14:05:13.586 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.0078013676125827675, pT: 0.01, pH: 0.012198632387417233, qL: 1.4712269568928835E-20, qT: 2.0828823225897924E-20, qH: 2.5744611456479312E-20
+2017-02-13T14:05:13.708 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=51200
+2017-02-13T14:05:13.708 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [53.681845232638075, 131.50176865308643, 11.237689338352878, 71.21105769693217, 2.462583018115129, 61.95308932339966, 33.96048592938011, 30.489209018444967]
+2017-02-13T14:05:14.248 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 51200 @ 37105.75 / s
+2017-02-13T14:05:14.249 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 51200, cutH: 3.861691718471897E-20, cutL: 9.808179712619223E-21 tol: 1.4712269568928836E-22
+2017-02-13T14:05:14.249 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 3.6876832975218477E-20, qT: 3.866465373671796E-20, qH: 3.876585315341655E-20
+2017-02-13T14:05:14.249 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:14.256 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=51200
+2017-02-13T14:05:14.256 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [53.681845232638075, 131.50176865308643, 11.237689338352878, 71.21105769693217, 2.462583018115129, 61.95308932339966, 33.96048592938011, 30.489209018444967]
+2017-02-13T14:05:15.111 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 51200 @ 23391.812 / s
+2017-02-13T14:05:15.112 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 51200, cutH: 1.5446766873887588E-19, cutL: 9.808179712619223E-21 tol: 1.4712269568928836E-22
+2017-02-13T14:05:15.112 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 3.6876832975218477E-20, qT: 4.591459892921193E-20, qH: 5.793912239782223E-20
+2017-02-13T14:05:15.345 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=204800
+2017-02-13T14:05:15.345 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [48.034279023717616, 117.43391346967965, 10.034152923400452, 64.60464602950782, 2.2923115322317984, 56.50242616234919, 30.254879673584803, 27.274181349572068]
+2017-02-13T14:05:16.506 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 204800 @ 17241.379 / s
+2017-02-13T14:05:16.506 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 204800, cutH: 8.690868359673335E-20, cutL: 2.458455531681232E-20 tol: 3.6876832975218475E-22
+2017-02-13T14:05:16.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 7.046978814959839E-20, qT: 8.618424848452803E-20, qH: 8.695613171589178E-20
+2017-02-13T14:05:16.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:16.533 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=204800
+2017-02-13T14:05:16.533 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [48.034279023717616, 117.43391346967965, 10.034152923400452, 64.60464602950782, 2.2923115322317984, 56.50242616234919, 30.254879673584803, 27.274181349572068]
+2017-02-13T14:05:18.387 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 204800 @ 10787.486 / s
+2017-02-13T14:05:18.387 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 204800, cutH: 3.476347343869334E-19, cutL: 2.458455531681232E-20 tol: 3.6876832975218475E-22
+2017-02-13T14:05:18.387 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 7.046978814959839E-20, qT: 8.618462194169437E-20, qH: 1.0331329067615689E-19
+2017-02-13T14:05:19.416 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=819200
+2017-02-13T14:05:19.417 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [42.71256420843056, 104.36768578627523, 8.947556491784697, 57.49222310851287, 2.032024324588659, 50.27958711209662, 26.84081800211365, 24.19663809043148]
+2017-02-13T14:05:21.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 819200 @ 9569.378 / s
+2017-02-13T14:05:21.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 819200, cutH: 1.5496993601423533E-19, cutL: 4.697985876639893E-20 tol: 7.046978814959839E-22
+2017-02-13T14:05:21.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 1.4346448919690143E-19, qT: 1.549995124562637E-19, qH: 1.5504431532491266E-19
+2017-02-13T14:05:21.507 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:21.620 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=819200
+2017-02-13T14:05:21.620 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [42.71256420843056, 104.36768578627523, 8.947556491784697, 57.49222310851287, 2.032024324588659, 50.27958711209662, 26.84081800211365, 24.19663809043148]
+2017-02-13T14:05:25.392 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 819200 @ 5302.227 / s
+2017-02-13T14:05:25.393 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 819200, cutH: 6.198797440569413E-19, cutL: 4.697985876639893E-20 tol: 7.046978814959839E-22
+2017-02-13T14:05:25.393 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 1.4346448919690143E-19, qT: 1.7656593193361543E-19, qH: 2.0246355715127508E-19
+2017-02-13T14:05:29.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=2242560
+2017-02-13T14:05:29.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [39.16277681426166, 95.68941100146334, 8.216390203677099, 52.92375818593184, 1.8672909617222542, 46.29054743217361, 24.59913937893611, 22.163442890755718]
+2017-02-13T14:05:32.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 2242560 @ 6666.6665 / s
+2017-02-13T14:05:32.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 2242560, cutH: 3.0369533572691263E-19, cutL: 9.564299279793428E-20 tol: 1.4346448919690143E-21
+2017-02-13T14:05:32.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 2.311662288256835E-19, qT: 2.844354672662259E-19, qH: 3.037244926542936E-19
+2017-02-13T14:05:32.099 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Bad CutoffH
+2017-02-13T14:05:32.375 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Calculating scores for n=2242560
+2017-02-13T14:05:32.375 DEBUG [macrobase.classifier.QuantileBoundEstimator] - BW: [39.16277681426166, 95.68941100146334, 8.216390203677099, 52.92375818593184, 1.8672909617222542, 46.29054743217361, 24.59913937893611, 22.163442890755718]
+2017-02-13T14:05:40.142 DEBUG [macrobase.classifier.QuantileBoundEstimator] - Scored 20000 on 2242560 @ 2574.9968 / s
+2017-02-13T14:05:40.142 DEBUG [macrobase.classifier.QuantileBoundEstimator] - rSize: 2242560, cutH: 1.2147813429076505E-18, cutL: 9.564299279793428E-20 tol: 1.4346448919690143E-21
+2017-02-13T14:05:40.143 DEBUG [macrobase.classifier.QuantileBoundEstimator] - pL: 0.008241094090066214, pT: 0.01, pH: 0.011758905909933786, qL: 2.311662288256835E-19, qT: 2.844354672662259E-19, qH: 3.3247670837208034E-19
+2017-02-13T14:05:40.143 DEBUG [macrobase.classifier.KDEClassifier] - Set up Kernel
+2017-02-13T14:05:40.143 DEBUG [macrobase.classifier.KDEClassifier] - Trained Tree
+2017-02-13T14:05:48.203 INFO  [macrobase.KDEApp] - Trained in: 00:00:36.598
+2017-02-13T14:05:48.203 INFO  [macrobase.KDEApp] - BW: [31.33022145140933, 76.55152880117068, 6.57311216294168, 42.33900654874547, 1.4938327693778035, 37.03243794573889, 19.679311503148888, 17.730754312604574]
+2017-02-13T14:05:48.203 INFO  [macrobase.KDEApp] - CutoffH: 3.3247670837208034E-19, CutoffL: 2.311662288256835E-19 Tolerance: 2.3116622882568348E-21
+2017-02-13T14:06:01.746 INFO  [macrobase.kde.TreeKDE] - Final Loop Cutoff: tol 341, > cutoff 24284, < cutoff 747, completion 0
+2017-02-13T14:06:01.746 INFO  [macrobase.kde.TreeKDE] - Avg # of nodes processed: tol 2546.4134897360705, > cutoff 1061.5621808598255, < cutoff 985.4310575635877, completion NaN
+2017-02-13T14:06:01.746 INFO  [macrobase.KDEApp] - Scored in 00:00:13.541
+2017-02-13T14:06:01.746 INFO  [macrobase.KDEApp] - Scored @ 7384.979 / s
+2017-02-13T14:06:01.746 INFO  [macrobase.KDEApp] - Total Processing: 50.139
+2017-02-13T14:06:01.746 INFO  [macrobase.KDEApp] - Avg # Kernels: 2548.63972
+2017-02-13T14:06:01.761 INFO  [macrobase.KDEApp] - 0.01 percentile: 3.06197694362966E-19
+Parsed Output:
+{"algorithm":"ic2","dataset":"bigdata/tmy3.csv","dim":8,"num_train":2242560,"num_test":100000,"train_time":36598,"test_time":13541,"num_kernels":254863972}
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 01:00 min
+[INFO] Finished at: 2017-02-13T14:06:01-08:00
+[INFO] Final Memory: 33M/1740M
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,6 @@
+{'algorithm': 'sklearn', 'num_kernels': None, 'dataset': 'bigdata/mnist.csv', 'train_time': None, 'dim': 784, 'num_train': 70000, 'num_test': 100, 'test_time': None}
+Trained in 59.3984010219574
+Scored in 12.01622986793518
+Quantile: 0.013350893107974496
+Final Output:
+{'algorithm': 'sklearn', 'num_kernels': None, 'dataset': 'bigdata/mnist.csv', 'train_time': 59398.4010219574, 'dim': 784, 'num_train': 70000, 'num_test': 100, 'test_time': 12016.22986793518}

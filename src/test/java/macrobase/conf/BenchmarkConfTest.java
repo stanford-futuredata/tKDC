@@ -12,4 +12,11 @@ public class BenchmarkConfTest {
         assertEquals(3, bConf.inputColumns.size());
         assertEquals(TreeKDEConf.Algorithm.TREEKDE, bConf.tKDEConf.algorithm);
     }
+
+    @Test
+    public void testColumnRange() throws Exception {
+        BenchmarkConf bConf = BenchmarkConf.load("src/test/resources/conf/test_colrange.yaml");
+        assertEquals(2, bConf.inputColumns.size());
+        assertEquals(1, bConf.inputColumns.get(0).intValue());
+    }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public class TreeKDEConf {
     // High Level Algorithm
     public enum Algorithm {
-        TREEKDE, SIMPLEKDE, TREEKNN
+        TREEKDE, SIMPLEKDE, TREEKNN, RKDE
     }
     public Algorithm algorithm = Algorithm.TREEKDE;
     // Classifier
@@ -24,7 +24,11 @@ public class TreeKDEConf {
     public double qCutoffMultiplier = 1.5;
     // KDE
     public String kernel = "gaussian";
+    public boolean denormalized = false;
+    public double bwValue = -1.0;
     public double bwMultiplier = 1.0;
+    public boolean useStdDev = false;
+
     public boolean ignoreSelfScoring = false;
     public boolean calculateCutoffs = true;
     public double tolAbsolute = 0.0;
