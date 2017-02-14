@@ -72,6 +72,9 @@ public class QuantileBoundEstimator {
             } else {
                 qL = 0.0;
             }
+            if (qL < 0.0) {
+                qL = 0.0;
+            }
             qH = pCalc.evaluate(100 * pH);
             log.debug("rSize: {}, cutH: {}, cutL: {} tol: {}", rSize, curCutoffH, curCutoffL, curTolerance);
             log.debug("pL: {}, pT: {}, pH: {}, qL: {}, qT: {}, qH: {}", pL, pT, pH, qL, qT, qH);

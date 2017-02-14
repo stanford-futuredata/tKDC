@@ -1,6 +1,6 @@
 inputPath: "bigdata/hep.csv"
 inputColumnRange: 1-27
-inputRows: 100000
+inputRows: 1000000
 numToScore: 200
 
 tKDEConf:
@@ -13,8 +13,9 @@ tKDEConf:
 
   kernel: gaussian
   denormalized: true
-  bwMultiplier: 1.0
-  ignoreSelfScoring: false
+#  bwMultiplier: 1.0
+  bwValue: 10.0
+  ignoreSelfScoring: true
 
   calculateCutoffs: true
 
