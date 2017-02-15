@@ -1,7 +1,7 @@
 inputPath: "bigdata/gauss_2.csv"
 inputColumnRange: 0-1
 inputRows: 1000000
-numToScore: 200
+numToScore: 2000
 
 tKDEConf:
   algorithm: RKDE

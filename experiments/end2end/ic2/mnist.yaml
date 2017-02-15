@@ -6,8 +6,8 @@ numToScore: 200
 tKDEConf:
   algorithm: TREEKDE
   percentile: 0.01
-
-  qSampleSize: 1000
+  qSampleSize: 2000
+  qReservoirMin: 2000
   qCutoffMultiplier: 1.2
   qTolMultiplier: 0.01
 

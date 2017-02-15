@@ -77,7 +77,7 @@ public class KDEClassifier implements DensityEstimator {
                         .build(data);
             }
             log.debug("Trained Tree");
-            RadiusKDE rkde = new RadiusKDE(tree)
+            RadiusKDE2 rkde = new RadiusKDE2(tree)
                     .setBandwidth(bandwidth)
                     .setKernel(kernel)
                     .setEpsilon(tolerance)

@@ -17,12 +17,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
 public class RadiusKDETest {
-    private RadiusKDE trainSimpleRadiusKDE(List<double[]> data, double epsilon) {
+    private RadiusKDE2 trainSimpleRadiusKDE(List<double[]> data, double epsilon) {
         double[] bw = (new BandwidthSelector()).findBandwidth(data);
         Kernel k = new GaussianKernel().initialize(bw);
 
         KDTree t = new KDTree().setSplitByWidth(true).build(data);
-        RadiusKDE rKDE = new RadiusKDE(t)
+        RadiusKDE2 rKDE = new RadiusKDE2(t)
                 .setBandwidth(bw)
                 .setKernel(k)
                 .setEpsilon(epsilon)
@@ -45,7 +45,7 @@ public class RadiusKDETest {
     public void testTinyExact() {
         List<double[]> data = new TinyDataSource().get();
         SimpleKDE sKDE = trainSimpleKDE(data);
-        RadiusKDE rKDE = trainSimpleRadiusKDE(data, 0.0);
+        RadiusKDE2 rKDE = trainSimpleRadiusKDE(data, 0.0);
 
         for (double[] q : data) {
             double p1 = sKDE.density(q);
@@ -70,7 +70,7 @@ public class RadiusKDETest {
         ArrayList<double[]> data = new ArrayList<>(Arrays.asList(rdata));
 
         SimpleKDE sKDE = trainSimpleKDE(data);
-        RadiusKDE rKDE = trainSimpleRadiusKDE(data, 1e-3);
+        RadiusKDE2 rKDE = trainSimpleRadiusKDE(data, 1e-3);
 
         for (double[] q : data) {
             double p1 = sKDE.density(q);

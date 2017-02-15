@@ -20,6 +20,8 @@ public class TreeKDEConf {
     public double percentile = 0.01;
     // Quantile Estimation
     public int qSampleSize = 10000;
+    public int qReservoirMin = 200;
+    public int qReservoirMax = 2000000;
     public double qTolMultiplier = 0.01;
     public double qCutoffMultiplier = 1.5;
     // KDE

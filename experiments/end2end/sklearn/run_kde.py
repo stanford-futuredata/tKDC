@@ -36,7 +36,8 @@ def estimate_kde_bw(data, use_std=False):
 
 def run_benchmark(
         df_path, n, numScore, tol, cols,
-        bwValue=None, denorm=False, use_std=False):
+        bwValue=None, bwMult=1.0,
+        denorm=False, use_std=False):
     params = {
         "algorithm": "sklearn",
         "dataset": df_path,
@@ -52,7 +53,7 @@ def run_benchmark(
 
     trainstart = time.time()
     if bwValue is None:
-        bw = estimate_kde_bw(data, use_std=use_std)
+        bw = bwMult*estimate_kde_bw(data, use_std=use_std)
         print("BW: {}".format(bw))
     else:
         bw = bwValue * np.ones(len(cols))

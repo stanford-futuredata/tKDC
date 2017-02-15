@@ -9,6 +9,7 @@ public class RangeQuery {
     public KDTree t;
     public int k;
     public double[] scalingFactor;
+    public boolean fastApprox = false;
 
     public int[] counts;
 

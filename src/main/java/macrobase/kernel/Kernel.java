@@ -11,6 +11,8 @@ public abstract class Kernel {
     protected double dimFactor;
     protected double bwFactor;
 
+    private double[] delta;
+
     public Kernel setDenormalized(boolean flag) {
         this.denormalized = flag;
         return this;
@@ -33,7 +35,16 @@ public abstract class Kernel {
                 bwFactor *= invBandwidth[i];
             }
         }
+
+        this.delta = new double[dim];
         return this;
+    }
+
+    public double qdensity(double[] p, double[] q) {
+        for (int i = 0; i < p.length; i++) {
+            delta[i] = p[i] - q[i];
+        }
+        return this.density(delta);
     }
 
     public abstract double getDimFactor(int curDim);

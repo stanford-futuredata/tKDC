@@ -28,7 +28,6 @@ public class QuantileBoundEstimator {
     // Cache existing tree for reuse
     public KDTree tree;
 
-    public static final int startingSampleSize = 200;
     public static double confidenceFactor = 2.5;
 
     public QuantileBoundEstimator(TreeKDEConf tConf) {
@@ -41,14 +40,29 @@ public class QuantileBoundEstimator {
      * @return reservoir size
      */
     public int estimateQuantiles(List<double[]> metrics) {
-        int rSize = startingSampleSize;
-        int sampleSize = startingSampleSize;
+        int rSize = Math.min(tConf.qReservoirMin, metrics.size());
+        int sampleSize = Math.min(rSize, tConf.qSampleSize);
         double curCutoffH = -1;
         double curCutoffL = -1;
         double curTolerance = -1;
 
+        double[] curBW = new BandwidthSelector()
+                .setValue(tConf.bwValue)
+                .setMultiplier(tConf.bwMultiplier)
+                .setUseStdDev(tConf.useStdDev)
+                .findBandwidth(metrics);
+        if (tConf.bwValue > 0) {
+            log.debug("BW: {}", tConf.bwValue);
+        } else {
+            log.debug("BW: {}", curBW);
+        }
+
         KDTree oldTree = null;
-        while (rSize <= metrics.size()) {
+        int maxReservoirSize = Math.min(
+                tConf.qReservoirMax,
+                metrics.size()
+        );
+        while (rSize <= maxReservoirSize) {
             List<double[]> curData = metrics.subList(0, rSize);
 
             if (oldTree == null) {
@@ -56,6 +70,7 @@ public class QuantileBoundEstimator {
             }
             Percentile pCalc = calcQuantiles(
                     metrics.subList(0, rSize),
+                    curBW,
                     sampleSize,
                     oldTree,
                     curCutoffH,
@@ -96,7 +111,11 @@ public class QuantileBoundEstimator {
                     curCutoffH = tConf.qCutoffMultiplier * qH;
                     curCutoffL = qL / tConf.qCutoffMultiplier;
                     curTolerance = tConf.qTolMultiplier * qL;
-                    rSize = Math.min(4 * rSize, metrics.size());
+                    if (rSize < maxReservoirSize) {
+                        rSize = Math.min(4 * rSize, maxReservoirSize);
+                    } else {
+                        rSize += 1;
+                    }
                     sampleSize = Math.min(rSize, tConf.qSampleSize);
                     oldTree = null;
                 }
@@ -121,23 +140,14 @@ public class QuantileBoundEstimator {
 
     public Percentile calcQuantiles(
             List<double[]> data,
+            double[] curBW,
             int sampleSize,
             KDTree tree,
             double curCutoffH,
             double curCutoffL,
             double curTolerance
     ) {
-        double[] curBW = new BandwidthSelector()
-                .setValue(tConf.bwValue)
-                .setMultiplier(tConf.bwMultiplier)
-                .setUseStdDev(tConf.useStdDev)
-                .findBandwidth(data);
         log.debug("Calculating scores for n={}", data.size());
-        if (tConf.bwValue > 0) {
-            log.debug("BW: {}", tConf.bwValue);
-        } else {
-            log.debug("BW: {}", curBW);
-        }
         Kernel k = kFactory
                 .get()
                 .setDenormalized(tConf.denormalized)

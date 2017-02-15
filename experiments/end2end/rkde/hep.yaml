@@ -1,23 +1,19 @@
 inputPath: "bigdata/hep.csv"
 inputColumnRange: 1-27
 inputRows: 1000000
-numToScore: 1000
+numToScore: 200
 
 tKDEConf:
-  algorithm: TREEKDE
+  algorithm: RKDE
   percentile: 0.01
-
-  qSampleSize: 5000
-  qReservoirMax: 1000000
-  qCutoffMultiplier: 1.2
-  qTolMultiplier: 0.01
 
   kernel: gaussian
   denormalized: true
   useStdDev: true
   ignoreSelfScoring: true
 
-  calculateCutoffs: true
+  calculateCutoffs: false
+  tolAbsolute: 2.3e-13
 
   leafSize: 20
   splitByWidth: true
