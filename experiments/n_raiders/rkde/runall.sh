@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 
-D=experiments/n_raiders/simple
+D=experiments/n_raiders/rkde
 
 for i in 0 1 2 3 4 5 6 7 8
 do

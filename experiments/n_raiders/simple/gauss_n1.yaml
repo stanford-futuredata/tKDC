@@ -1,0 +1,22 @@
+
+inputPath: "bigdata/bgauss.csv"
+inputColumnRange: 0-1
+inputRows: 30000
+numToScore: 10000
+
+tKDEConf:
+  algorithm: SIMPLEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: false
+  bwMultiplier: 1.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: true
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false

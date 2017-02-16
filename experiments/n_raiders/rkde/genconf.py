@@ -3,9 +3,9 @@ import numpy as np
 ns = (10000 * 3**np.arange(0,9)).astype(int)
 for i, n in enumerate(ns):
     if n > 1000000:
-        numToScore = 50
+        numToScore = 100
     else:
-        numToScore = 1000
+        numToScore = 10000
     output = """
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
@@ -13,7 +13,7 @@ inputRows: {n}
 numToScore: {numToScore}
 
 tKDEConf:
-  algorithm: SIMPLEKDE
+  algorithm: RKDE
   percentile: 0.01
 
   kernel: gaussian
