@@ -98,6 +98,6 @@ def run_benchmark(
     q = np.percentile(final_scores, 1.0)
     print("Quantile: {}".format(q))
     print("Final Output:")
-    print(params)
+    print(json.dumps(params))
     return final_scores
 
