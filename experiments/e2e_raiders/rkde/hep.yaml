@@ -1,0 +1,21 @@
+inputPath: "bigdata/hep.csv"
+inputColumnRange: 1-27
+inputRows: 0
+numToScore: 400
+
+tKDEConf:
+  algorithm: RKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  tolAbsolute: 1.0e-13
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false

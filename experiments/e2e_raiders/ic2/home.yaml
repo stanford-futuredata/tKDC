@@ -1,15 +1,15 @@
-inputPath: "bigdata/bgauss.csv"
-inputColumnRange: 0-1
-inputRows: 100000000
-numToScore: 10000000
+inputPath: "bigdata/homesensor.csv"
+inputColumnRange: 2-11
+inputRows: 0
+numToScore: 900000
 
 tKDEConf:
   algorithm: TREEKDE
   percentile: 0.01
 
   qSampleSize: 20000
-  qCutoffMultiplier: 1.1
-  qTolMultiplier: 0.1
+  qCutoffMultiplier: 1.5
+  qTolMultiplier: 0.01
 
   kernel: gaussian
   denormalized: false
@@ -22,6 +22,6 @@ tKDEConf:
   leafSize: 20
   splitByWidth: true
 
-  useGrid: true
+  useGrid: false
   gridSizes:
     - 0.8

@@ -1,15 +1,11 @@
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
 inputRows: 100000000
-numToScore: 10000000
+numToScore: 500
 
 tKDEConf:
   algorithm: TREEKDE
   percentile: 0.01
-
-  qSampleSize: 20000
-  qCutoffMultiplier: 1.1
-  qTolMultiplier: 0.1
 
   kernel: gaussian
   denormalized: false
@@ -17,11 +13,10 @@ tKDEConf:
   useStdDev: true
   ignoreSelfScoring: true
 
-  calculateCutoffs: true
+  calculateCutoffs: false
+  tolAbsolute: 2.0e-4
 
   leafSize: 20
   splitByWidth: true
 
-  useGrid: true
-  gridSizes:
-    - 0.8
+  useGrid: false
