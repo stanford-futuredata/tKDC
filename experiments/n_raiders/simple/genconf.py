@@ -22,7 +22,7 @@ tKDEConf:
   useStdDev: true
   ignoreSelfScoring: true
 
-  calculateCutoffs: true
+  calculateCutoffs: false
 
   leafSize: 20
   splitByWidth: true

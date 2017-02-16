@@ -2,7 +2,7 @@
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
 inputRows: 10000
-numToScore: 10000
+numToScore: 1000
 
 tKDEConf:
   algorithm: SIMPLEKDE
@@ -14,7 +14,7 @@ tKDEConf:
   useStdDev: true
   ignoreSelfScoring: true
 
-  calculateCutoffs: true
+  calculateCutoffs: false
 
   leafSize: 20
   splitByWidth: true
