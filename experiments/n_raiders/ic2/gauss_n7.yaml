@@ -1,0 +1,28 @@
+
+inputPath: "bigdata/bgauss.csv"
+inputColumnRange: 0-1
+inputRows: 21870000
+numToScore: 10000000
+
+tKDEConf:
+  algorithm: TREEKDE
+  percentile: 0.01
+
+  qSampleSize: 20000
+  qCutoffMultiplier: 1.1
+  qTolMultiplier: 0.1
+
+  kernel: gaussian
+  denormalized: false
+  bwMultiplier: 1.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: true
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: true
+  gridSizes:
+    - 0.8

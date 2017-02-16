@@ -1,0 +1,875 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+theorems-ams-bytype
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Figures
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename regions.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Near and Far queries: Far queries can be evaluated using only index lookups.
+ Near queries are more expensive.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \quad{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename shrinkage.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+As the training dataset grows from 
+\begin_inset Formula $n$
+\end_inset
+
+ to 
+\begin_inset Formula $2n$
+\end_inset
+
+, the index improves and the expensive near region shrinks.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Breaking down the query points by their runtime cost
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Bullets
+\end_layout
+
+\begin_layout Itemize
+Setup
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Dataset 
+\begin_inset Formula $X\in\mathbb{R}^{n\times k}$
+\end_inset
+
+, query point 
+\begin_inset Formula $x\in\mathbb{R}^{k}$
+\end_inset
+
+ with Kernel Density 
+\begin_inset Formula $p\left(x\right)\in\mathbb{R}$
+\end_inset
+
+, classified relative to density threshold 
+\begin_inset Formula $t\in\mathbb{R}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Analyze cost of a single query, since IC2 processes each query independently
+\end_layout
+
+\begin_layout Itemize
+Assume 
+\begin_inset Formula $t=t^{u}=t^{l}$
+\end_inset
+
+ and tolerance 
+\begin_inset Formula $\epsilon=0$
+\end_inset
+
+ for bare-bones algorithm that captures most of speedups
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Near and far points
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+IC2 works by traversing a tree, maintaining bounds, and accumulating individual
+ kernel contributions if necessary
+\end_layout
+
+\begin_layout Itemize
+Definition: A 
+\emph on
+far
+\emph default
+ query point is one which IC2 can classify using only the bounds derived
+ from the k-d tree, while a 
+\emph on
+near 
+\emph default
+query point is one which IC2 must accumulate one or more exact kernel densities
+ to classify.
+\end_layout
+
+\begin_layout Itemize
+Far points have densities further from the threshold, and can be classified
+ quickly once the index allows us to bound 
+\begin_inset Formula $p^{min}>t$
+\end_inset
+
+ or 
+\begin_inset Formula $p^{max}<t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Since different queries have different costs, we look at 
+\series bold
+expected
+\series default
+ 
+\series bold
+runtime
+\series default
+, i.e.
+ runtime averaged over the two regions defined by near and far query points
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Regions change as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The regions change as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases: the far region expands since with more training points, the
+ index grows deeper and more precise.
+ A more precise index can classify more query points on its own.
+\end_layout
+
+\begin_layout Itemize
+Define regions 
+\begin_inset Formula $R_{n}^{near},R_{n}^{far}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Lemma 1: probability of seeing query points from the near region shrinks
+ as 
+\begin_inset Formula $P\left[x_{q}\in R_{n}^{near}\right]=O\left(n^{-\frac{1}{k}}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Runtime cost
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Let 
+\begin_inset Formula $F_{n}$
+\end_inset
+
+ be the average runtime cost
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O\left(n\right)$
+\end_inset
+
+ to classify points in the near region
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O\left(n\right)$
+\end_inset
+
+ to classify points in the far region
+\end_layout
+
+\begin_layout Itemize
+Suppose we go from a training set 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ of size 
+\begin_inset Formula $n$
+\end_inset
+
+ to one 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ of size 
+\begin_inset Formula $2n$
+\end_inset
+
+ from the same distribution, we can bound the runtime increase
+\end_layout
+
+\begin_layout Itemize
+Query points in the 
+\begin_inset Formula $R_{n}^{far}$
+\end_inset
+
+ region have the same expected runtime cost under 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+: on average the same sequence of tree lookups will be executed under 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ assuming it is from the same distribution.
+\end_layout
+
+\begin_layout Itemize
+Any additional expense for classifying points under 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ comes from classifying near queries and 
+\begin_inset Quotes eld
+\end_inset
+
+delta
+\begin_inset Quotes erd
+\end_inset
+
+ queries that were near under 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ but are now far under 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $F_{2n}\leq F_{n}+F_{2n}^{near}+F_{2n}^{delta}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $F_{2n}\leq F_{n}+P\left[x_{q}\in R_{2n}^{near}\right]O\left(2n\right)+P\left[x_{q}\in\left(R_{2n}^{far}\setminus R_{n}^{far}\right)\right]O\left(2n\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\boxed{F_{n}=O\left(n^{1-\frac{1}{k}}\right)}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Body
+\end_layout
+
+\begin_layout Standard
+In this section we will characterize the runtime cost of using IC2 to classify
+ k-dimensional data points relative to the training dataset size 
+\begin_inset Formula $n$
+\end_inset
+
+.
+ Since IC2 processes each query independently, it is sufficient to analyze
+ the cost of a single query.
+ Given a query point 
+\begin_inset Formula $x\in\mathbb{R}^{k}$
+\end_inset
+
+, IC2 estimates its kernel density 
+\begin_inset Formula $p\left(x\right)\in\mathbb{R}$
+\end_inset
+
+ and classifies it according to a threshold.
+ In its full generality, IC2 supports upper and lower thresholds 
+\begin_inset Formula $t^{u},t^{l}$
+\end_inset
+
+ as well as an error tolerance 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+: these are useful optimizations but in this section we will focus on classifyin
+g points precisely according to a single threshold 
+\begin_inset Formula $t$
+\end_inset
+
+, thus analyzing IC2 in its simplest form with in effect only the cutoff
+ rule enabled.
+ Even in this minimal form, we will show that IC2 runs in time 
+\begin_inset Formula $\boxed{O\left(n^{1-\frac{1}{d}}\right)}$
+\end_inset
+
+ for 
+\begin_inset Formula $d>1$
+\end_inset
+
+ and 
+\begin_inset Formula $O\left(\log n\right)$
+\end_inset
+
+ for 
+\begin_inset Formula $d=1$
+\end_inset
+
+, making it asymptotically faster than naive methods which run in 
+\begin_inset Formula $O\left(n\right)$
+\end_inset
+
+ time.
+\end_layout
+
+\begin_layout Standard
+IC2 works by traversing a k-d tree index containing training data 
+\begin_inset Formula $X=\left\{ x_{T}:x_{T}\in\mathbb{R}^{k}\right\} $
+\end_inset
+
+ until it has enough information to make a classification or, in the worst
+ case, processes each leaf node in the tree and is able to calculate the
+ exact kernel density 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+.
+ Thus, depending on the training dataset and query, IC2 might be able to
+ classify 
+\begin_inset Formula $x$
+\end_inset
+
+ using only information available from the k-d tree index, or it may have
+ to resort to accumulating individual kernel contributions from points in
+ 
+\begin_inset Formula $X$
+\end_inset
+
+.
+ In general, points whose densities 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ are far away from the classification threshold 
+\begin_inset Formula $t$
+\end_inset
+
+ can resolved quickly using the index, while points whose densities are
+ near the threshold may require additional processing.
+ This is because IC2 works by refining upper and lower bounds for 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ as it traverses the tree, and if 
+\begin_inset Formula $p\left(x\right)\gg t$
+\end_inset
+
+ for instance then the lower bound should quickly exceed 
+\begin_inset Formula $t$
+\end_inset
+
+ and we would be able to make a classification before having to process
+ contributions from raw training data.
+ 
+\end_layout
+
+\begin_layout Definition
+A 
+\emph on
+far
+\emph default
+ query point is one which IC2 can classify using only the bounds derived
+ from the k-d tree, while a 
+\emph on
+near 
+\emph default
+query point is one which IC2 must accumulate one or more exact kernel densities
+ to classify.
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Regions-Near-and"
+
+\end_inset
+
+ illustrates how the query points far from and near the threshold define
+ distinct regions of the query space 
+\begin_inset Formula $\mathbb{R}^{k}$
+\end_inset
+
+ which we will refer to as the far and near regions.
+ Since the cost of evaluating queries in these regions can vary greatly,
+ we will analyze the
+\series bold
+ 
+\series default
+expected runtime 
+\begin_inset Formula $F_{n}$
+\end_inset
+
+ (which depends on the dataset size 
+\begin_inset Formula $n$
+\end_inset
+
+) averaged over the space of possible queries.
+ If we can characterize the expected runtimes in the near and far regions
+ 
+\begin_inset Formula $F_{n}^{near}$
+\end_inset
+
+, 
+\begin_inset Formula $F_{n}^{far}$
+\end_inset
+
+ and the probabilities of seeing queries in each region 
+\begin_inset Formula $w_{n}^{near},w_{n}^{far}$
+\end_inset
+
+, then expected runtime is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{n}=w_{n}^{near}F_{n}^{near}+w_{n}^{far}F_{n}^{far}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+However, the near and far regions change as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Region-changes-with"
+
+\end_inset
+
+ illustrates how the size of the near region shrinks as we move from a dataset
+ of size 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ to one of size 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+: intuitively as we have more data points 
+\begin_inset Formula $n$
+\end_inset
+
+the k-d tree regions is able to give us tighter estimates before we have
+ to look at individual data points, allowing more points to be classified
+ using only the index.
+ We prove the following lemma in the Appendix:
+\end_layout
+
+\begin_layout Lemma
+The probability 
+\begin_inset Formula $w_{near}$
+\end_inset
+
+ of seeing query points from the near region (i.e.
+ which cannot be evaluated using only the k-d tree index) shrinks as 
+\begin_inset Formula $O\left(n^{-\frac{1}{k}}\right)$
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "lem:nearshrink"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the near regions, 
+\begin_inset Formula $F_{n}^{near}=O\left(n\right)$
+\end_inset
+
+ since in the worst case we traverse the entire tree and adding up contributions
+ from each invidual data point in 
+\begin_inset Formula $X$
+\end_inset
+
+.
+ Thus, we can begin solving for 
+\begin_inset Formula $F_{n}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+F_{n} & =w_{n}^{near}F_{n}^{near}+w_{n}^{far}F_{n}^{far}\\
+ & \leq O\left(n^{-1/k}\right)O\left(n\right)+\left(1\right)F_{n}^{far}\\
+ & =O\left(n^{1-\frac{1}{k}}\right)+F_{n}^{far}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $F_{n}^{far}$
+\end_inset
+
+ is more difficult to calculate directly, but we can derive a recurrence
+ for it as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases.
+ Suppose we have a dataset 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ with 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ points and a dataset 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ with 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ points, both from the same distribution.
+ Then we can relate 
+\begin_inset Formula $F_{n_{1}}^{far}$
+\end_inset
+
+ and 
+\begin_inset Formula $F_{n_{2}}^{far}$
+\end_inset
+
+.
+ On average, we expect the k-d trees for 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ to agree up until 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ bottoms out.
+ Thus, points that can be evaluated using only the k-d tree for 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ can still be evaluated using only the tree for 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+: their cost 
+\emph on
+does not go up with 
+\begin_inset Formula $n$
+\end_inset
+
+ 
+\emph default
+since it makes use only of the index.
+ Let 
+\begin_inset Formula $R_{n_{1}}^{far},R_{n_{2}}^{far}\subseteq\mathbb{R}^{k}$
+\end_inset
+
+ denote the far regions for datasets of size 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ .
+ The total cost of evaluating queries in 
+\begin_inset Formula $R_{n_{2}}^{far}$
+\end_inset
+
+ is just the cost of evaluating points 
+\begin_inset Formula $R_{n_{1}}^{far}$
+\end_inset
+
+ plus the additional cost of query points that are now part of the expanded
+ far region for 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+.
+ Each of these new points 
+\begin_inset Formula $x\in R_{n_{2}}^{far}\setminus R_{n_{1}}^{far}$
+\end_inset
+
+ can be evaluated in time 
+\begin_inset Formula $O\left(n_{2}\right)$
+\end_inset
+
+ since the k-d tree is size 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+, and the gains made by the far region are exactly the complement of the
+ losses from the near region as 
+\begin_inset Formula $n$
+\end_inset
+
+ increases.
+ Thus:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{n_{2}}^{far}=F_{n_{1}}^{far}+O\left(n_{2}^{-1/k}-n_{1}^{-1/k}\right)O\left(n_{2}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $n_{2}=2n_{1}$
+\end_inset
+
+, then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+F_{2n}^{far} & =F_{n}^{far}+O\left(\left(2^{-1/k}n^{-1/k}-n^{-1/k}\right)n\right)\\
+ & =F_{n}^{far}+O\left(n^{1-\frac{1}{k}}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This recurrence can also be solved so show that
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{2n}^{far}=O\left(n^{1-\frac{1}{k}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So finally
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\boxed{F_{n}=O\left(n^{1-\frac{1}{k}}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Appendix
+\end_layout
+
+\end_body
+\end_document
