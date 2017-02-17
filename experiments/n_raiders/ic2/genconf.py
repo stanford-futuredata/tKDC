@@ -27,7 +27,8 @@ tKDEConf:
   leafSize: 20
   splitByWidth: true
 
-  useGrid: false
+  useGrid: true
+  gridSizes: [0.8]
 """.format(n=n)
     with open("./gauss_n{i}.yaml".format(i=i), 'w') as f:
         f.write(output)
