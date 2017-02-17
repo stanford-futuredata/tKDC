@@ -74,7 +74,6 @@ public class KDEApp {
         bn.dataset = benchmarkConf.inputPath;
         bn.dim = metrics.get(0).length;
         bn.num_train = metrics.size();
-        bn.num_test = benchmarkConf.numToScore;
 
         StopWatch sw = new StopWatch();
         KDEClassifier classifier = new KDEClassifier(tConf);
@@ -100,10 +99,19 @@ public class KDEApp {
         int densitySize = Math.min(metrics.size(), benchmarkConf.numToScore);
         double[] densities = new double[densitySize];
         long numKernels = 0;
+        int actualNumScored = 0;
+        double maxTime = Double.MAX_VALUE;
+        if (benchmarkConf.timeToScore > 0.0) {
+            maxTime = benchmarkConf.timeToScore;
+        }
         for (int i = 0; i < benchmarkConf.numToScore; i++) {
             int modI = i % densities.length;
             densities[modI] = classifier.density(metrics.get(modI));
             numKernels += classifier.getNumKernels();
+            actualNumScored++;
+            if (sw.getTime()/1000.0 > maxTime) {
+                break;
+            }
         }
         sw.stop();
         long scoreTime = sw.getTime();
@@ -112,11 +120,13 @@ public class KDEApp {
         }
         bn.num_kernels = numKernels;
         bn.test_time = scoreTime;
+        bn.num_test = actualNumScored;
+
         log.info("Scored in {}", sw.toString());
         log.info("Scored @ {} / s",
-                (float)benchmarkConf.numToScore * 1000/(scoreTime));
+                (float)actualNumScored * 1000/(scoreTime));
         log.info("Total Processing: {}", (double)(trainTime+scoreTime)/1000);
-        log.info("Avg # Kernels: {}", (double)numKernels/benchmarkConf.numToScore);
+        log.info("Avg # Kernels: {}", (double)numKernels/actualNumScored);
 
         if (outputPath != null) {
             BufferedWriter out = Files.newBufferedWriter(Paths.get(outputPath));
@@ -127,9 +137,12 @@ public class KDEApp {
             out.close();
         }
 
-        Arrays.sort(densities);
-        int expectedNumOutliers = (int)(densities.length * tConf.percentile);
-        double quantile = densities[expectedNumOutliers];
+        int numDensitiesToCopy = Math.min(actualNumScored, densitySize);
+        double[] actualDensities = new double[numDensitiesToCopy];
+        System.arraycopy(densities, 0, actualDensities, 0, numDensitiesToCopy);
+        Arrays.sort(actualDensities);
+        int expectedNumOutliers = (int)(actualDensities.length * tConf.percentile);
+        double quantile = actualDensities[expectedNumOutliers];
         log.info("{} percentile: {}", tConf.percentile, quantile);
 
         Gson gs = new Gson();

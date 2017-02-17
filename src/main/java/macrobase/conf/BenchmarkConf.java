@@ -18,6 +18,7 @@ public class BenchmarkConf {
 
     public int inputRows;
     public int numToScore;
+    public double timeToScore;
 
     public TreeKDEConf tKDEConf;
 

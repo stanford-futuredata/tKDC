@@ -1,16 +1,10 @@
 ds = [1, 2, 4, 8, 16, 32, 64, 128, 256]
 for i, d in enumerate(ds):
-    if d < 8:
-        numToScore = 1000000
-    elif d < 32:
-        numToScore = 10000
-    else:
-        numToScore = 1000
     output = """
 inputPath: "bigdata/pmnist.csv"
 inputColumnRange: 0-{d}
 inputRows: 0
-numToScore: {numToScore}
+timeToScore: 20.0
 
 tKDEConf:
   algorithm: TREEKDE
@@ -34,7 +28,6 @@ tKDEConf:
   useGrid: false
 """.format(
         d=d-1,
-        numToScore=numToScore,
     )
     with open("./mnist_{d}.yaml".format(d=d), 'w') as f:
         f.write(output)

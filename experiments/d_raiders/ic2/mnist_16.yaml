@@ -2,7 +2,7 @@
 inputPath: "bigdata/pmnist.csv"
 inputColumnRange: 0-15
 inputRows: 0
-numToScore: 10000
+timeToScore: 20.0
 
 tKDEConf:
   algorithm: TREEKDE
