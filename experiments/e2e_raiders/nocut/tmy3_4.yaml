@@ -1,0 +1,22 @@
+inputPath: "bigdata/otmy3.csv"
+inputColumnRange: 0-3
+inputRows: 0
+numToScore: 1000
+
+tKDEConf:
+  algorithm: TREEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: false
+  bwMultiplier: 1.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  tolAbsolute: 5.0e-13
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false
