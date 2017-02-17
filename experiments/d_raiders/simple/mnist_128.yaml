@@ -1,0 +1,19 @@
+
+inputPath: "bigdata/pmnist.csv"
+inputColumnRange: 0-127
+inputRows: 0
+timeToScore: 30.0
+
+tKDEConf:
+  algorithm: SIMPLEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  bwMultiplier: 3.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+
+  useGrid: false
