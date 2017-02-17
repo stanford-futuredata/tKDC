@@ -6,7 +6,7 @@ for i, n in enumerate(ns):
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
 inputRows: {n}
-numToScore: 10000000
+timeToScore: 30.0
 
 tKDEConf:
   algorithm: TREEKDE
@@ -28,8 +28,7 @@ tKDEConf:
   splitByWidth: true
 
   useGrid: true
-  gridSizes:
-    - 0.8
+  gridSizes: [0.8]
 """.format(n=n)
     with open("./gauss_n{i}.yaml".format(i=i), 'w') as f:
         f.write(output)
