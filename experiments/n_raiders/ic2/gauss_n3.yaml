@@ -2,7 +2,7 @@
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
 inputRows: 270000
-numToScore: 10000000
+timeToScore: 30.0
 
 tKDEConf:
   algorithm: TREEKDE
@@ -23,6 +23,4 @@ tKDEConf:
   leafSize: 20
   splitByWidth: true
 
-  useGrid: true
-  gridSizes:
-    - 0.8
+  useGrid: false
