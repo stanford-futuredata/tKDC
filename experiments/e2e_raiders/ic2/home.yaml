@@ -23,5 +23,3 @@ tKDEConf:
   splitByWidth: true
 
   useGrid: false
-  gridSizes:
-    - 0.8

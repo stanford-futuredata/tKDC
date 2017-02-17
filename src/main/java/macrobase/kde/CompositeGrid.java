@@ -24,7 +24,7 @@ public class CompositeGrid implements DensityEstimator {
             double cutoff
     ) {
         this.kernel = k;
-        this.baseGridSize = baseGridSize;
+        this.baseGridSize = baseGridSize.clone();
         this.gridRatios = gridRatios;
         this.cutoff = cutoff;
 
