@@ -7,5 +7,6 @@ run_kde.run_benchmark(
     tol=0.1,
     cols=list(range(1,28)),
     use_std=True,
+    denorm=True
 )
 
