@@ -2,11 +2,11 @@
 inputPath: "bigdata/otmy3.csv"
 inputColumnRange: 0-3
 inputRows: 0
-timeToScore: 30.0
+timeToScore: 60.0
 
 tKDEConf:
   algorithm: TREEKDE
-  percentile: 0.01
+  percentile: 0.4
 
   qSampleSize: 20000
   qCutoffMultiplier: 1.1
