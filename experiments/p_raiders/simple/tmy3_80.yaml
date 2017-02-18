@@ -5,12 +5,8 @@ inputRows: 0
 timeToScore: 60.0
 
 tKDEConf:
-  algorithm: TREEKDE
-  percentile: 0.9
-
-  qSampleSize: 4000
-  qCutoffMultiplier: 1.1
-  qTolMultiplier: 0.01
+  algorithm: SIMPLEKDE
+  percentile: 0.8
 
   kernel: gaussian
   denormalized: false
@@ -18,11 +14,9 @@ tKDEConf:
   useStdDev: true
   ignoreSelfScoring: true
 
-  calculateCutoffs: true
+  calculateCutoffs: false
 
   leafSize: 20
   splitByWidth: true
 
-  useGrid: true
-  gridSizes:
-    - 0.8
+  useGrid: false

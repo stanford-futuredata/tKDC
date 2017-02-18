@@ -8,7 +8,7 @@ tKDEConf:
   algorithm: TREEKDE
   percentile: 0.8
 
-  qSampleSize: 20000
+  qSampleSize: 4000
   qCutoffMultiplier: 1.1
   qTolMultiplier: 0.01
 
