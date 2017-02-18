@@ -12,18 +12,17 @@ from sklearn.neighbors import (
 )
 
 
-def get_self_density(d, n, denorm=False):
-    internal_bw = 1.0
+def get_self_density(d, n, denorm):
     if denorm:
-        internal_bw = 1.0/(math.sqrt(2*math.pi))
+        return 1.0 / n
 
     return scipy.stats.multivariate_normal.pdf(
         np.zeros(d), 
         mean=np.zeros(d), 
-        cov=np.identity(d)*internal_bw*internal_bw) / n
+        cov=np.identity(d)) / n
 
 
-def estimate_kde_bw(data, use_std=False):
+def estimate_kde_bw(data, use_std):
     if use_std:
         iqr = np.std(data, axis=0)
     else:
@@ -66,6 +65,12 @@ def run_benchmark(
         internal_bw = 1.0/(math.sqrt(2*math.pi))
     scaled_data = (data / bw) * internal_bw
 
+    self_density = get_self_density(
+        data.shape[1],
+        data.shape[0],
+        denorm=denorm)
+    print("self score: {}".format(self_density))
+
     # Normalized Computations
     kde = KernelDensity(
         bandwidth=internal_bw,
@@ -85,7 +90,6 @@ def run_benchmark(
     print("Scored in {}".format(score_time), flush=True)
     print("Rate: {}".format(numScore/score_time))
 
-    self_density = get_self_density(data.shape[1], data.shape[0])
     scores_minus_self = scores - self_density
 
     # scale scores back
