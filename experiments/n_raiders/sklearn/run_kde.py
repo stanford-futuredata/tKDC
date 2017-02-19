@@ -48,7 +48,7 @@ def run_benchmark(
         # "num_kernels": None
     }
     print(params)
-    data = pd.read_csv(df_path, nrows=n+1)[cols].iloc[:n].values
+    data = pd.read_csv(df_path)[cols].iloc[:n].values
 
     trainstart = time.time()
     if bwValue is None:

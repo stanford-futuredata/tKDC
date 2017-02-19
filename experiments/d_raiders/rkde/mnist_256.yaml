@@ -14,12 +14,8 @@ tKDEConf:
   useStdDev: true
   ignoreSelfScoring: true
 
-  qSampleSize: 2000
-  qReservoirMin: 1000
-  qCutoffMultiplier: 1.2
-  qTolMultiplier: 0.01
-
-  calculateCutoffs: true
+  calculateCutoffs: false
+  tolAbsolute: 1.0e-17
 
   leafSize: 20
   splitByWidth: true
