@@ -9,6 +9,8 @@ def process_lines(lines):
     for i,line in enumerate(lines):
         if "Parsed Output" in line or "Final Output" in line:
             output_idx = i+1
+    if output_idx == -1:
+        return None
     outstr = lines[output_idx].strip().replace("'",'"')
     return json.loads(outstr)
 
@@ -22,8 +24,9 @@ for root,dirs,files in os.walk("."):
                 print(cur_path)
                 with open(cur_path) as f:
                     res = process_lines(f.readlines())
-                    res["out_path"] = cur_path
-                    rows.append(res)
+                    if res is not None:
+                        res["out_path"] = cur_path
+                        rows.append(res)
 
 df = pd.DataFrame(rows)
 df.to_csv("scale_d.csv", index=False)
