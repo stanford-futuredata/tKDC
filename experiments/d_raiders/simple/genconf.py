@@ -4,7 +4,7 @@ for i, d in enumerate(ds):
 inputPath: "bigdata/pmnist.csv"
 inputColumnRange: 0-{d}
 inputRows: 0
-timeToScore: 30.0
+timeToScore: 600.0
 
 tKDEConf:
   algorithm: SIMPLEKDE
