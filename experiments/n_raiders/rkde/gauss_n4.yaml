@@ -2,7 +2,7 @@
 inputPath: "bigdata/bgauss.csv"
 inputColumnRange: 0-1
 inputRows: 810000
-numToScore: 10000
+timeToScore: 600
 
 tKDEConf:
   algorithm: RKDE

@@ -12,7 +12,6 @@ python3 experiments/e2e_raiders/sklearn/home.py | tee experiments/e2e_raiders/sk
 python3 experiments/e2e_raiders/sklearn/mnist_64.py | tee experiments/e2e_raiders/sklearn/out/mnist_64.out
 python3 experiments/e2e_raiders/sklearn/tmy3_4.py | tee experiments/e2e_raiders/sklearn/out/tmy3_4.out
 
-
 ./run2.sh experiments/e2e_raiders/simple/bgauss.yaml | tee experiments/e2e_raiders/simple/out/bgauss.out
 ./run2.sh experiments/e2e_raiders/simple/tmy3.yaml | tee experiments/e2e_raiders/simple/out/tmy3.out
 ./run2.sh experiments/e2e_raiders/simple/hep.yaml | tee experiments/e2e_raiders/simple/out/hep.out
@@ -28,16 +27,12 @@ python3 experiments/e2e_raiders/sklearn/tmy3_4.py | tee experiments/e2e_raiders/
 ./run2.sh experiments/e2e_raiders/nocut/mnist_64.yaml | tee experiments/e2e_raiders/nocut/out/mnist_64.out
 ./run2.sh experiments/e2e_raiders/nocut/tmy3_4.yaml | tee experiments/e2e_raiders/nocut/out/tmy3_4.out
 
-
-
 ./run2.sh experiments/e2e_raiders/rkde/bgauss.yaml | tee experiments/e2e_raiders/rkde/out/bgauss.out
 ./run2.sh experiments/e2e_raiders/rkde/tmy3.yaml | tee experiments/e2e_raiders/rkde/out/tmy3.out
 ./run2.sh experiments/e2e_raiders/rkde/hep.yaml | tee experiments/e2e_raiders/rkde/out/hep.out
 ./run2.sh experiments/e2e_raiders/rkde/home.yaml | tee experiments/e2e_raiders/rkde/out/home.out
 ./run2.sh experiments/e2e_raiders/rkde/mnist_64.yaml | tee experiments/e2e_raiders/rkde/out/mnist_64.out
 ./run2.sh experiments/e2e_raiders/rkde/tmy3_4.yaml | tee experiments/e2e_raiders/rkde/out/tmy3_4.out
-
-
 
 thresholds:
 gauss: 0.0016

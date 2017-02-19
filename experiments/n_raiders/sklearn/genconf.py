@@ -15,7 +15,7 @@ run_kde.run_benchmark(
 )
 """.format(
         n=n,
-        n_score=min(int(100000000.0/n * 100), n)
+        n_score=min(int(100000000.0/n * 1000), n)
     )
     with open("./gauss_n{i}.py".format(i=i), 'w') as f:
         f.write(output)
