@@ -16,7 +16,7 @@ tKDEConf:
 
   qSampleSize: {qs}
   qCutoffMultiplier: 1.1
-  qTolMultiplier: 0.01
+  qTolMultiplier: 0.1
 
   kernel: gaussian
   denormalized: false
