@@ -1,6 +1,4 @@
-tols = [0.9, 0.5, 0.2, 0.1, 0.05, 0.01, 0.001, 1.0e-5]
-for i, tol in enumerate(tols):
-    output = """
+
 inputPath: "bigdata/otmy3.csv"
 inputColumnRange: 0-3
 inputRows: 0
@@ -16,14 +14,9 @@ tKDEConf:
   ignoreSelfScoring: true
 
   calculateCutoffs: false
-  tolAbsolute: {tol}
+  tolAbsolute: 0.05
 
   leafSize: 20
   splitByWidth: true
 
   useGrid: false
-""".format(
-        tol=tol,
-    )
-    with open("./tmy3_t{i}.yaml".format(i=i), 'w') as f:
-        f.write(output)
