@@ -1,0 +1,21 @@
+inputPath: "bigdata/mnist.csv"
+inputColumnRange: 1-784
+inputRows: 0
+timeToScore: 600.0
+
+tKDEConf:
+  algorithm: RKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  bwValue: 1000.0
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  tolAbsolute: 0.001
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false
