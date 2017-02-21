@@ -1,0 +1,22 @@
+
+inputPath: "bigdata/hep.csv"
+inputColumnRange: 1-27
+inputRows: 320000
+numToScore: 10000000
+timeToScore: 180.0
+
+tKDEConf:
+  algorithm: SIMPLEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false
