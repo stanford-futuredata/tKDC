@@ -8,7 +8,7 @@ for p in ps:
 inputPath: "bigdata/otmy3.csv"
 inputColumnRange: 0-3
 inputRows: 0
-timeToScore: 60.0
+timeToScore: 600.0
 
 tKDEConf:
   algorithm: TREEKDE
