@@ -23,3 +23,5 @@ tKDEConf:
 
   leafSize: 20
   splitByWidth: true
+
+  useGrid: false

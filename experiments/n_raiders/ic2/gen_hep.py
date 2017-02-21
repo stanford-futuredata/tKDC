@@ -27,6 +27,8 @@ tKDEConf:
 
   leafSize: 20
   splitByWidth: true
+
+  useGrid: false
 """.format(n=n)
     with open("./hep_n{i}.yaml".format(i=i), 'w') as f:
         f.write(output)
