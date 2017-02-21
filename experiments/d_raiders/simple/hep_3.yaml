@@ -1,6 +1,6 @@
 
 inputPath: "bigdata/hep.csv"
-inputColumnRange: 1-2
+inputColumnRange: 1-3
 inputRows: 0
 timeToScore: 600.0
 

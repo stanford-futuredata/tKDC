@@ -18,7 +18,7 @@ tKDEConf:
 
   useGrid: false
 """.format(
-        d=d-1,
+        d=d,
     )
     with open("./hep_{d}.yaml".format(d=d), 'w') as f:
         f.write(output)
