@@ -2,7 +2,8 @@
 inputPath: "bigdata/hep.csv"
 inputColumnRange: 1-27
 inputRows: 2560000
-timeToScore: 120.0
+timeToScore: 180.0
+numToScore: 10000000
 
 tKDEConf:
   algorithm: TREEKDE
