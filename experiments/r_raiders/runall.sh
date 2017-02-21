@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 
-D=experiments/r_raiders/
+D=experiments/r_raiders
 
 for i in 0 1 2 3 4 5 6 7
 do
