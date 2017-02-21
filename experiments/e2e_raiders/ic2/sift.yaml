@@ -15,6 +15,7 @@ tKDEConf:
   kernel: gaussian
   denormalized: true
   useStdDev: true
+  bwMultiplier: 3.0
   ignoreSelfScoring: true
 
   calculateCutoffs: true

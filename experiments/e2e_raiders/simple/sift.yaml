@@ -9,7 +9,7 @@ tKDEConf:
 
   kernel: gaussian
   denormalized: true
-  bwMultiplier: 1.0
+  bwMultiplier: 3.0
   useStdDev: true
   ignoreSelfScoring: true
 
