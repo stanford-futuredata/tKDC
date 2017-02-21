@@ -1,0 +1,24 @@
+inputPath: "bigdata/sift.csv"
+inputColumnRange: 0-127
+inputRows: 0
+timeToScore: 120.0
+
+tKDEConf:
+  algorithm: TREEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  useStdDev: true
+  bwMultiplier: 3.0
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  cutoffHAbsolute: 1.0e-12
+  cutoffLAbsolute: 1.0e-12
+  tolAbsolute: 1.0e-14
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false
