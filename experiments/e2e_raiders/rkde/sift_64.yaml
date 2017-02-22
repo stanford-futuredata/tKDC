@@ -1,0 +1,22 @@
+inputPath: "bigdata/sift.csv"
+inputColumnRange: 0-63
+inputRows: 0
+timeToScore: 120.0
+
+tKDEConf:
+  algorithm: RKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: true
+  useStdDev: true
+  bwMultiplier: 1.0
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+  tolAbsolute: 2.0e-18
+
+  leafSize: 20
+  splitByWidth: true
+
+  useGrid: false
