@@ -1,0 +1,18 @@
+inputPath: "bigdata/homesensor.csv"
+inputColumnRange: 2-5
+inputRows: 0
+timeToScore: 600
+
+tKDEConf:
+  algorithm: SIMPLEKDE
+  percentile: 0.01
+
+  kernel: gaussian
+  denormalized: false
+  bwMultiplier: 1.0
+  useStdDev: true
+  ignoreSelfScoring: true
+
+  calculateCutoffs: false
+
+  useGrid: false
