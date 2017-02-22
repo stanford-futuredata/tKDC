@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy as np
 import sklearn
 import scipy.stats
@@ -81,13 +83,13 @@ def run_benchmark(
     kde.fit(scaled_data)
     train_time = time.time() - trainstart
     params["train_time"] = 1000*train_time
-    print("Trained in {}".format(train_time), flush=True)
+    print("Trained in {}".format(train_time))
 
     scorestart = time.time()
     scores = np.exp(kde.score_samples(scaled_data[:numScore]))
     score_time = time.time() - scorestart
     params["test_time"] = 1000*score_time
-    print("Scored in {}".format(score_time), flush=True)
+    print("Scored in {}".format(score_time))
     print("Rate: {}".format(numScore/score_time))
 
     scores_minus_self = scores - self_density
