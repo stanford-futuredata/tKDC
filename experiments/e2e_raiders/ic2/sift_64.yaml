@@ -1,5 +1,5 @@
 inputPath: "bigdata/sift.csv"
-inputColumnRange: 0-127
+inputColumnRange: 0-63
 inputRows: 0
 timeToScore: 120.0
 
@@ -15,7 +15,7 @@ tKDEConf:
   kernel: gaussian
   denormalized: true
   useStdDev: true
-  bwMultiplier: 2.0
+  bwMultiplier: 1.0
   ignoreSelfScoring: true
 
   calculateCutoffs: true
