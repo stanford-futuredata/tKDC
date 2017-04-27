@@ -1,0 +1,15 @@
+algorithm,dataset,dim,num_kernels,num_test,num_train,out_path,test_time,train_time
+ic2,bigdata/otmy3.csv,4,2421760756,73707,1822080,./ic2/out/tmy3_90.out,600010,113299
+ic2,bigdata/otmy3.csv,4,573515480,233249,1822080,./ic2/out/tmy3_10.out,60004,30725
+ic2,bigdata/otmy3.csv,4,221836279,7568,1822080,./ic2/out/tmy3_70.out,60035,457620
+ic2,bigdata/otmy3.csv,4,2376794900,59873,1822080,./ic2/out/tmy3_80.out,600009,157068
+ic2,bigdata/otmy3.csv,4,249658286,9568,1822080,./ic2/out/tmy3_60.out,60084,704823
+ic2,bigdata/otmy3.csv,4,2652365940,164084,1822080,./ic2/out/tmy3_99.out,600001,82854
+ic2,bigdata/otmy3.csv,4,2508331356,85102,1822080,./ic2/out/tmy3_95.out,600016,96051
+ic2,bigdata/otmy3.csv,4,324108453,22466,1822080,./ic2/out/tmy3_40.out,60009,198735
+ic2,bigdata/otmy3.csv,4,268614093,21880,1822080,./ic2/out/tmy3_30.out,60007,163667
+ic2,bigdata/otmy3.csv,4,345557027,81488,1822080,./ic2/out/tmy3_20.out,60002,51303
+ic2,bigdata/otmy3.csv,4,163868252,10906,1822080,./ic2/out/tmy3_50.out,60007,404589
+ic2,bigdata/otmy3.csv,4,788229837,937152,1822080,./ic2/out/tmy3_1.out,60001,15887
+ic2,bigdata/otmy3.csv,4,1056719966,558769,1822080,./ic2/out/tmy3_5.out,60001,28313
+ic2,bigdata/otmy3.csv,4,7802146560,4282,1822080,./simple/out/tmy3_50.out,600126,446

@@ -1,0 +1,7 @@
+Factor,Training Time,Scoring Time,Kernel Evaluations
+Baseline,1,39500,200000
+1% Tolerance,2.2,25000,100000
+p99 Cutoff,2.2,500,50000
+Tol+Cutoff,2.2,10,1000
+EquiWidth,2.2,4.6,1000
+Grid,3.0,3.2,300

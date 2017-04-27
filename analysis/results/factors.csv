@@ -1,0 +1,6 @@
+factor,throughput,kernels
+Baseline,10.0,566615.75
++Threshold,4800,609.9691
++Tolerance,51000,151.139068
++Equiwidth,85000,90.919384
++Grid,114000,55.398756

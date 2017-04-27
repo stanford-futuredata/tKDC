@@ -1,0 +1,5 @@
+0: all
+1: tolerance
+2: cutoff
+3: equiwidth
+4: grid
